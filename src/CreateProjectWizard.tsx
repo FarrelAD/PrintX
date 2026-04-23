@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ProjectType } from './types/project';
+import type { ProjectType, ProjectData } from './types/project';
 import Step1Category from './components/wizard/Step1Category';
 import Step2Assets from './components/wizard/Step2Assets';
 import Step3Mapping from './components/wizard/Step3Mapping';
@@ -9,7 +9,9 @@ export default function CreateProjectWizard({ onClose }: {
   onClose: () => void;
 }) {
   const [step, setStep] = useState(1);
-  const [projectType, setProjectType] = useState<ProjectType>(null);
+  const [projectData, setProjectData] = useState<ProjectData>({
+    type: null,
+  });
 
   const steps = [
     { number: 1, title: 'Kategori' },
@@ -19,7 +21,7 @@ export default function CreateProjectWizard({ onClose }: {
   ];
 
   const handleTypeSelect = (type: ProjectType) => {
-    setProjectType(type);
+    setProjectData(prev => ({ ...prev, type }));
     setStep(2);
   };
 
@@ -42,12 +44,31 @@ export default function CreateProjectWizard({ onClose }: {
         <div className="flex gap-2 md:gap-4 items-center">
           {steps.map((s) => (
             <div key={s.number} className="flex items-center gap-1 md:gap-2">
-              <div className={`w-6 h-6 md:w-8 md:h-8 flex items-center justify-center border font-bold text-[10px] md:text-xs ${step === s.number ? 'bg-primary text-white border-primary' : 'border-outline-variant text-secondary'}`}>
-                {s.number}
-              </div>
-              <span className={`text-[10px] uppercase font-bold tracking-widest hidden lg:inline ${step === s.number ? 'text-primary' : 'text-secondary'}`}>
-                {s.title}
-              </span>
+              <button 
+                onClick={() => setStep(s.number)}
+                disabled={s.number > 1 && !projectData.type && step < s.number}
+                className={`flex items-center gap-1 md:gap-2 group transition-all ${
+                  (s.number > 1 && !projectData.type && step < s.number) 
+                    ? 'opacity-40 cursor-not-allowed' 
+                    : 'cursor-pointer'
+                }`}
+                title={s.number > 1 && !projectData.type && step < s.number ? 'Pilih kategori terlebih dahulu' : `Ke langkah ${s.number}`}
+              >
+                <div className={`w-6 h-6 md:w-8 md:h-8 flex items-center justify-center border font-bold text-[10px] md:text-xs transition-all ${
+                  step === s.number 
+                    ? 'bg-primary text-white border-primary' 
+                    : 'border-outline-variant text-secondary group-hover:border-primary group-hover:text-primary'
+                }`}>
+                  {s.number}
+                </div>
+                <span className={`text-[10px] uppercase font-bold tracking-widest hidden lg:inline transition-all ${
+                  step === s.number 
+                    ? 'text-primary' 
+                    : 'text-secondary group-hover:text-primary'
+                }`}>
+                  {s.title}
+                </span>
+              </button>
               {s.number < 4 && <div className="w-2 md:w-4 h-px bg-outline-variant"></div>}
             </div>
           ))}
@@ -56,9 +77,9 @@ export default function CreateProjectWizard({ onClose }: {
 
       <div className="max-w-[800px] mx-auto w-full">
         {step === 1 && <Step1Category onSelect={handleTypeSelect} />}
-        {step === 2 && <Step2Assets onNext={handleNext} onBack={handleBack} />}
-        {step === 3 && <Step3Mapping onNext={handleNext} onBack={handleBack} />}
-        {step === 4 && <Step4Result projectType={projectType} onBack={handleBack} onComplete={onClose} />}
+        {step === 2 && <Step2Assets data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
+        {step === 3 && <Step3Mapping data={projectData} onNext={handleNext} onBack={handleBack} />}
+        {step === 4 && <Step4Result projectType={projectData.type} onBack={handleBack} onComplete={onClose} />}
       </div>
     </div>
   );
