@@ -1,131 +1,95 @@
-:root {
+@import "tailwindcss";
+
+@theme {
   /* Colors */
-  --primary: #000000;
-  --on-primary: #ffffff;
-  --background: #f9f9f9;
-  --on-background: #1a1c1c;
-  --secondary: #5d5f5f;
-  --surface: #f9f9f9;
-  --surface-container: #eeeeee;
-  --surface-container-high: #e8e8e8;
-  --surface-container-highest: #e2e2e2;
-  --outline: #000000;
-  --outline-variant: #cfc4c5;
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-background: #f9f9f9;
+  --color-on-background: #1a1c1c;
+  --color-secondary: #5d5f5f;
+  --color-surface: #f9f9f9;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-outline: #000000;
+  --color-outline-variant: #cfc4c5;
   
   /* Typography */
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-heading: 'Newsreader', serif;
   
   /* Spacing */
-  --gutter: 24px;
-  --margin: 48px;
-  --stack-sm: 16px;
-  --stack-md: 32px;
-  --stack-lg: 64px;
+  --spacing-gutter: 24px;
+  --spacing-margin: 48px;
+  --spacing-stack-sm: 16px;
+  --spacing-stack-md: 32px;
+  --spacing-stack-lg: 64px;
   
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  
-  font-family: var(--font-body);
-  line-height: 1.6;
-  font-weight: 400;
-  
-  color-scheme: light;
-  color: var(--on-background);
-  background-color: var(--background);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Breakpoints */
+  --breakpoint-xs: 480px;
+
+  /* Z-Index */
+  --z-index-100: 100;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-#root {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-h1, h2, h3, h4, .font-serif {
-  font-family: var(--font-heading);
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: var(--transition-fast);
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  transition: var(--transition-fast);
-}
-
-/* Utilities */
-.container {
-  max-width: 1440px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 var(--margin);
-  box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
+@layer base {
   :root {
-    --margin: 24px;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    font-weight: 400;
+    color-scheme: light;
+    color: var(--color-on-background);
+    background-color: var(--color-background);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  .container {
-    padding: 0 var(--margin);
+
+  body {
+    @apply min-h-screen overflow-x-hidden;
+  }
+
+  #root {
+    @apply w-full min-h-screen flex flex-col;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+
+  a {
+    @apply no-underline transition-all duration-150;
+    color: inherit;
+  }
+
+  button {
+    @apply cursor-pointer border-none bg-none font-[inherit] transition-all duration-150;
   }
 }
 
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  vertical-align: middle;
-}
+@layer utilities {
+  .brutalist-shadow {
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  }
 
-/* Brutalist UI Elements */
-.brutalist-border {
-  border: 1px solid var(--primary);
-}
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
-.brutalist-shadow {
-  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  margin-right: 8px;
-  margin-bottom: 8px;
-}
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface-container);
+  }
 
-.btn-primary {
-  background: var(--primary);
-  color: var(--on-primary);
-  padding: 12px 24px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 14px;
-  border: 1px solid var(--primary);
-}
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+  }
 
-.btn-primary:hover {
-  background: var(--on-primary);
-  color: var(--primary);
-}
-
-.btn-primary:active {
-  transform: scale(0.95);
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+  }
 }

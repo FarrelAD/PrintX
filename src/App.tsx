@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './App.css'
 import Dashboard from './Dashboard'
 
 function App() {
@@ -11,48 +10,48 @@ function App() {
 
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-inner">
-          <div className="logo">PRINTX</div>
-          <div className="nav-links">
-            <a href="#" className="nav-link">Arsip</a>
-            <a href="#" className="nav-link">Fitur</a>
-            <a href="#" className="nav-link">Harga</a>
-            <a href="#" className="nav-link">Manifesto</a>
+      <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
+        <div className="flex justify-between items-center py-8 px-margin max-w-[1440px] mx-auto flex-wrap gap-4 max-xs:px-margin max-xs:justify-center">
+          <div className="text-2xl font-bold tracking-tighter uppercase max-xs:text-xl">PRINTX</div>
+          <div className="hidden md:flex gap-12 items-center">
+            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Arsip</a>
+            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Fitur</a>
+            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Harga</a>
+            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Manifesto</a>
           </div>
-          <button className="btn-primary" onClick={() => setView('dashboard')}>
+          <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>
             MULAI SEKARANG
           </button>
         </div>
       </nav>
 
-      <main className="container">
+      <main className="max-w-[1440px] w-full mx-auto px-margin">
         {/* Hero Section */}
-        <section className="hero">
-          <div className="hero-content">
-            <h1 className="display-lg">
+        <section className="grid grid-cols-12 gap-gutter py-stack-lg border-b border-primary">
+          <div className="col-span-12 lg:col-span-6 flex flex-col justify-center">
+            <h1 className="text-[clamp(40px,5vw,64px)] leading-[1.1] tracking-tight mb-stack-sm font-heading">
               Ubah Spreadsheet Anda Menjadi Dokumen Siap Cetak
             </h1>
-            <p className="body-lg">
+            <p className="text-lg text-secondary mb-stack-md max-w-[480px]">
               Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.
             </p>
-            <div style={{ display: 'flex' }}>
-              <button className="btn-primary" onClick={() => setView('dashboard')}>Mulai Gratis</button>
+            <div className="flex">
+              <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>Mulai Gratis</button>
             </div>
           </div>
-          <div className="hero-visual">
-            <div className="brutalist-shadow brutalist-border" style={{ background: 'white', padding: '24px', width: '100%', aspectRatio: '16/9', position: 'relative' }}>
-              <div style={{ display: 'flex', gap: '16px', height: '100%' }}>
-                <div style={{ width: '33%', borderRight: '1px solid #ccc', opacity: 0.5, fontSize: '10px', fontFamily: 'monospace' }}>
+          <div className="col-span-12 lg:col-span-6 bg-surface-container border border-primary p-8 flex items-center justify-center">
+            <div className="brutalist-shadow border border-primary bg-white p-6 w-full aspect-video relative">
+              <div className="flex gap-4 h-full">
+                <div className="w-1/3 border-r border-[#ccc] opacity-50 text-[10px] font-mono leading-tight">
                   NAMA,JABATAN,UID<br/>
                   Jane Doe,Senior Lead,8821<br/>
                   John Smith,Desainer,9912
                 </div>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid black', position: 'relative' }}>
-                  <div style={{ width: '64px', height: '64px', background: '#eee', marginBottom: '16px' }}></div>
-                  <h3 style={{ fontSize: '24px' }}>Jane Doe</h3>
-                  <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#666' }}>Senior Lead</p>
-                  <div style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'black', color: 'white', fontSize: '8px', padding: '4px 8px', textTransform: 'uppercase' }}>
+                <div className="flex-1 flex flex-col items-center justify-center border border-black relative">
+                  <div className="w-16 h-16 bg-[#eee] mb-4"></div>
+                  <h3 className="text-2xl font-heading">Jane Doe</h3>
+                  <p className="text-[12px] uppercase tracking-widest text-[#666]">Senior Lead</p>
+                  <div className="absolute -top-2 -right-2 bg-black text-white text-[8px] px-2 py-1 uppercase">
                     Siap Cetak
                   </div>
                 </div>
@@ -62,11 +61,11 @@ function App() {
         </section>
 
         {/* Problem Section */}
-        <section className="section-border problem-section">
-          <div className="problem-title">
-            <h2 className="section-title">Beban Manual</h2>
+        <section className="border-b border-primary py-stack-lg grid grid-cols-12 gap-gutter">
+          <div className="col-span-12 md:col-span-4 md:border-r border-primary md:pr-gutter max-md:border-b max-md:pb-stack-sm max-md:mb-stack-sm">
+            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">Beban Manual</h2>
           </div>
-          <div className="problem-text">
+          <div className="col-span-12 md:col-span-8 text-lg text-secondary">
             <p>
               Memformat dokumen secara manual adalah cara lama. Menyalin data dari spreadsheet ke perangkat lunak desain sangat rawan kesalahan, membosankan, dan sulit dikembangkan. PrintX menjembatani celah antara data terstruktur dan hasil fisik tanpa hambatan.
             </p>
@@ -74,71 +73,71 @@ function App() {
         </section>
 
         {/* Solution Flow */}
-        <section className="solution-flow">
-          <div className="solution-step">
-            <span className="material-symbols-outlined step-icon">dashboard</span>
-            <h3 className="step-title">1. Pilih Templat</h3>
-            <p className="step-desc">Pilih dari perpustakaan standar arsip kami atau bangun tata letak berbasis grid kustom Anda sendiri.</p>
+        <section className="grid grid-cols-1 md:grid-cols-3 border-b border-primary">
+          <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
+            <span className="material-symbols-outlined text-[48px] mb-stack-sm">dashboard</span>
+            <h3 className="text-2xl mb-2">1. Pilih Templat</h3>
+            <p className="text-secondary">Pilih dari perpustakaan standar arsip kami atau bangun tata letak berbasis grid kustom Anda sendiri.</p>
           </div>
-          <div className="solution-step">
-            <span className="material-symbols-outlined step-icon">upload_file</span>
-            <h3 className="step-title">2. Unggah Data</h3>
-            <p className="step-desc">Masukkan CSV, Excel, atau Google Sheet Anda. Kami menangani parsing dan sanitasi data secara otomatis.</p>
+          <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
+            <span className="material-symbols-outlined text-[48px] mb-stack-sm">upload_file</span>
+            <h3 className="text-2xl mb-2">2. Unggah Data</h3>
+            <p className="text-secondary">Masukkan CSV, Excel, atau Google Sheet Anda. Kami menangani parsing dan sanitasi data secara otomatis.</p>
           </div>
-          <div className="solution-step">
-            <span className="material-symbols-outlined step-icon">print</span>
-            <h3 className="step-title">3. Ekspor & Cetak</h3>
-            <p className="step-desc">Hasilkan PDF siap cetak dengan tanda bleed dan garis potong hanya dalam satu klik.</p>
+          <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
+            <span className="material-symbols-outlined text-[48px] mb-stack-sm">print</span>
+            <h3 className="text-2xl mb-2">3. Ekspor & Cetak</h3>
+            <p className="text-secondary">Hasilkan PDF siap cetak dengan tanda bleed dan garis potong hanya dalam satu klik.</p>
           </div>
         </section>
 
         {/* Feature Highlights */}
-        <section className="section-border">
-          <div className="section-header">
-            <h2 className="section-title">Kemampuan Sistem</h2>
-            <div className="section-subtitle">04 Fitur Utama</div>
+        <section className="border-b border-primary py-stack-lg">
+          <div className="flex justify-between items-baseline mb-stack-md gap-4 max-md:flex-col max-md:gap-2">
+            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">Kemampuan Sistem</h2>
+            <div className="text-[12px] text-secondary uppercase tracking-[0.2em]">04 Fitur Utama</div>
           </div>
-          <div className="features-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mt-stack-md">
             {[
               { icon: 'drag_pan', title: 'Tarik & Lepas Bidang', desc: 'Tempatkan variabel dinamis di mana pun pada kanvas Anda dengan presisi piksel yang sempurna.', label: 'Visual Editor' },
               { icon: 'auto_awesome', title: 'Pemetaan Data Otomatis', desc: 'Kami mendeteksi nama header dan secara otomatis menghubungkannya ke bidang dokumen Anda.', label: 'Inteligensi' },
               { icon: 'visibility', title: 'Pratinjau Langsung', desc: 'Lihat setiap data rekaman secara instan sebelum Anda melakukan proses cetak massal.', label: 'Proofing' },
               { icon: 'picture_as_pdf', title: 'Ekspor PDF Massal', desc: 'Ukuran file yang dioptimalkan dengan rendering teks vektor sempurna untuk skala apa pun.', label: 'Output' }
             ].map((f, i) => (
-              <div key={i} className="feature-card">
-                <span className="material-symbols-outlined" style={{ fontSize: '32px', marginBottom: '16px' }}>{f.icon}</span>
-                <h4 className="feature-title">{f.title}</h4>
-                <p className="feature-desc">{f.desc}</p>
-                <div className="feature-label">{f.label}</div>
+              <div key={i} className="border border-primary p-8 flex flex-col h-full">
+                <span className="material-symbols-outlined text-[32px] mb-4">{f.icon}</span>
+                <h4 className="text-2xl mb-4">{f.title}</h4>
+                <p className="text-secondary mb-8">{f.desc}</p>
+                <div className="mt-auto pt-4 border-t border-outline-variant text-[12px] uppercase tracking-widest font-semibold">{f.label}</div>
               </div>
             ))}
           </div>
         </section>
 
         {/* Use Cases */}
-        <section className="use-cases">
+        <section className="grid grid-cols-2 lg:grid-cols-4 border-y border-primary">
           {['Kartu ID', 'Sertifikat', 'Label', 'Undangan'].map((u, i) => (
-            <div key={i} className="use-case-item">
-              <div style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', marginBottom: '8px' }}>Kasus 0{i + 1}</div>
-              <h3 style={{ fontSize: '24px' }}>{u}</h3>
+            <div key={i} className={`p-8 text-center border-r border-primary last:border-none ${i === 1 && 'max-md:border-r-0'} ${i < 2 && 'max-md:border-b'}`}>
+              <div className="text-[12px] text-[#666] uppercase mb-2">Kasus 0{i + 1}</div>
+              <h3 className="text-2xl">{u}</h3>
             </div>
           ))}
         </section>
 
         {/* Preview Archive */}
-        <section className="section-border">
-          <div className="preview-container">
-            <div className="preview-header">
-              <div className="preview-title">Arsip Hasil Cetak</div>
-              <div className="preview-filename">FILE_EKSPOR_V1_SIAP_CETAK.PDF</div>
+        <section className="border-b border-primary py-stack-lg">
+          <div className="bg-surface-container border border-primary p-6 md:p-12 my-stack-lg">
+            <div className="flex justify-between items-baseline mb-8 gap-4 max-md:flex-col max-md:items-start max-md:gap-2">
+              <div className="font-heading text-2xl italic">Arsip Hasil Cetak</div>
+              <div className="text-[10px] font-mono">FILE_EKSPOR_V1_SIAP_CETAK.PDF</div>
             </div>
-            <div className="preview-grid">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="preview-card">
-                  <div style={{ width: '100%', height: '100px', background: '#eee', marginBottom: '16px' }}></div>
-                  <div style={{ height: '8px', background: 'black', width: '75%', marginBottom: '8px' }}></div>
-                  <div style={{ height: '8px', background: '#666', width: '50%', marginBottom: '16px' }}></div>
-                  <div style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', fontSize: '8px' }}>
+                <div key={n} className="bg-white border border-primary p-4 aspect-[3/4] flex flex-col">
+                  <div className="w-full h-[100px] bg-[#eee] mb-4"></div>
+                  <div className="h-2 bg-black w-[75%] mb-2"></div>
+                  <div className="h-2 bg-[#666] w-1/2 mb-4"></div>
+                  <div className="mt-auto pt-2 border-t border-[#ccc] flex justify-between text-[8px]">
                     <span>REF: 00{n}</span>
                     <span>TERVERIFIKASI</span>
                   </div>
@@ -149,27 +148,27 @@ function App() {
         </section>
 
         {/* Final CTA */}
-        <section className="cta-section">
-          <h2 className="cta-title">
+        <section className="text-center py-16">
+          <h2 className="text-[clamp(32px,6vw,48px)] mb-8 max-w-[800px] mx-auto">
             Mulai Buat Dokumen Pertama Anda
           </h2>
-          <button className="btn-primary btn-cta" onClick={() => setView('dashboard')}>
+          <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>
             Buka Aplikasi PrintX
           </button>
         </section>
       </main>
 
-      <footer className="footer">
-        <div className="container footer-inner">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="logo">PRINTX</div>
-            <div className="font-serif" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+      <footer className="border-t border-primary py-16 mt-16">
+        <div className="max-w-[1440px] w-full mx-auto px-margin flex justify-between items-center gap-8 max-md:flex-col max-md:text-center">
+          <div className="flex flex-col gap-4">
+            <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
+            <div className="font-heading text-[12px] uppercase tracking-widest">
               © 2024 PRINTX SYSTEMS. DISUSUN DENGAN NEWSREADER. SELURUH HAK CIPTA DILINDUNGI.
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
+          <div className="flex gap-8 flex-wrap">
             {['Ketentuan Layanan', 'Kebijakan Privasi', 'Dokumentasi API', 'Kontak'].map((l) => (
-              <a key={l} href="#" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#666' }}>{l}</a>
+              <a key={l} href="#" className="text-[12px] uppercase tracking-widest text-[#666]">{l}</a>
             ))}
           </div>
         </div>
@@ -179,3 +178,4 @@ function App() {
 }
 
 export default App
+
