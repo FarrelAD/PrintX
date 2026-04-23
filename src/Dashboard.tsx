@@ -50,75 +50,116 @@ export default function Dashboard({ onBack }: {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col pb-20 lg:pb-0 items-center">
-        <header className="p-6 md:p-margin bg-white border-b border-primary w-full">
-          <div className="flex lg:hidden justify-between items-center mb-6">
-            <div className="text-2xl font-bold tracking-tighter uppercase cursor-pointer" onClick={onBack}>PRINTX</div>
-            <button className="p-2">
-              <span className="material-symbols-outlined">account_circle</span>
-            </button>
-          </div>
-          <div className="flex justify-between items-center gap-6 max-md:flex-col max-md:items-start">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading font-medium">Dashboard Proyek</h1>
-            <button 
-              onClick={() => setIsCreating(true)}
-              className="bg-primary text-on-primary py-2.5 px-5 md:py-3 md:px-6 font-semibold tracking-widest uppercase text-xs md:text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all flex items-center gap-2 max-md:w-full max-md:justify-center"
-            >
-              <span className="material-symbols-outlined text-lg md:text-xl">add</span>
-              PROYEK BARU
-            </button>
+      <main className="flex-1 flex flex-col pb-24 lg:pb-0">
+        {/* Mobile Header - Compact & Sticky */}
+        <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-primary z-50 px-6 py-4 flex justify-between items-center">
+          <div className="text-xl font-bold tracking-tighter uppercase cursor-pointer" onClick={onBack}>PRINTX</div>
+          <div className="flex items-center gap-4">
+            <button className="material-symbols-outlined text-xl">search</button>
+            <button className="material-symbols-outlined text-xl">account_circle</button>
           </div>
         </header>
 
-        <div className="p-stack-lg px-margin max-w-[1200px] w-full mx-auto">
+        <div className="max-w-[1400px] w-full mx-auto px-6 md:px-margin pt-8 md:pt-12">
           {isCreating ? (
-            <CreateProjectWizard onClose={() => setIsCreating(false)} />
+            <div className="max-w-[1000px] mx-auto">
+              <CreateProjectWizard onClose={() => setIsCreating(false)} />
+            </div>
           ) : (
             <>
-              {/* Quick Stats */}
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-stack-lg">
-                <div className="bg-white border border-primary p-8">
-                  <div className="text-[12px] uppercase tracking-widest text-secondary mb-3">Total Proyek</div>
-                  <div className="font-heading text-4xl font-semibold">12</div>
-                </div>
-                <div className="bg-white border border-primary p-8">
-                  <div className="text-[12px] uppercase tracking-widest text-secondary mb-3">Total Item Dicetak</div>
-                  <div className="font-heading text-4xl font-semibold">1,240</div>
-                </div>
-                <div className="bg-white border border-primary p-8">
-                  <div className="text-[12px] uppercase tracking-widest text-secondary mb-3">Kapasitas Penyimpanan</div>
-                  <div className="font-heading text-4xl font-semibold">85%</div>
+              {/* Masthead / Hero Section */}
+              <section className="mb-12 md:mb-20 border-b border-primary pb-8">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-[10px] uppercase font-bold tracking-[0.2em] bg-primary text-white px-2 py-0.5">Vol. 01</span>
+                      <span className="text-[10px] uppercase font-semibold tracking-widest text-secondary">
+                        {new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+                      </span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading leading-[0.9] tracking-tighter mb-4">
+                      Dashboard <br className="hidden md:block" />
+                      <span className="font-serif-display">Proyek</span>
+                    </h1>
+                    <p className="text-secondary text-sm md:text-base max-w-md">
+                      Kelola alur kerja cetak massal Anda dengan presisi. Mulai dari desain hingga distribusi data dalam satu tempat.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col items-start md:items-end gap-4">
+                    <button 
+                      onClick={() => setIsCreating(true)}
+                      className="group relative bg-primary text-on-primary py-4 px-8 font-semibold tracking-widest uppercase text-sm border border-primary overflow-hidden transition-all hover:bg-white hover:text-primary active:scale-95 flex items-center gap-3 w-full md:w-auto justify-center"
+                    >
+                      <span className="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">add</span>
+                      <span>Proyek Baru</span>
+                    </button>
+                    <div className="hidden md:flex gap-8 border-t border-primary/20 pt-4 w-full justify-end">
+                      <div className="text-right">
+                        <div className="text-[10px] uppercase tracking-widest text-secondary">Aktif</div>
+                        <div className="font-heading text-xl">12</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] uppercase tracking-widest text-secondary">Selesai</div>
+                        <div className="font-heading text-xl">1.2k</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </section>
 
-              {/* Project List */}
-              <section className="mt-stack-md">
-                <div className="flex justify-between items-baseline mb-8">
-                  <h2 className="text-2xl font-heading">Aktivitas Terakhir</h2>
-                  <a href="#" className="text-[12px] font-semibold uppercase tracking-wider">LIHAT SEMUA</a>
+              {/* Navigation & Filter Bar */}
+              <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 border-b border-primary/10 pb-6">
+                <div className="flex gap-6 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
+                  {['Semua', 'Draf', 'Siap Cetak', 'Selesai'].map((tab, i) => (
+                    <button key={tab} className={`text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'}`}>
+                      {tab}
+                    </button>
+                  ))}
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {projects.map((project) => (
-                    <div key={project.id} className="bg-white border border-primary transition-all cursor-pointer hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-primary)] flex flex-col">
-                      <div className="aspect-16/10 bg-surface-container border-b border-primary relative overflow-hidden">
-                        <div className="h-full flex items-center justify-center text-surface-container-highest">
-                          <span className="text-[64px] material-symbols-outlined">description</span>
-                        </div>
-                        <div className={`absolute top-4 right-4 py-1 px-3 text-[10px] uppercase font-bold tracking-wider border border-primary ${project.status === 'Siap Cetak' ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
-                          {project.status}
-                        </div>
+                <div className="hidden md:flex items-center gap-4 w-full md:w-64 border-b border-primary/20 pb-1">
+                  <span className="material-symbols-outlined text-secondary text-lg">search</span>
+                  <input type="text" placeholder="Cari proyek..." className="bg-transparent border-none outline-none text-sm w-full font-body" />
+                </div>
+              </section>
+
+              {/* Project Grid */}
+              <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16">
+                {projects.map((project) => (
+                  <div key={project.id} className="group flex flex-col cursor-pointer">
+                    <div className="aspect-[4/3] bg-surface-container border border-primary relative overflow-hidden mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                        <span className="text-[80px] material-symbols-outlined">description</span>
                       </div>
-                      <div className="p-6">
-                        <div className="font-mono text-[10px] text-secondary mb-2">#{project.id}</div>
-                        <h3 className="text-lg mb-3">{project.name}</h3>
-                        <div className="text-[12px] text-secondary flex items-center gap-2">
-                          <span>{project.items} Item</span>
-                          <span className="w-1 h-1 bg-outline-variant rounded-full"></span>
-                          <span>{project.date}</span>
-                        </div>
+                      <div className="absolute top-0 left-0 p-4">
+                        <div className="text-[10px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id}</div>
+                      </div>
+                      <div className={`absolute bottom-4 right-4 py-1.5 px-4 text-[10px] uppercase font-bold tracking-wider border border-primary ${project.status === 'Siap Cetak' ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
+                        {project.status}
                       </div>
                     </div>
-                  ))}
+                    
+                    <div className="flex flex-col">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all">{project.name}</h3>
+                        <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_outward</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-secondary font-bold border-t border-primary/10 pt-3 mt-auto">
+                        <span>{project.items} Salinan</span>
+                        <span className="w-1 h-1 bg-primary rounded-full"></span>
+                        <span>{project.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Empty State / Call to Action Card */}
+                <div 
+                  onClick={() => setIsCreating(true)}
+                  className="hidden md:flex aspect-[4/3] border border-primary border-dashed items-center justify-center flex-col gap-4 cursor-pointer hover:bg-surface-container transition-colors group"
+                >
+                  <span className="material-symbols-outlined text-4xl text-secondary group-hover:scale-110 transition-transform">add_circle</span>
+                  <span className="text-xs uppercase tracking-widest font-bold text-secondary">Buat Proyek Baru</span>
                 </div>
               </section>
             </>

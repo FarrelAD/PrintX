@@ -76,6 +76,21 @@
     box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
   }
 
+  .editorial-grid {
+    background-image: linear-gradient(to right, var(--color-surface-container) 1px, transparent 1px);
+    background-size: 40px 100%;
+  }
+
+  .thin-border {
+    border-width: 0.5px;
+  }
+
+  .font-serif-display {
+    font-family: var(--font-heading);
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
