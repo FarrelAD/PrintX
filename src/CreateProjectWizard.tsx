@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 type ProjectType = 'id_card' | 'certificate' | 'label' | null;
 
-interface CreateProjectWizardProps {
+export default function CreateProjectWizard({ onClose }: {
   onClose: () => void;
-}
-
-const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({ onClose }) => {
+}) {
   const [step, setStep] = useState(1);
   const [projectType, setProjectType] = useState<ProjectType>(null);
 
@@ -208,5 +206,3 @@ const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({ onClose }) =>
     </div>
   );
 };
-
-export default CreateProjectWizard;

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Dashboard from './Dashboard'
 
-function App() {
+export default function App() {
   const [view, setView] = useState<'landing' | 'dashboard'>('landing')
 
   if (view === 'dashboard') {
@@ -176,6 +176,3 @@ function App() {
     </>
   )
 }
-
-export default App
-

@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreateProjectWizard from './CreateProjectWizard';
 
-interface DashboardProps {
+export default function Dashboard({ onBack }: {
   onBack: () => void;
-}
-
-const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
+}) {
   const [isCreating, setIsCreating] = useState(false);
 
   const projects = [
@@ -154,5 +152,3 @@ const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
     </div>
   );
 };
-
-export default Dashboard;
