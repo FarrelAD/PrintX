@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import './App.css'
+import Dashboard from './Dashboard'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [view, setView] = useState<'landing' | 'dashboard'>('landing')
+
+  if (view === 'dashboard') {
+    return <Dashboard onBack={() => setView('landing')} />
+  }
 
   return (
     <>
@@ -15,8 +20,8 @@ function App() {
             <a href="#" className="nav-link">Harga</a>
             <a href="#" className="nav-link">Manifesto</a>
           </div>
-          <button className="btn-primary" onClick={() => setCount((c) => c + 1)}>
-            MULAI SEKARANG ({count})
+          <button className="btn-primary" onClick={() => setView('dashboard')}>
+            MULAI SEKARANG
           </button>
         </div>
       </nav>
@@ -32,7 +37,7 @@ function App() {
               Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.
             </p>
             <div style={{ display: 'flex' }}>
-              <button className="btn-primary">Mulai Gratis</button>
+              <button className="btn-primary" onClick={() => setView('dashboard')}>Mulai Gratis</button>
             </div>
           </div>
           <div className="hero-visual">
@@ -148,7 +153,7 @@ function App() {
           <h2 className="cta-title">
             Mulai Buat Dokumen Pertama Anda
           </h2>
-          <button className="btn-primary btn-cta">
+          <button className="btn-primary btn-cta" onClick={() => setView('dashboard')}>
             Buka Aplikasi PrintX
           </button>
         </section>
