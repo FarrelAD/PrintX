@@ -78,8 +78,8 @@ export default function CreateProjectWizard({ onClose }: {
       <div className="max-w-[800px] mx-auto w-full">
         {step === 1 && <Step1Category onSelect={handleTypeSelect} />}
         {step === 2 && <Step2Assets data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
-        {step === 3 && <Step3Mapping data={projectData} onNext={handleNext} onBack={handleBack} />}
-        {step === 4 && <Step4Result projectType={projectData.type} onBack={handleBack} onComplete={onClose} />}
+        {step === 3 && <Step3Mapping data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
+        {step === 4 && <Step4Result data={projectData} onBack={handleBack} onComplete={onClose} />}
       </div>
     </div>
   );

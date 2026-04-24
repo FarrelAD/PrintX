@@ -1,5 +1,18 @@
 export type ProjectType = 'id_card' | 'certificate' | 'label' | null;
 
+export type MappingField = {
+  id: string;
+  column: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontSize: number;
+  fontFamily: string;
+  align: 'left' | 'center' | 'right';
+  color: string;
+};
+
 export type ProjectData = {
   type: ProjectType;
   design?: {
@@ -9,6 +22,7 @@ export type ProjectData = {
   dataset?: {
     file: File | null;
     headers: string[];
-    rows: any[];
+    rows: any[][];
   };
+  mapping?: MappingField[];
 };
