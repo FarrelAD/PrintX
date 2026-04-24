@@ -1,6 +1,6 @@
 export type ProjectType = 'id_card' | 'certificate' | 'label' | null;
 
-export interface ProjectData {
+export type ProjectData = {
   type: ProjectType;
   design?: {
     file: File | null;
@@ -11,4 +11,4 @@ export interface ProjectData {
     headers: string[];
     rows: any[];
   };
-}
+};
