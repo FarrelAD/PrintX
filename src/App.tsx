@@ -133,7 +133,7 @@ export default function App() {
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="bg-white border border-primary p-4 aspect-[3/4] flex flex-col">
+                <div key={n} className="bg-white border border-primary p-4 aspect-3/4 flex flex-col">
                   <div className="w-full h-[100px] bg-[#eee] mb-4"></div>
                   <div className="h-2 bg-black w-[75%] mb-2"></div>
                   <div className="h-2 bg-[#666] w-1/2 mb-4"></div>

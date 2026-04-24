@@ -127,7 +127,7 @@ export default function Dashboard({ onBack }: {
               <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16">
                 {projects.map((project) => (
                   <div key={project.id} className="group flex flex-col cursor-pointer">
-                    <div className="aspect-[4/3] bg-surface-container border border-primary relative overflow-hidden mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
+                    <div className="aspect-4/3 bg-surface-container border border-primary relative overflow-hidden mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
                       <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
                         <span className="text-[80px] material-symbols-outlined">description</span>
                       </div>
@@ -156,7 +156,7 @@ export default function Dashboard({ onBack }: {
                 {/* Empty State / Call to Action Card */}
                 <div 
                   onClick={() => setIsCreating(true)}
-                  className="hidden md:flex aspect-[4/3] border border-primary border-dashed items-center justify-center flex-col gap-4 cursor-pointer hover:bg-surface-container transition-colors group"
+                  className="hidden md:flex aspect-4/3 border border-primary border-dashed items-center justify-center flex-col gap-4 cursor-pointer hover:bg-surface-container transition-colors group"
                 >
                   <span className="material-symbols-outlined text-4xl text-secondary group-hover:scale-110 transition-transform">add_circle</span>
                   <span className="text-xs uppercase tracking-widest font-bold text-secondary">Buat Proyek Baru</span>
