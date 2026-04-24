@@ -50,7 +50,7 @@ export default function Dashboard({ onBack }: {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col pb-24 lg:pb-0">
+      <main className="flex-1 flex flex-col pb-24 lg:pb-0 min-w-0">
         {/* Mobile Header - Compact & Sticky */}
         <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-primary z-50 px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold tracking-tighter uppercase cursor-pointer" onClick={onBack}>PRINTX</div>
@@ -62,7 +62,7 @@ export default function Dashboard({ onBack }: {
 
         <div className="max-w-[1400px] w-full mx-auto px-6 md:px-margin pt-8 md:pt-12">
           {isCreating ? (
-            <div className="max-w-[1000px] mx-auto">
+            <div className="max-w-full mx-auto">
               <CreateProjectWizard onClose={() => setIsCreating(false)} />
             </div>
           ) : (

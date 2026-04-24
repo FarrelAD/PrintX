@@ -29,7 +29,7 @@ export default function CreateProjectWizard({ onClose }: {
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col min-h-full min-w-0">
       {/* Header Wizard */}
       <div className="flex justify-between items-center mb-8 md:mb-12">
         <div>
@@ -75,7 +75,7 @@ export default function CreateProjectWizard({ onClose }: {
         </div>
       </div>
 
-      <div className="max-w-[800px] mx-auto w-full">
+      <div className="max-w-full mx-auto w-full">
         {step === 1 && <Step1Category onSelect={handleTypeSelect} />}
         {step === 2 && <Step2Assets data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
         {step === 3 && <Step3Mapping data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}

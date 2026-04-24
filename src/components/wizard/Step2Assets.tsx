@@ -166,12 +166,12 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
 
       {/* Full-width Data Preview */}
       {data.dataset && (
-        <div className="mt-8 border border-primary bg-white p-4 md:p-8 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="mt-8 border border-primary bg-white p-4 md:p-8 animate-in fade-in slide-in-from-top-4 duration-500 w-full overflow-hidden">
           <div className="flex justify-between items-end mb-4">
             <h3 className="text-base md:text-lg font-heading uppercase tracking-tight">Pratinjau Dataset</h3>
             <p className="text-[9px] md:text-[10px] font-bold text-secondary uppercase tracking-widest">Menampilkan 15 baris</p>
           </div>
-          <div className="border border-outline-variant overflow-x-auto">
+          <div className="border border-outline-variant overflow-x-auto w-full">
             <table className="w-full text-xs text-left border-collapse">
               <thead className="bg-surface-container-low border-b border-outline-variant">
                 <tr>

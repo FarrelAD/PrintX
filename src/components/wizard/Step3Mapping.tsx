@@ -37,24 +37,31 @@ function uid() {
 function ColumnChip({
   header,
   isUsed,
+  isActive,
   onDragStart,
+  onClick,
 }: {
   header: string;
   isUsed: boolean;
+  isActive?: boolean;
   onDragStart: (header: string, e: React.DragEvent) => void;
+  onClick: () => void;
 }) {
   return (
     <div
       draggable
       onDragStart={(e) => onDragStart(header, e)}
+      onClick={onClick}
       className={`
         flex items-center justify-between gap-2 px-4 py-3 md:py-2.5
         border-2 text-[10px] md:text-xs font-bold uppercase tracking-widest
         cursor-grab active:cursor-grabbing select-none
         transition-all duration-200
-        ${isUsed
-          ? 'border-primary bg-primary text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]'
-          : 'border-primary bg-white hover:bg-surface-container hover:shadow-[4px_4px_0px_0px_var(--color-primary)]'
+        ${isActive
+          ? 'border-secondary bg-secondary text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] scale-95'
+          : isUsed
+            ? 'border-primary bg-primary text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]'
+            : 'border-primary bg-white hover:bg-surface-container hover:shadow-[4px_4px_0px_0px_var(--color-primary)]'
         }
       `}
     >
@@ -85,6 +92,7 @@ export default function Step3Mapping({
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
   const [dragOverCanvas, setDragOverCanvas] = useState(false);
+  const [activeColumn, setActiveColumn] = useState<string | null>(null);
 
   // ── Refs ──
   const containerRef = useRef<HTMLDivElement>(null);
@@ -222,7 +230,9 @@ export default function Step3Mapping({
                   key={header}
                   header={header}
                   isUsed={usedColumns.has(header)}
+                  isActive={activeColumn === header}
                   onDragStart={handleColumnDragStart}
+                  onClick={() => setActiveColumn(prev => prev === header ? null : header)}
                 />
               ))}
             </div>
@@ -230,7 +240,9 @@ export default function Step3Mapping({
 
           <div className="mt-2 p-3 bg-surface-container border border-outline-variant text-[9px] text-secondary leading-relaxed">
             <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
-            Seret kolom ke area kanvas. Klik bidang untuk mengedit propertinya.
+            {activeColumn 
+              ? `Pilih "${activeColumn}" aktif. Klik di kanvas untuk menempatkan.`
+              : 'Seret kolom ke area kanvas atau klik untuk memilih (mobile).'}
           </div>
         </div>
 
@@ -252,12 +264,37 @@ export default function Step3Mapping({
             onDragLeave={() => setDragOverCanvas(false)}
             onDrop={handleCanvasDrop}
             onClick={(e) => {
+              // Tap-to-place logic for mobile/click
+              if (activeColumn) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const newField: MappingField = {
+                  id: uid(),
+                  column: activeColumn,
+                  x: Math.max(0, x - DEFAULT_FIELD_W / 2),
+                  y: Math.max(0, y - DEFAULT_FIELD_H / 2),
+                  width: DEFAULT_FIELD_W,
+                  height: DEFAULT_FIELD_H,
+                  fontSize: DEFAULT_FONT_SIZE,
+                  fontFamily: 'Inter',
+                  align: 'left',
+                  color: '#000000',
+                };
+                setFields((prev) => [...prev, newField]);
+                setSelectedId(newField.id);
+                setActiveColumn(null); // Clear after placement
+                return;
+              }
+
               // Deselect when clicking canvas background (not a field)
               if (e.target === e.currentTarget) setSelectedId(null);
             }}
             className={`
               relative border-2 transition-colors duration-150 overflow-hidden min-w-0
               ${dragOverCanvas ? 'border-primary bg-primary/5' : 'border-outline-variant'}
+              ${activeColumn ? 'cursor-crosshair border-secondary bg-secondary/5 shadow-inner' : ''}
               ${!data.design?.preview ? 'bg-surface-container' : ''}
             `}
             style={{ minHeight: 240 }}
@@ -326,6 +363,15 @@ export default function Step3Mapping({
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bg-primary/10">
                 <div className="bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-2 shadow-lg">
                   Lepaskan untuk menempatkan
+                </div>
+              </div>
+            )}
+
+            {activeColumn && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bg-secondary/10">
+                <div className="bg-secondary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 shadow-lg flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm">touch_app</span>
+                  Klik di mana saja untuk menempatkan "{activeColumn}"
                 </div>
               </div>
             )}
