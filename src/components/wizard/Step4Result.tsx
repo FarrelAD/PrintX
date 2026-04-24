@@ -2,11 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Image as KonvaImage, Text } from 'react-konva';
 import type { ProjectData } from '../../types/project';
 
-// ── Constants ────────────────────────────────────────────────────────────────
-
-const PREVIEW_WIDTH = 280;
-const MAX_PREVIEW_ROWS = 6;
-
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function useLoadedImage(src?: string | null) {
@@ -24,10 +19,12 @@ function useLoadedImage(src?: string | null) {
 
 function RowPreview({
   rowIndex,
+  width = 280,
   data,
   bgImage,
 }: {
   rowIndex: number;
+  width?: number;
   data: ProjectData;
   bgImage: HTMLImageElement | null;
 }) {
@@ -37,9 +34,9 @@ function RowPreview({
   const naturalW = bgImage?.naturalWidth ?? 1;
   const naturalH = bgImage?.naturalHeight ?? 1;
   const ratio = naturalH / naturalW;
-  const previewH = Math.round(PREVIEW_WIDTH * ratio);
+  const previewH = Math.round(width * ratio);
 
-  const scaleX = PREVIEW_WIDTH / naturalW;
+  const scaleX = width / naturalW;
   const scaleY = previewH / naturalH;
 
   const row = dataset.rows[rowIndex] ?? [];
@@ -49,17 +46,17 @@ function RowPreview({
   return (
     <div className="flex flex-col gap-1 items-center">
       <div
-        className="border border-outline-variant overflow-hidden"
-        style={{ width: PREVIEW_WIDTH, height: previewH }}
+        className="border border-outline-variant overflow-hidden bg-surface-container-low"
+        style={{ width: width, height: previewH }}
       >
-        <Stage width={PREVIEW_WIDTH} height={previewH} listening={false}>
+        <Stage width={width} height={previewH} listening={false}>
           <Layer>
             {bgImage && (
               <KonvaImage
                 image={bgImage}
                 x={0}
                 y={0}
-                width={PREVIEW_WIDTH}
+                width={width}
                 height={previewH}
                 listening={false}
               />
@@ -113,8 +110,46 @@ export default function Step4Result({
   const bgImage = useLoadedImage(data.design?.preview);
   const totalRows = data.dataset?.rows.length ?? 0;
   const mappedFields = data.mapping?.length ?? 0;
-  const previewCount = Math.min(totalRows, MAX_PREVIEW_ROWS);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(600);
+
+  // Measure container for responsive preview
+  useEffect(() => {
+    const obs = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        const w = entries[0].contentRect.width;
+        setContainerWidth(Math.min(600, w - 80)); // 80px for buttons
+      }
+    });
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') setCurrentIndex(prev => Math.max(0, prev - 1));
+      if (e.key === 'ArrowRight') setCurrentIndex(prev => Math.min(totalRows - 1, prev + 1));
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [totalRows]);
+
+  // Auto-scroll mini strip
+  useEffect(() => {
+    if (scrollRef.current) {
+      const activeBtn = scrollRef.current.children[currentIndex] as HTMLElement;
+      if (activeBtn) {
+        scrollRef.current.scrollTo({
+          left: activeBtn.offsetLeft - scrollRef.current.offsetWidth / 2 + activeBtn.offsetWidth / 2,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [currentIndex]);
 
   const hasMappings = mappedFields > 0 && totalRows > 0;
 
@@ -125,24 +160,11 @@ export default function Step4Result({
         Pratinjau hasil pemetaan data Anda sebelum proses cetak massal dimulai.
       </p>
 
-      {/* Preview grid */}
-      <div className="border border-primary bg-white p-4 md:p-6 mb-6">
-        <div className="flex justify-between items-end mb-5">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">
-              Pratinjau Output
-            </p>
-            <p className="text-lg font-heading mt-0.5">
-              {previewCount} dari {totalRows} dokumen
-            </p>
-          </div>
-          {previewCount < totalRows && (
-            <p className="text-[10px] text-secondary italic">
-              +{totalRows - previewCount} dokumen lainnya
-            </p>
-          )}
-        </div>
-
+      {/* Carousel Preview Area */}
+      <div 
+        ref={containerRef}
+        className="border border-primary bg-white p-4 md:p-8 mb-6 relative"
+      >
         {!hasMappings ? (
           <div className="border border-dashed border-outline-variant p-10 text-center">
             <span className="material-symbols-outlined text-3xl text-secondary mb-2 block">
@@ -155,19 +177,84 @@ export default function Step4Result({
             </p>
           </div>
         ) : (
-          <div
-            ref={scrollRef}
-            className="flex gap-4 overflow-x-auto pb-2"
-          >
-            {Array.from({ length: previewCount }, (_, i) => (
-              <div key={i} className="shrink-0">
-                <RowPreview
-                  rowIndex={i}
-                  data={data}
-                  bgImage={bgImage}
+          <div className="flex flex-col gap-8">
+            {/* Main Stage */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+              <div className="flex items-center justify-center gap-4 md:contents">
+                <button 
+                  onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+                  disabled={currentIndex === 0}
+                  className={`w-12 h-12 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-primary hover:bg-surface-container transition-all ${currentIndex === 0 ? 'opacity-20 cursor-not-allowed' : ''}`}
+                >
+                  <span className="material-symbols-outlined">chevron_left</span>
+                </button>
+
+                <div className="flex-1 flex justify-center animate-in fade-in zoom-in-95 duration-300" key={currentIndex}>
+                  <RowPreview
+                    rowIndex={currentIndex}
+                    data={data}
+                    bgImage={bgImage}
+                    width={containerWidth}
+                  />
+                </div>
+
+                <button 
+                  onClick={() => setCurrentIndex(prev => Math.min(totalRows - 1, prev + 1))}
+                  disabled={currentIndex === totalRows - 1}
+                  className={`w-12 h-12 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-primary hover:bg-surface-container transition-all ${currentIndex === totalRows - 1 ? 'opacity-20 cursor-not-allowed' : ''}`}
+                >
+                  <span className="material-symbols-outlined">chevron_right</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Navigation Strip */}
+            <div className="flex flex-col gap-6 md:gap-4 pt-6 border-t border-outline-variant">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">
+                  Navigasi Rekaman
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold bg-primary text-white px-3 py-1">
+                    {currentIndex + 1} / {totalRows}
+                  </span>
+                </div>
+              </div>
+              
+              <div 
+                ref={scrollRef}
+                className="flex gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
+              >
+                {Array.from({ length: totalRows }, (_, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => setCurrentIndex(i)}
+                    className={`shrink-0 transition-all duration-300 p-1 border-2 ${
+                      i === currentIndex ? 'border-primary scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
+                    }`}
+                  >
+                    <RowPreview
+                      rowIndex={i}
+                      data={data}
+                      bgImage={bgImage}
+                      width={60}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Slider for quick jump */}
+              <div className="px-2 py-4 md:py-0">
+                <input 
+                  type="range"
+                  min={0}
+                  max={totalRows - 1}
+                  value={currentIndex}
+                  onChange={(e) => setCurrentIndex(Number(e.target.value))}
+                  className="w-full accent-primary h-2.5 md:h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer touch-none"
                 />
               </div>
-            ))}
+            </div>
           </div>
         )}
       </div>

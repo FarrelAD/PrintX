@@ -147,6 +147,8 @@ export default function Step3Mapping({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fields]);
 
+  const stageScale = bgImage ? stageSize.width / bgImage.naturalWidth : 1;
+
   // ── Drag handlers (from column panel) ──
   const handleColumnDragStart = useCallback(
     (header: string, e: React.DragEvent) => {
@@ -164,8 +166,8 @@ export default function Step3Mapping({
       if (!col || !stageRef.current) return;
 
       const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = (e.clientX - rect.left) / stageScale;
+      const y = (e.clientY - rect.top) / stageScale;
 
       const newField: MappingField = {
         id: uid(),
@@ -183,7 +185,7 @@ export default function Step3Mapping({
       setSelectedId(newField.id);
       draggingColumn.current = '';
     },
-    []
+    [stageScale]
   );
 
   // ── Field mutation helpers ──
@@ -267,8 +269,8 @@ export default function Step3Mapping({
               // Tap-to-place logic for mobile/click
               if (activeColumn) {
                 const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const x = (e.clientX - rect.left) / stageScale;
+                const y = (e.clientY - rect.top) / stageScale;
 
                 const newField: MappingField = {
                   id: uid(),
@@ -326,6 +328,7 @@ export default function Step3Mapping({
                     <FieldNode
                       key={field.id}
                       field={field}
+                      scale={stageScale}
                       isSelected={field.id === selectedId}
                       onSelect={() => setSelectedId(field.id)}
                       onChange={(patch) => updateField(field.id, patch)}
@@ -439,11 +442,13 @@ export default function Step3Mapping({
 
 function FieldNode({
   field,
+  scale,
   isSelected,
   onSelect,
   onChange,
 }: {
   field: MappingField;
+  scale: number;
   isSelected: boolean;
   onSelect: () => void;
   onChange: (patch: Partial<MappingField>) => void;
@@ -459,10 +464,10 @@ function FieldNode({
     node.scaleX(1);
     node.scaleY(1);
     onChange({
-      x: node.x(),
-      y: node.y(),
-      width: Math.max(40, node.width() * scaleX),
-      height: Math.max(20, node.height() * scaleY),
+      x: node.x() / scale,
+      y: node.y() / scale,
+      width: Math.max(40, (node.width() * scaleX) / scale),
+      height: Math.max(20, (node.height() * scaleY) / scale),
     });
   };
 
@@ -472,15 +477,15 @@ function FieldNode({
     <Group
       ref={groupRef}
       id={`field-${field.id}`}
-      x={field.x}
-      y={field.y}
-      width={field.width}
-      height={field.height}
+      x={field.x * scale}
+      y={field.y * scale}
+      width={field.width * scale}
+      height={field.height * scale}
       draggable
       onClick={onSelect}
       onTap={onSelect}
       onDragEnd={(e: { target: Konva.Node }) => {
-        onChange({ x: e.target.x(), y: e.target.y() });
+        onChange({ x: e.target.x() / scale, y: e.target.y() / scale });
       }}
       onTransformEnd={handleTransformEnd}
     >
@@ -488,8 +493,8 @@ function FieldNode({
       <Rect
         x={0}
         y={0}
-        width={field.width}
-        height={field.height}
+        width={field.width * scale}
+        height={field.height * scale}
         fill={isSelected ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)'}
         stroke={isSelected ? '#000000' : 'rgba(0,0,0,0.3)'}
         strokeWidth={isSelected ? 1.5 : 1}
@@ -497,12 +502,12 @@ function FieldNode({
       />
       {/* Label text */}
       <Text
-        x={4}
-        y={4}
-        width={field.width - 8}
-        height={field.height - 8}
+        x={4 * scale}
+        y={4 * scale}
+        width={(field.width - 8) * scale}
+        height={(field.height - 8) * scale}
         text={label}
-        fontSize={field.fontSize}
+        fontSize={field.fontSize * scale}
         fontFamily={field.fontFamily}
         fill={field.color}
         align={field.align}
