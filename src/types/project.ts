@@ -13,6 +13,16 @@ export type MappingField = {
   color: string;
 };
 
+export type PrintConfig = {
+  paperSize: 'A4' | 'A3' | 'SRA3' | 'Custom';
+  orientation: 'p' | 'l';
+  widthCm: number;
+  heightCm: number;
+  bleedMm: number;
+  showCropMarks: boolean;
+  nUp: boolean;
+};
+
 export type ProjectData = {
   type: ProjectType;
   design?: {
@@ -25,4 +35,5 @@ export type ProjectData = {
     rows: any[][];
   };
   mapping?: MappingField[];
+  printConfig?: PrintConfig;
 };

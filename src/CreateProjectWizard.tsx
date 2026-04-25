@@ -4,6 +4,7 @@ import Step1Category from './components/wizard/Step1Category';
 import Step2Assets from './components/wizard/Step2Assets';
 import Step3Mapping from './components/wizard/Step3Mapping';
 import Step4Result from './components/wizard/Step4Result';
+import Step5Print from './components/wizard/Step5Print';
 
 export default function CreateProjectWizard({ onClose }: {
   onClose: () => void;
@@ -18,6 +19,7 @@ export default function CreateProjectWizard({ onClose }: {
     { number: 2, title: 'Aset' },
     { number: 3, title: 'Pemetaan' },
     { number: 4, title: 'Hasil' },
+    { number: 5, title: 'Cetak' },
   ];
 
   const handleTypeSelect = (type: ProjectType) => {
@@ -25,7 +27,7 @@ export default function CreateProjectWizard({ onClose }: {
     setStep(2);
   };
 
-  const handleNext = () => setStep((s) => Math.min(s + 1, 4));
+  const handleNext = () => setStep((s) => Math.min(s + 1, 5));
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
   return (
@@ -79,7 +81,21 @@ export default function CreateProjectWizard({ onClose }: {
         {step === 1 && <Step1Category onSelect={handleTypeSelect} />}
         {step === 2 && <Step2Assets data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
         {step === 3 && <Step3Mapping data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
-        {step === 4 && <Step4Result data={projectData} onBack={handleBack} onComplete={onClose} />}
+        {step === 4 && (
+          <Step4Result 
+            data={projectData} 
+            onBack={handleBack} 
+            onComplete={handleNext} 
+          />
+        )}
+        {step === 5 && (
+          <Step5Print 
+            data={projectData} 
+            onBack={handleBack} 
+            onUpdate={setProjectData}
+            onComplete={onClose} 
+          />
+        )}
       </div>
     </div>
   );
