@@ -351,7 +351,6 @@ async function generateProfessionalPDF(
 
   for (let i = 0; i < totalRows; i++) {
     const row = dataset.rows[i];
-    const pageIndex = Math.floor(i / itemsPerPage);
     const itemInPageIndex = i % itemsPerPage;
     
     if (i > 0 && itemInPageIndex === 0) {
