@@ -17,12 +17,7 @@ function LandingPage() {
             <Logo size="lg" />
             <div className="text-2xl font-bold tracking-tighter uppercase max-xs:text-xl">PRINTX</div>
           </div>
-          <div className="hidden md:flex gap-12 items-center">
-            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Arsip</a>
-            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Fitur</a>
-            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Harga</a>
-            <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Manifesto</a>
-          </div>
+
           <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
             MULAI SEKARANG
           </button>
@@ -147,13 +142,12 @@ function LandingPage() {
               <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
             </div>
             <div className="font-heading text-[12px] uppercase tracking-widest">
-              © 2024 PRINTX SYSTEMS. DISUSUN DENGAN NEWSREADER. SELURUH HAK CIPTA DILINDUNGI.
+              © {new Date().getFullYear()} PRINTX. DIKEMBANGKAN OLEH <a href="https://github.com/FarrelAD/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">FARREL AD</a>.
             </div>
           </div>
-          <div className="flex gap-8 flex-wrap justify-center md:justify-start">
-            {['Ketentuan Layanan', 'Kebijakan Privasi', 'Dokumentasi API', 'Kontak'].map((l) => (
-              <a key={l} href="#" className="text-[12px] uppercase tracking-widest text-[#666]">{l}</a>
-            ))}
+          <div className="flex items-center gap-2 text-[12px] uppercase tracking-widest text-primary font-bold bg-surface-container px-4 py-2">
+            <span className="material-symbols-outlined text-[16px]">lock</span>
+            100% Berjalan Lokal
           </div>
         </div>
       </footer>
