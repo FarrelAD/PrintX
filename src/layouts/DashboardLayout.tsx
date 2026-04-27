@@ -55,15 +55,6 @@ export default function DashboardLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="p-8 border-t border-primary">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary text-white flex items-center justify-center font-bold text-sm uppercase">JD</div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold">Jane Doe</div>
-              <div className="text-[10px] uppercase text-secondary tracking-widest">Premium Plan</div>
-            </div>
-          </div>
-        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -74,10 +65,6 @@ export default function DashboardLayout() {
             <Logo size="sm" />
             <div className="text-xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
           </Link>
-          <div className="flex items-center gap-4">
-            <button className="material-symbols-outlined text-xl">search</button>
-            <button className="material-symbols-outlined text-xl">account_circle</button>
-          </div>
         </header>
 
         {/* Content provided by Routes */}
