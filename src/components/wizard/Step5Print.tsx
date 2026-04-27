@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
+import QRCode from 'qrcode';
 import type { ProjectData, PrintConfig } from '../../types/project';
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -372,28 +373,54 @@ async function generateProfessionalPDF(
     // Draw background (scaled to include bleed)
     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-    // Draw text fields
-    mapping.forEach((field) => {
+    // Draw fields
+    for (const field of mapping) {
       const val = String(row[headerIndex[field.column]] ?? '');
       const scaleX = canvas.width / (bgImg.naturalWidth || 1);
       const scaleY = canvas.height / (bgImg.naturalHeight || 1);
-      
-      ctx.fillStyle = field.color;
-      ctx.font = `bold ${Math.round(field.fontSize * scaleX)}px ${field.fontFamily}`;
-      ctx.textAlign = field.align;
-      ctx.textBaseline = 'middle';
       
       const x = (field.x * scaleX);
       const y = (field.y * scaleY);
       const w = (field.width * scaleX);
       const h = (field.height * scaleY);
-      
-      let drawX = x;
-      if (field.align === 'center') drawX = x + w / 2;
-      if (field.align === 'right') drawX = x + w;
-      
-      ctx.fillText(val, drawX, y + h / 2, w);
-    });
+
+      if (field.type === 'qrcode') {
+        try {
+          // Generate QR code as data URL
+          const qrDataUrl = await QRCode.toDataURL(val, {
+            margin: 1,
+            width: Math.min(w, h), // Keep it square
+            color: {
+              dark: '#000000',
+              light: '#ffffff00', // Transparent background
+            }
+          });
+          
+          const qrImg = await loadImage(qrDataUrl);
+          
+          // Center QR code within the field bounds if needed, or just fill
+          const qrSize = Math.min(w, h);
+          const qrX = x + (w - qrSize) / 2;
+          const qrY = y + (h - qrSize) / 2;
+          
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+        } catch (err) {
+          console.error('QR Generation failed for:', val, err);
+        }
+      } else {
+        // Default text rendering
+        ctx.fillStyle = field.color;
+        ctx.font = `bold ${Math.round(field.fontSize * scaleX)}px ${field.fontFamily}`;
+        ctx.textAlign = field.align;
+        ctx.textBaseline = 'middle';
+        
+        let drawX = x;
+        if (field.align === 'center') drawX = x + w / 2;
+        if (field.align === 'right') drawX = x + w;
+        
+        ctx.fillText(val, drawX, y + h / 2, w);
+      }
+    }
 
     // B. Add to PDF
     const dataUrl = canvas.toDataURL('image/jpeg', 0.95);

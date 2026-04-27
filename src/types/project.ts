@@ -3,6 +3,7 @@ export type ProjectType = 'id_card' | 'certificate' | 'label' | null;
 export type MappingField = {
   id: string;
   column: string;
+  type?: 'text' | 'qrcode';
   x: number;
   y: number;
   width: number;

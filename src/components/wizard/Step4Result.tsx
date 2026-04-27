@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Text } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Text, Rect, Group } from 'react-konva';
+import QRCode from 'qrcode';
 import type { ProjectData } from '../../types/project';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -13,6 +14,81 @@ function useLoadedImage(src?: string | null) {
     el.onload = () => setImg(el);
   }, [src]);
   return img;
+}
+
+// ── QRNode ──────────────────────────────────────────────────────────────────
+
+function QRNode({
+  value,
+  x,
+  y,
+  width,
+  height,
+}: {
+  value: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}) {
+  const [qrImg, setQrImg] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    QRCode.toDataURL(value, {
+      margin: 1,
+      width: 128, // Low res for preview
+      color: {
+        dark: '#000000',
+        light: '#ffffff00',
+      }
+    }).then(url => {
+      if (!isMounted) return;
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        if (isMounted) setQrImg(img);
+      };
+    }).catch(err => console.error('QR Preview failed', err));
+
+    return () => { isMounted = false; };
+  }, [value]);
+
+  const size = Math.min(width, height);
+  const qrX = x + (width - size) / 2;
+  const qrY = y + (height - size) / 2;
+
+  if (!qrImg) {
+    return (
+      <Group x={x} y={y}>
+        <Rect
+          width={width}
+          height={height}
+          fill="#f3f4f6"
+          stroke="#d1d5db"
+          strokeWidth={1}
+        />
+        <Text
+          width={width}
+          height={height}
+          text="..."
+          align="center"
+          verticalAlign="middle"
+        />
+      </Group>
+    );
+  }
+
+  return (
+    <KonvaImage
+      image={qrImg}
+      x={qrX}
+      y={qrY}
+      width={size}
+      height={size}
+      listening={false}
+    />
+  );
 }
 
 // ── RowPreview ────────────────────────────────────────────────────────────────
@@ -66,6 +142,19 @@ function RowPreview({
               const value = colIdx >= 0 && row[colIdx] !== undefined
                 ? String(row[colIdx])
                 : `[${field.column}]`;
+
+              if (field.type === 'qrcode') {
+                return (
+                  <QRNode
+                    key={field.id}
+                    value={value}
+                    x={field.x * scaleX}
+                    y={field.y * scaleY}
+                    width={field.width * scaleX}
+                    height={field.height * scaleY}
+                  />
+                );
+              }
 
               return (
                 <Text
