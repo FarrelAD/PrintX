@@ -1,18 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CreateProjectWizard from './CreateProjectWizard';
 import Logo from './components/Logo';
+import { getAllProjects, deleteProject as dbDeleteProject } from './lib/db';
+import type { ProjectData } from './types/project';
 
 export default function Dashboard({ onBack }: {
   onBack: () => void;
 }) {
   const [isCreating, setIsCreating] = useState(false);
+  const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [editingProject, setEditingProject] = useState<ProjectData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const projects = [
-    { id: '001', name: 'Kartu Nama Karyawan', items: 24, status: 'Siap Cetak', date: '24 Apr 2024' },
-    { id: '002', name: 'Sertifikat Webinar UX', items: 156, status: 'Draf', date: '22 Apr 2024' },
-    { id: '003', name: 'Label Pengiriman V1', items: 89, status: 'Siap Cetak', date: '20 Apr 2024' },
-    { id: '004', name: 'Undangan Gala Dinner', items: 42, status: 'Menunggu Data', date: '18 Apr 2024' },
-  ];
+  useEffect(() => {
+    loadProjects();
+  }, [isCreating]);
+
+  async function loadProjects() {
+    setIsLoading(true);
+    try {
+      const data = await getAllProjects();
+      setProjects(data.reverse()); // Newest first
+    } catch (err) {
+      console.error('Failed to load projects:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDelete(e: React.MouseEvent, id: string) {
+    e.stopPropagation();
+    if (!confirm('Apakah Anda yakin ingin menghapus proyek ini?')) return;
+    await dbDeleteProject(id);
+    loadProjects();
+  }
+
+  const handleOpenProject = (project: ProjectData) => {
+    setEditingProject(project);
+    setIsCreating(true);
+  };
+
+  const handleCloseWizard = () => {
+    setIsCreating(false);
+    setEditingProject(null);
+  };
 
   return (
     <div className="flex min-h-screen bg-background text-on-background">
@@ -70,7 +101,10 @@ export default function Dashboard({ onBack }: {
         <div className="max-w-[1400px] w-full mx-auto px-6 md:px-margin pt-8 md:pt-12">
           {isCreating ? (
             <div className="max-w-full mx-auto">
-              <CreateProjectWizard onClose={() => setIsCreating(false)} />
+              <CreateProjectWizard 
+                initialData={editingProject} 
+                onClose={handleCloseWizard} 
+              />
             </div>
           ) : (
             <>
@@ -103,12 +137,12 @@ export default function Dashboard({ onBack }: {
                     </button>
                     <div className="hidden md:flex gap-8 border-t border-primary/20 pt-4 w-full justify-end">
                       <div className="text-right">
-                        <div className="text-[10px] uppercase tracking-widest text-secondary">Aktif</div>
-                        <div className="font-heading text-xl">12</div>
+                         <div className="text-[10px] uppercase tracking-widest text-secondary">Total Proyek</div>
+                        <div className="font-heading text-xl">{projects.length}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] uppercase tracking-widest text-secondary">Selesai</div>
-                        <div className="font-heading text-xl">1.2k</div>
+                        <div className="text-[10px] uppercase tracking-widest text-secondary">Penyimpanan</div>
+                        <div className="font-heading text-xl">LOKAL</div>
                       </div>
                     </div>
                   </div>
@@ -133,32 +167,57 @@ export default function Dashboard({ onBack }: {
               {/* Project Grid */}
               <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16">
                 {projects.map((project) => (
-                  <div key={project.id} className="group flex flex-col cursor-pointer">
+                  <div 
+                    key={project.id} 
+                    onClick={() => handleOpenProject(project)}
+                    className="group flex flex-col cursor-pointer"
+                  >
                     <div className="aspect-4/3 bg-surface-container border border-primary relative overflow-hidden mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
-                      <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
-                        <span className="text-[80px] material-symbols-outlined">description</span>
-                      </div>
-                      <div className="absolute top-0 left-0 p-4">
-                        <div className="text-[10px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id}</div>
+                      {project.design?.preview ? (
+                        <img 
+                          src={project.design.preview} 
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                          alt={project.name} 
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                          <span className="text-[80px] material-symbols-outlined">description</span>
+                        </div>
+                      )}
+                      <div className="absolute top-0 left-0 p-4 flex justify-between w-full items-start">
+                        <div className="text-[10px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id?.slice(0, 8)}</div>
+                        <button 
+                          onClick={(e) => handleDelete(e, project.id!)}
+                          className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                        >
+                          <span className="material-symbols-outlined text-sm">delete</span>
+                        </button>
                       </div>
                       <div className={`absolute bottom-4 right-4 py-1.5 px-4 text-[10px] uppercase font-bold tracking-wider border border-primary ${project.status === 'Siap Cetak' ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
-                        {project.status}
+                        {project.status || 'Draf'}
                       </div>
                     </div>
                     
                     <div className="flex flex-col">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all">{project.name}</h3>
-                        <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_outward</span>
+                        <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">{project.name || 'Proyek Tanpa Nama'}</h3>
+                        <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity shrink-0"> </span>
                       </div>
                       <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-secondary font-bold border-t border-primary/10 pt-3 mt-auto">
-                        <span>{project.items} Salinan</span>
+                        <span>{project.dataset?.rows.length || 0} Salinan</span>
                         <span className="w-1 h-1 bg-primary rounded-full"></span>
-                        <span>{project.date}</span>
+                        <span>{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) : '-'}</span>
                       </div>
                     </div>
                   </div>
                 ))}
+
+                {projects.length === 0 && !isLoading && (
+                  <div className="col-span-full border-2 border-dashed border-outline-variant py-20 flex flex-col items-center justify-center text-secondary opacity-50">
+                    <span className="material-symbols-outlined text-6xl mb-4">folder_open</span>
+                    <p className="text-sm font-bold uppercase tracking-widest">Belum ada proyek lokal</p>
+                  </div>
+                )}
                 
                 {/* Empty State / Call to Action Card */}
                 <div 

@@ -89,6 +89,7 @@ export default function Step5Print({
     
     try {
       await generateProfessionalPDF(data, config, (p) => setProgress(p));
+      onUpdate({ ...data, status: 'Siap Cetak', printConfig: config });
       onComplete();
     } catch (err) {
       console.error('PDF Generation failed:', err);

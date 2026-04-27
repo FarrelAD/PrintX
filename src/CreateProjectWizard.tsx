@@ -1,18 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ProjectType, ProjectData } from './types/project';
 import Step1Category from './components/wizard/Step1Category';
 import Step2Assets from './components/wizard/Step2Assets';
 import Step3Mapping from './components/wizard/Step3Mapping';
 import Step4Result from './components/wizard/Step4Result';
 import Step5Print from './components/wizard/Step5Print';
+import { saveProject } from './lib/db';
 
-export default function CreateProjectWizard({ onClose }: {
+export default function CreateProjectWizard({ 
+  initialData,
+  onClose 
+}: {
+  initialData?: ProjectData | null;
   onClose: () => void;
 }) {
-  const [step, setStep] = useState(1);
-  const [projectData, setProjectData] = useState<ProjectData>({
+  const [step, setStep] = useState(initialData ? 2 : 1);
+  const [projectData, setProjectData] = useState<ProjectData>(initialData || {
     type: null,
   });
+
+  // Auto-save on data change
+  useEffect(() => {
+    if (projectData.type) {
+      saveProject(projectData).then(updated => {
+        if (!projectData.id) {
+          setProjectData(prev => ({ ...prev, id: updated.id }));
+        }
+      });
+    }
+  }, [projectData]);
 
   const steps = [
     { number: 1, title: 'Kategori' },

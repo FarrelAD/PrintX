@@ -25,15 +25,19 @@ export type PrintConfig = {
 };
 
 export type ProjectData = {
+  id?: string;
+  name?: string;
+  updatedAt?: number;
+  status?: 'Draf' | 'Siap Cetak';
   type: ProjectType;
   design?: {
-    file: File | null;
     preview: string | null;
+    fileName?: string;
   };
   dataset?: {
-    file: File | null;
     headers: string[];
     rows: any[][];
+    fileName?: string;
   };
   mapping?: MappingField[];
   printConfig?: PrintConfig;

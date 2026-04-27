@@ -19,7 +19,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
         onUpdate({
           ...data,
           design: {
-            file,
+            fileName: file.name,
             preview: event.target?.result as string
           }
         });
@@ -45,7 +45,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
           onUpdate({
             ...data,
             dataset: {
-              file,
+              fileName: file.name,
               headers,
               rows
             }
@@ -70,8 +70,20 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Unggah Aset Proyek</h2>
-      <p className="text-secondary text-center mb-6 md:mb-12 px-4 text-xs md:text-base">Kami membutuhkan desain dasar dan data variabel Anda.</p>
+      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Aset Proyek</h2>
+      <p className="text-secondary text-center mb-8 px-4 text-xs md:text-sm">Beri nama proyek Anda dan unggah aset yang diperlukan.</p>
+
+      {/* Project Name Input */}
+      <div className="max-w-md mx-auto mb-10">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-secondary block mb-2">Nama Proyek</label>
+        <input 
+          type="text"
+          value={data.name || ''}
+          onChange={(e) => onUpdate({ ...data, name: e.target.value })}
+          placeholder="Contoh: Kartu ID Karyawan 2024"
+          className="w-full bg-white border-2 border-primary p-3 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all"
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Design Upload */}
@@ -115,8 +127,8 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
               </div>
             </div>
           )}
-          {data.design?.file && (
-            <p className="mt-2 text-[10px] text-secondary truncate">{data.design.file.name}</p>
+          {data.design?.fileName && (
+            <p className="mt-2 text-[10px] text-secondary truncate">{data.design.fileName}</p>
           )}
         </div>
 
@@ -143,7 +155,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
           ) : (
             <div className="border border-primary bg-surface-container-low p-6 flex-1 flex flex-col items-center justify-center text-center">
               <span className="material-symbols-outlined text-4xl mb-2 text-primary">check_circle</span>
-              <p className="text-sm font-bold uppercase tracking-widest truncate max-w-full mb-1">{data.dataset.file?.name}</p>
+              <p className="text-sm font-bold uppercase tracking-widest truncate max-w-full mb-1">{data.dataset.fileName}</p>
               <p className="text-[10px] text-secondary uppercase tracking-widest mb-4">{data.dataset.rows.length} Baris ditemukan</p>
               <div className="flex gap-4">
                 <button 
