@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Dashboard from './Dashboard'
+import Logo from './components/Logo'
 
 export default function App() {
   const [view, setView] = useState<'landing' | 'dashboard'>('landing')
@@ -12,7 +13,10 @@ export default function App() {
     <>
       <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
         <div className="flex justify-between items-center py-8 px-margin max-w-[1440px] mx-auto flex-wrap gap-4 max-xs:px-margin max-xs:justify-center">
-          <div className="text-2xl font-bold tracking-tighter uppercase max-xs:text-xl">PRINTX</div>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('landing')}>
+            <Logo size="lg" />
+            <div className="text-2xl font-bold tracking-tighter uppercase max-xs:text-xl">PRINTX</div>
+          </div>
           <div className="hidden md:flex gap-12 items-center">
             <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Arsip</a>
             <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Fitur</a>
@@ -161,7 +165,10 @@ export default function App() {
       <footer className="border-t border-primary py-16 mt-16">
         <div className="max-w-[1440px] w-full mx-auto px-margin flex justify-between items-center gap-8 max-md:flex-col max-md:text-center">
           <div className="flex flex-col gap-4">
-            <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
+            <div className="flex items-center gap-3">
+              <Logo size="md" />
+              <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
+            </div>
             <div className="font-heading text-[12px] uppercase tracking-widest">
               © 2024 PRINTX SYSTEMS. DISUSUN DENGAN NEWSREADER. SELURUH HAK CIPTA DILINDUNGI.
             </div>

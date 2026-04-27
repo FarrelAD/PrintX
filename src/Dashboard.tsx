@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CreateProjectWizard from './CreateProjectWizard';
+import Logo from './components/Logo';
 
 export default function Dashboard({ onBack }: {
   onBack: () => void;
@@ -18,7 +19,10 @@ export default function Dashboard({ onBack }: {
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-[280px] bg-white border-r border-primary flex-col sticky top-0 h-screen z-10">
         <div className="p-8 border-b border-primary">
-          <div className="text-2xl font-bold tracking-tighter uppercase cursor-pointer" onClick={onBack}>PRINTX</div>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={onBack}>
+            <Logo size="md" />
+            <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
+          </div>
         </div>
         <nav className="flex-1 py-6 flex flex-col">
           <a href="#" onClick={() => setIsCreating(false)} className={`flex items-center gap-4 py-4 px-8 uppercase text-sm font-semibold tracking-wider transition-all ${!isCreating ? 'text-primary bg-surface-container-high border-l-4 border-primary' : 'text-secondary border-l-4 border-transparent hover:bg-surface-container hover:text-primary'}`}>
@@ -53,7 +57,10 @@ export default function Dashboard({ onBack }: {
       <main className="flex-1 flex flex-col pb-24 lg:pb-0 min-w-0">
         {/* Mobile Header - Compact & Sticky */}
         <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-primary z-50 px-6 py-4 flex justify-between items-center">
-          <div className="text-xl font-bold tracking-tighter uppercase cursor-pointer" onClick={onBack}>PRINTX</div>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={onBack}>
+            <Logo size="sm" />
+            <div className="text-xl font-bold tracking-tighter uppercase">PRINTX</div>
+          </div>
           <div className="flex items-center gap-4">
             <button className="material-symbols-outlined text-xl">search</button>
             <button className="material-symbols-outlined text-xl">account_circle</button>
