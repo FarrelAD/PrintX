@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import Dashboard from './Dashboard'
-import Logo from './components/Logo'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import Logo from './components/Logo';
+import DashboardLayout from './layouts/DashboardLayout';
+import DashboardHome from './components/views/DashboardHome';
+import ProjectsView from './components/views/ProjectsView';
+import DatasetView from './components/views/DatasetView';
+import SettingsView from './components/views/SettingsView';
+import ProjectWizardView from './components/views/ProjectWizardView';
 
-export default function App() {
-  const [view, setView] = useState<'landing' | 'dashboard'>('landing')
-
-  if (view === 'dashboard') {
-    return <Dashboard onBack={() => setView('landing')} />
-  }
-
+function LandingPage() {
+  const navigate = useNavigate();
   return (
     <>
       <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
         <div className="flex justify-between items-center py-8 px-margin max-w-[1440px] mx-auto flex-wrap gap-4 max-xs:px-margin max-xs:justify-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('landing')}>
+          <div className="flex items-center gap-3 cursor-pointer">
             <Logo size="lg" />
             <div className="text-2xl font-bold tracking-tighter uppercase max-xs:text-xl">PRINTX</div>
           </div>
@@ -23,7 +23,7 @@ export default function App() {
             <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Harga</a>
             <a href="#" className="text-sm tracking-widest uppercase text-secondary hover:text-primary transition-colors">Manifesto</a>
           </div>
-          <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>
+          <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
             MULAI SEKARANG
           </button>
         </div>
@@ -40,7 +40,7 @@ export default function App() {
               Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.
             </p>
             <div className="flex">
-              <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>Mulai Gratis</button>
+              <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>Mulai Gratis</button>
             </div>
           </div>
           <div className="col-span-12 lg:col-span-6 bg-surface-container border border-primary p-8 flex items-center justify-center">
@@ -128,35 +128,12 @@ export default function App() {
           ))}
         </section>
 
-        {/* Preview Archive */}
-        <section className="border-b border-primary py-stack-lg">
-          <div className="bg-surface-container border border-primary p-6 md:p-12 my-stack-lg">
-            <div className="flex justify-between items-baseline mb-8 gap-4 max-md:flex-col max-md:items-start max-md:gap-2">
-              <div className="font-heading text-2xl italic">Arsip Hasil Cetak</div>
-              <div className="text-[10px] font-mono">FILE_EKSPOR_V1_SIAP_CETAK.PDF</div>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-              {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="bg-white border border-primary p-4 aspect-3/4 flex flex-col">
-                  <div className="w-full h-[100px] bg-[#eee] mb-4"></div>
-                  <div className="h-2 bg-black w-[75%] mb-2"></div>
-                  <div className="h-2 bg-[#666] w-1/2 mb-4"></div>
-                  <div className="mt-auto pt-2 border-t border-[#ccc] flex justify-between text-[8px]">
-                    <span>REF: 00{n}</span>
-                    <span>TERVERIFIKASI</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Final CTA */}
         <section className="text-center py-16">
           <h2 className="text-[clamp(32px,6vw,48px)] mb-8 max-w-[800px] mx-auto">
             Mulai Buat Dokumen Pertama Anda
           </h2>
-          <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => setView('dashboard')}>
+          <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
             Buka Aplikasi PrintX
           </button>
         </section>
@@ -165,7 +142,7 @@ export default function App() {
       <footer className="border-t border-primary py-16 mt-16">
         <div className="max-w-[1440px] w-full mx-auto px-margin flex justify-between items-center gap-8 max-md:flex-col max-md:text-center">
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               <Logo size="md" />
               <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
             </div>
@@ -173,7 +150,7 @@ export default function App() {
               © 2024 PRINTX SYSTEMS. DISUSUN DENGAN NEWSREADER. SELURUH HAK CIPTA DILINDUNGI.
             </div>
           </div>
-          <div className="flex gap-8 flex-wrap">
+          <div className="flex gap-8 flex-wrap justify-center md:justify-start">
             {['Ketentuan Layanan', 'Kebijakan Privasi', 'Dokumentasi API', 'Kontak'].map((l) => (
               <a key={l} href="#" className="text-[12px] uppercase tracking-widest text-[#666]">{l}</a>
             ))}
@@ -181,5 +158,23 @@ export default function App() {
         </div>
       </footer>
     </>
-  )
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="projects" element={<ProjectsView />} />
+          <Route path="dataset" element={<DatasetView />} />
+          <Route path="settings" element={<SettingsView />} />
+          <Route path="project/:id" element={<ProjectWizardView />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
