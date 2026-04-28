@@ -6,6 +6,7 @@ import ProjectsView from './components/views/ProjectsView';
 import DatasetView from './components/views/DatasetView';
 import SettingsView from './components/views/SettingsView';
 import ProjectWizardView from './components/views/ProjectWizardView';
+import OGGenerator from './components/views/OGGenerator';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -160,6 +161,7 @@ export default function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/og" element={<OGGenerator />} />
         
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardHome />} />
