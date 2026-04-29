@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjects } from '../../lib/db';
-import type { ProjectData } from '../../types/project';
+import { getAllProjects } from '@/lib/db';
+import type { ProjectData } from '@/types/project';
 
 export default function DatasetView() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   async function loadProjects() {
-    setIsLoading(true);
     try {
       const data = await getAllProjects();
       setProjects(data.reverse());
@@ -23,6 +18,10 @@ export default function DatasetView() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    Promise.resolve().then(() => loadProjects());
+  }, []);
 
   const projectsWithDataset = projects.filter(p => p.dataset && p.dataset.rows.length > 0);
 

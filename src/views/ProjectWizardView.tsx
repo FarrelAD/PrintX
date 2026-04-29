@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CreateProjectWizard from '../../CreateProjectWizard';
-import { getProject } from '../../lib/db';
-import type { ProjectData } from '../../types/project';
+import WizardShell from '@/features/wizard/WizardShell';
+import { getProject } from '@/lib/db';
+import type { ProjectData } from '@/types/project';
 
 export default function ProjectWizardView() {
   const { id } = useParams();
@@ -25,7 +25,7 @@ export default function ProjectWizardView() {
         setInitialData(null);
       });
     } else {
-      setInitialData(null); // 'new' project
+      Promise.resolve().then(() => setInitialData(null)); // 'new' project
     }
   }, [id]);
 
@@ -50,7 +50,7 @@ export default function ProjectWizardView() {
 
   return (
     <div className="max-w-full mx-auto pb-10">
-      <CreateProjectWizard 
+      <WizardShell 
         initialData={initialData} 
         onClose={() => navigate('/dashboard')} 
       />

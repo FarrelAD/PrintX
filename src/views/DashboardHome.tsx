@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllProjects } from '../../lib/db';
-import type { ProjectData } from '../../types/project';
+import { getAllProjects } from '@/lib/db';
+import type { ProjectData } from '@/types/project';
 
 export default function DashboardHome() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   async function loadProjects() {
-    setIsLoading(true);
     try {
       const data = await getAllProjects();
       setProjects(data.reverse()); // Newest first
@@ -23,6 +18,11 @@ export default function DashboardHome() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    Promise.resolve().then(() => loadProjects());
+  }, []);
+
 
   const activeProjects = projects.filter(p => p.status !== 'Siap Cetak').length;
   const completedProjects = projects.filter(p => p.status === 'Siap Cetak').length;

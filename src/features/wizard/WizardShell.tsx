@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { ProjectType, ProjectData } from './types/project';
-import Step1Category from './components/wizard/Step1Category';
-import Step2Assets from './components/wizard/Step2Assets';
-import Step3Mapping from './components/wizard/Step3Mapping';
-import Step4Result from './components/wizard/Step4Result';
-import Step5Print from './components/wizard/Step5Print';
-import { saveProject } from './lib/db';
+import type { ProjectType, ProjectData } from '@/types/project';
+import Step1Category from '@/components/wizard/Step1Category';
+import Step2Assets from '@/components/wizard/Step2Assets';
+import Step3Mapping from '@/components/wizard/Step3Mapping';
+import Step4Result from '@/components/wizard/Step4Result';
+import Step5Print from '@/components/wizard/Step5Print';
+import { saveProject } from '@/lib/db';
 
-export default function CreateProjectWizard({ 
+export default function WizardShell({ 
   initialData,
   onClose 
 }: {

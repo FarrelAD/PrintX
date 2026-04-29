@@ -1,11 +1,7 @@
-import React from 'react';
-
-interface LogoProps {
+export default function Logo({ size = 'md', className = '' }: {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
-}
-
-const Logo: React.FC<LogoProps> = ({ size = 'md', className = '' }) => {
+}) {
   const sizeClasses = {
     sm: 'w-6 h-6 text-[14px]',
     md: 'w-8 h-8 text-[18px]',
@@ -20,5 +16,3 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', className = '' }) => {
     </div>
   );
 };
-
-export default Logo;

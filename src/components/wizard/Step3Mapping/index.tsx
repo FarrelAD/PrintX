@@ -1,79 +1,19 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { Stage, Layer, Image as KonvaImage, Text, Rect, Transformer, Group } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Transformer } from 'react-konva';
 import type Konva from 'konva';
-import type { ProjectData, MappingField } from '../../types/project';
+import type { ProjectData, MappingField } from '@/types/project';
+import { useImageLoader } from '@/hooks/useImageLoader';
+import { useStageSize } from '@/hooks/useStageSize';
+import { uid } from '@/utils/uid';
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const FONT_OPTIONS = [
-  { label: 'Inter (Sans-serif)', value: 'Inter' },
-  { label: 'Newsreader (Serif)', value: 'Newsreader' },
-  { label: 'Playfair Display (Elegan)', value: 'Playfair Display' },
-  { label: 'Bebas Neue (Display)', value: 'Bebas Neue' },
-  { label: 'Source Code Pro (Monospace)', value: 'Source Code Pro' },
-  { label: 'Georgia (Serif)', value: 'Georgia' },
-  { label: 'Arial (Sans-serif)', value: 'Arial' },
-  { label: 'Courier New (Monospace)', value: 'Courier New' },
-];
-
-const ALIGN_OPTIONS: { value: MappingField['align']; icon: string }[] = [
-  { value: 'left', icon: 'format_align_left' },
-  { value: 'center', icon: 'format_align_center' },
-  { value: 'right', icon: 'format_align_right' },
-];
-
-const DEFAULT_FIELD_W = 180;
-const DEFAULT_FIELD_H = 40;
-const DEFAULT_FONT_SIZE = 16;
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function uid() {
-  return Math.random().toString(36).slice(2);
-}
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
-
-function ColumnChip({
-  header,
-  isUsed,
-  isActive,
-  onDragStart,
-  onClick,
-}: {
-  header: string;
-  isUsed: boolean;
-  isActive?: boolean;
-  onDragStart: (header: string, e: React.DragEvent) => void;
-  onClick: () => void;
-}) {
-  return (
-    <div
-      draggable
-      onDragStart={(e) => onDragStart(header, e)}
-      onClick={onClick}
-      className={`
-        flex items-center justify-between gap-2 px-4 py-3 md:py-2.5
-        border-2 text-[10px] md:text-xs font-bold uppercase tracking-widest
-        cursor-grab active:cursor-grabbing select-none
-        transition-all duration-200
-        ${isActive
-          ? 'border-secondary bg-secondary text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] scale-95'
-          : isUsed
-            ? 'border-primary bg-primary text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]'
-            : 'border-primary bg-white hover:bg-surface-container hover:shadow-[4px_4px_0px_0px_var(--color-primary)]'
-        }
-      `}
-    >
-      <span className="truncate">{header}</span>
-      <span className="material-symbols-outlined text-sm shrink-0">
-        {isUsed ? 'check_circle' : 'drag_indicator'}
-      </span>
-    </div>
-  );
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
+import { 
+  DEFAULT_FIELD_W, 
+  DEFAULT_FIELD_H, 
+  DEFAULT_FONT_SIZE 
+} from './constants';
+import { ColumnChip } from './ColumnChip';
+import { FieldNode } from './FieldNode';
+import { PropertiesPanel } from './PropertiesPanel';
 
 export default function Step3Mapping({
   data,
@@ -86,11 +26,8 @@ export default function Step3Mapping({
   onNext: () => void;
   onBack: () => void;
 }) {
-  // ── State ──
   const [fields, setFields] = useState<MappingField[]>(data.mapping ?? []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
-  const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
   const [dragOverCanvas, setDragOverCanvas] = useState(false);
   const [activeColumn, setActiveColumn] = useState<string | null>(null);
 
@@ -100,31 +37,9 @@ export default function Step3Mapping({
   const transformerRef = useRef<Konva.Transformer>(null);
   const draggingColumn = useRef<string>('');
 
-  // ── Load background image ──
-  useEffect(() => {
-    if (!data.design?.preview) return;
-    const img = new Image();
-    img.src = data.design.preview;
-    img.onload = () => setBgImage(img);
-  }, [data.design?.preview]);
-
-  // ── Compute stage size from container ──
-  useEffect(() => {
-    const measure = () => {
-      if (!containerRef.current) return;
-      const w = containerRef.current.clientWidth;
-      if (!bgImage) {
-        setStageSize({ width: w, height: Math.round(w * 0.6) });
-        return;
-      }
-      const ratio = bgImage.naturalHeight / bgImage.naturalWidth;
-      setStageSize({ width: w, height: Math.round(w * ratio) });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, [bgImage]);
+  // ── Image + Stage size (shared hooks) ──
+  const bgImage = useImageLoader(data.design?.preview);
+  const stageSize = useStageSize(containerRef, bgImage);
 
   // ── Attach Transformer to selected node ──
   useEffect(() => {
@@ -436,268 +351,6 @@ export default function Step3Mapping({
           Pratinjau &amp; Selesai
         </button>
       </div>
-    </div>
-  );
-}
-
-// ─── FieldNode ────────────────────────────────────────────────────────────────
-
-function FieldNode({
-  field,
-  scale,
-  isSelected,
-  onSelect,
-  onChange,
-}: {
-  field: MappingField;
-  scale: number;
-  isSelected: boolean;
-  onSelect: () => void;
-  onChange: (patch: Partial<MappingField>) => void;
-}) {
-  const groupRef = useRef<Konva.Group>(null);
-
-  // Sync size back after transformer resize
-  const handleTransformEnd = () => {
-    const node = groupRef.current;
-    if (!node) return;
-    const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
-    node.scaleX(1);
-    node.scaleY(1);
-    onChange({
-      x: node.x() / scale,
-      y: node.y() / scale,
-      width: Math.max(40, (node.width() * scaleX) / scale),
-      height: Math.max(20, (node.height() * scaleY) / scale),
-    });
-  };
-
-  const label = `{{${field.column}}}`;
-
-  return (
-    <Group
-      ref={groupRef}
-      id={`field-${field.id}`}
-      x={field.x * scale}
-      y={field.y * scale}
-      width={field.width * scale}
-      height={field.height * scale}
-      draggable
-      onClick={onSelect}
-      onTap={onSelect}
-      onDragEnd={(e: { target: Konva.Node }) => {
-        onChange({ x: e.target.x() / scale, y: e.target.y() / scale });
-      }}
-      onTransformEnd={handleTransformEnd}
-    >
-      {/* Background rect */}
-      <Rect
-        x={0}
-        y={0}
-        width={field.width * scale}
-        height={field.height * scale}
-        fill={isSelected ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)'}
-        stroke={isSelected ? '#000000' : 'rgba(0,0,0,0.3)'}
-        strokeWidth={isSelected ? 1.5 : 1}
-        dash={isSelected ? undefined : [4, 3]}
-      />
-      {/* Label text */}
-      {field.type === 'qrcode' ? (
-        <Group x={4 * scale} y={4 * scale}>
-          <Rect
-            width={(field.width - 8) * scale}
-            height={(field.height - 8) * scale}
-            fill="#f3f4f6"
-            stroke="#d1d5db"
-            strokeWidth={1}
-          />
-          <Text
-            width={(field.width - 8) * scale}
-            height={(field.height - 8) * scale}
-            text="QR CODE"
-            fontSize={Math.min(12 * scale, (field.height - 16) * scale)}
-            fontFamily="Inter"
-            fontStyle="bold"
-            fill="#6b7280"
-            align="center"
-            verticalAlign="middle"
-          />
-          <Text
-            x={(field.width - 24) * scale}
-            y={(field.height - 24) * scale}
-            text="qr_code_2"
-            fontFamily="Material Symbols Outlined"
-            fontSize={16 * scale}
-            fill="#6b7280"
-          />
-        </Group>
-      ) : (
-        <Text
-          x={4 * scale}
-          y={4 * scale}
-          width={(field.width - 8) * scale}
-          height={(field.height - 8) * scale}
-          text={label}
-          fontSize={field.fontSize * scale}
-          fontFamily={field.fontFamily}
-          fill={field.color}
-          align={field.align}
-          verticalAlign="middle"
-          ellipsis
-          wrap="none"
-          listening={false}
-        />
-      )}
-    </Group>
-  );
-}
-
-// ─── PropertiesPanel ─────────────────────────────────────────────────────────
-
-function PropertiesPanel({
-  field,
-  onChange,
-  onDelete,
-}: {
-  field: MappingField;
-  onChange: (patch: Partial<MappingField>) => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div className="flex flex-col gap-4">
-      {/* Field Type Toggle */}
-      <div>
-        <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-          Tipe Bidang
-        </label>
-        <div className="flex border border-outline-variant overflow-hidden">
-          <button
-            onClick={() => onChange({ type: 'text' })}
-            className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-              (field.type || 'text') === 'text'
-                ? 'bg-primary text-white'
-                : 'bg-white text-secondary hover:bg-surface-container'
-            }`}
-          >
-            Teks
-          </button>
-          <button
-            onClick={() => onChange({ type: 'qrcode' })}
-            className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-              field.type === 'qrcode'
-                ? 'bg-primary text-white'
-                : 'bg-white text-secondary hover:bg-surface-container'
-            }`}
-          >
-            QR Code
-          </button>
-        </div>
-      </div>
-
-      {/* Column name (read-only) */}
-      <div>
-        <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-          Kolom Terpilih
-        </label>
-        <div className="border border-primary bg-primary text-white px-3 py-2 text-xs font-bold uppercase tracking-widest truncate">
-          {field.column}
-        </div>
-      </div>
-
-      {field.type === 'qrcode' ? (
-        <div className="p-3 bg-surface-container-high border border-primary/20 text-[10px] text-secondary leading-relaxed">
-          <span className="material-symbols-outlined text-sm align-middle mr-1 text-primary">qr_code_2</span>
-          Data akan diubah menjadi QR Code secara otomatis saat proses cetak.
-        </div>
-      ) : (
-        <>
-          {/* Font family */}
-          <div>
-            <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Font
-            </label>
-            <select
-              value={field.fontFamily}
-              onChange={(e) => onChange({ fontFamily: e.target.value })}
-              className="w-full border border-outline-variant bg-white px-2 py-2 text-xs focus:outline-none focus:border-primary"
-              style={{ fontFamily: field.fontFamily }}
-            >
-              {FONT_OPTIONS.map((f) => (
-                <option key={f.value} value={f.value} style={{ fontFamily: f.value }}>
-                  {f.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Font size */}
-          <div>
-            <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Ukuran Font — {field.fontSize}px
-            </label>
-            <input
-              type="range"
-              min={8}
-              max={72}
-              value={field.fontSize}
-              onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
-              className="w-full accent-primary"
-            />
-            <div className="flex justify-between text-[9px] text-secondary mt-0.5">
-              <span>8</span><span>72</span>
-            </div>
-          </div>
-
-          {/* Alignment */}
-          <div>
-            <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Rata Teks
-            </label>
-            <div className="flex border border-outline-variant overflow-hidden">
-              {ALIGN_OPTIONS.map((a) => (
-                <button
-                  key={a.value}
-                  onClick={() => onChange({ align: a.value })}
-                  title={a.value}
-                  className={`flex-1 py-2 flex items-center justify-center transition-colors ${
-                    field.align === a.value
-                      ? 'bg-primary text-white'
-                      : 'bg-white text-secondary hover:bg-surface-container'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-sm">{a.icon}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color */}
-          <div>
-            <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Warna Teks
-            </label>
-            <div className="flex gap-2 items-center">
-              <input
-                type="color"
-                value={field.color}
-                onChange={(e) => onChange({ color: e.target.value })}
-                className="w-10 h-9 border border-outline-variant cursor-pointer bg-white p-0.5"
-              />
-              <span className="text-xs font-mono text-secondary">{field.color.toUpperCase()}</span>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Delete */}
-      <button
-        onClick={onDelete}
-        className="mt-2 w-full py-2 border border-outline-variant text-[10px] font-bold uppercase tracking-widest text-secondary hover:border-red-500 hover:text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
-      >
-        <span className="material-symbols-outlined text-sm">delete</span>
-        Hapus Bidang
-      </button>
     </div>
   );
 }

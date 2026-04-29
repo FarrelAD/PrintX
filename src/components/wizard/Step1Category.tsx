@@ -1,4 +1,4 @@
-import type { ProjectType } from '../../types/project';
+import type { ProjectType } from '@/types/project';
 
 export default function Step1Category({ onSelect }: {
   onSelect: (type: ProjectType) => void

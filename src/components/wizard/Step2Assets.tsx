@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import * as XLSX from 'xlsx';
-import type { ProjectData } from '../../types/project';
+import type { ProjectData } from '@/types/project';
 
 export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
   data: ProjectData,
@@ -37,7 +37,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
         const wb = XLSX.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
-        const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
+        const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 }) as (string | number | boolean | null)[][];
 
         if (jsonData.length > 0) {
           const headers = jsonData[0].map(h => String(h));

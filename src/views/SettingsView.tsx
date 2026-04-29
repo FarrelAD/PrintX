@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { getDB } from '../../lib/db';
+import { getDB } from '@/lib/db';
 
 export default function SettingsView() {
   const navigate = useNavigate();

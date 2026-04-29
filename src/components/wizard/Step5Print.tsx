@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react';
-import { jsPDF } from 'jspdf';
-import QRCode from 'qrcode';
-import type { ProjectData, PrintConfig } from '../../types/project';
-
-// ── Constants ────────────────────────────────────────────────────────────────
-
-const PAPER_SIZES = {
-  A4: { w: 210, h: 297 },
-  A3: { w: 297, h: 420 },
-  SRA3: { w: 320, h: 450 },
-  Custom: { w: 210, h: 297 }
-};
+import type { ProjectData, PrintConfig } from '@/types/project';
+import { generateProfessionalPDF } from '@/utils/pdf/generator';
 
 const DEFAULT_CONFIG: PrintConfig = {
   paperSize: 'A4',
@@ -21,8 +11,6 @@ const DEFAULT_CONFIG: PrintConfig = {
   showCropMarks: true,
   nUp: true,
 };
-
-// ── Step5Print ───────────────────────────────────────────────────────────────
 
 export default function Step5Print({
   data,
@@ -63,7 +51,7 @@ export default function Step5Print({
 
   useEffect(() => {
     onUpdate({ ...data, printConfig: config });
-  }, [config]);
+  }, [config, data, onUpdate]);
 
   const handleWidthChange = (val: number) => {
     setConfig(prev => {
@@ -115,7 +103,7 @@ export default function Step5Print({
                 <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Ukuran Kertas</label>
                 <select 
                   value={config.paperSize}
-                  onChange={(e) => setConfig({ ...config, paperSize: e.target.value as any })}
+                  onChange={(e) => setConfig({ ...config, paperSize: e.target.value as PrintConfig['paperSize'] })}
                   className="p-2.5 border-2 border-primary text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   <option value="A4">A4 (210 x 297 mm)</option>
@@ -303,174 +291,4 @@ export default function Step5Print({
   );
 }
 
-// ── PDF Generator Logic ──────────────────────────────────────────────────────
 
-async function generateProfessionalPDF(
-  data: ProjectData, 
-  config: PrintConfig,
-  onProgress: (p: number) => void
-) {
-  const { dataset, mapping, design } = data;
-  if (!dataset || !mapping || !design?.preview) return;
-
-  const paperDim = PAPER_SIZES[config.paperSize] || PAPER_SIZES.A4;
-  const paperW = config.orientation === 'p' ? paperDim.w : paperDim.h;
-  const paperH = config.orientation === 'p' ? paperDim.h : paperDim.w;
-
-  const pdf = new jsPDF({
-    orientation: config.orientation,
-    unit: 'mm',
-    format: [paperW, paperH],
-  });
-
-  // 1. Load Background Image once
-  const bgImg = await loadImage(design.preview);
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  // 300 DPI = 11.81 pixels per mm
-  const DPI_SCALE = 11.811;
-  const designW_mm = config.widthCm * 10;
-  const designH_mm = config.heightCm * 10;
-  const bleed_mm = config.bleedMm;
-  
-  // Canvas size includes bleed
-  canvas.width = Math.round((designW_mm + 2 * bleed_mm) * DPI_SCALE);
-  canvas.height = Math.round((designH_mm + 2 * bleed_mm) * DPI_SCALE);
-
-  const totalRows = dataset.rows.length;
-  const headerIndex: Record<string, number> = {};
-  dataset.headers.forEach((h, i) => { headerIndex[h] = i; });
-
-  // Imposition calculation
-  const margin_mm = 10; // Safety margin for printer
-  const stepX = designW_mm + (config.nUp ? 2 : 20); // Spacing between items
-  const stepY = designH_mm + (config.nUp ? 2 : 20);
-  const cols = config.nUp ? Math.floor((paperW - 2 * margin_mm) / stepX) : 1;
-  const rowsPerPage = config.nUp ? Math.floor((paperH - 2 * margin_mm) / stepY) : 1;
-  const itemsPerPage = cols * rowsPerPage;
-
-  for (let i = 0; i < totalRows; i++) {
-    const row = dataset.rows[i];
-    const itemInPageIndex = i % itemsPerPage;
-    
-    if (i > 0 && itemInPageIndex === 0) {
-      pdf.addPage();
-    }
-
-    const colIdx = itemInPageIndex % cols;
-    const rowIdx = Math.floor(itemInPageIndex / cols);
-    
-    // Position on paper (center grid)
-    const gridW = cols * stepX;
-    const gridH = rowsPerPage * stepY;
-    const startX = (paperW - gridW) / 2 + colIdx * stepX + stepX / 2 - designW_mm / 2;
-    const startY = (paperH - gridH) / 2 + rowIdx * stepY + stepY / 2 - designH_mm / 2;
-
-    // A. Render the high-res design to canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw background (scaled to include bleed)
-    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-
-    // Draw fields
-    for (const field of mapping) {
-      const val = String(row[headerIndex[field.column]] ?? '');
-      const scaleX = canvas.width / (bgImg.naturalWidth || 1);
-      const scaleY = canvas.height / (bgImg.naturalHeight || 1);
-      
-      const x = (field.x * scaleX);
-      const y = (field.y * scaleY);
-      const w = (field.width * scaleX);
-      const h = (field.height * scaleY);
-
-      if (field.type === 'qrcode') {
-        try {
-          // Generate QR code as data URL
-          const qrDataUrl = await QRCode.toDataURL(val, {
-            margin: 1,
-            width: Math.min(w, h), // Keep it square
-            color: {
-              dark: '#000000',
-              light: '#ffffff00', // Transparent background
-            }
-          });
-          
-          const qrImg = await loadImage(qrDataUrl);
-          
-          // Center QR code within the field bounds if needed, or just fill
-          const qrSize = Math.min(w, h);
-          const qrX = x + (w - qrSize) / 2;
-          const qrY = y + (h - qrSize) / 2;
-          
-          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-        } catch (err) {
-          console.error('QR Generation failed for:', val, err);
-        }
-      } else {
-        // Default text rendering
-        ctx.fillStyle = field.color;
-        ctx.font = `bold ${Math.round(field.fontSize * scaleX)}px ${field.fontFamily}`;
-        ctx.textAlign = field.align;
-        ctx.textBaseline = 'middle';
-        
-        let drawX = x;
-        if (field.align === 'center') drawX = x + w / 2;
-        if (field.align === 'right') drawX = x + w;
-        
-        ctx.fillText(val, drawX, y + h / 2, w);
-      }
-    }
-
-    // B. Add to PDF
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-    pdf.addImage(
-      dataUrl, 
-      'JPEG', 
-      startX - bleed_mm, 
-      startY - bleed_mm, 
-      designW_mm + 2 * bleed_mm, 
-      designH_mm + 2 * bleed_mm
-    );
-
-    // C. Draw Crop Marks
-    if (config.showCropMarks) {
-      drawCropMarks(pdf, startX, startY, designW_mm, designH_mm, bleed_mm);
-    }
-
-    onProgress(((i + 1) / totalRows) * 100);
-    
-    // Tiny delay to keep UI responsive
-    if (i % 5 === 0) await new Promise(r => setTimeout(r, 10));
-  }
-
-  pdf.save(`PrintX_Export_${new Date().getTime()}.pdf`);
-}
-
-function drawCropMarks(pdf: jsPDF, x: number, y: number, w: number, h: number, bleed: number) {
-  pdf.setLineWidth(0.1);
-  pdf.setDrawColor(0, 0, 0);
-  const len = 5; // length of marks
-  const gap = 2; // gap from trim line
-
-  // Horizontal marks
-  pdf.line(x - bleed - len, y, x - gap, y); // Top left
-  pdf.line(x + w + gap, y, x + w + bleed + len, y); // Top right
-  pdf.line(x - bleed - len, y + h, x - gap, y + h); // Bottom left
-  pdf.line(x + w + gap, y + h, x + w + bleed + len, y + h); // Bottom right
-
-  // Vertical marks
-  pdf.line(x, y - bleed - len, x, y - gap); // Top left
-  pdf.line(x, y + h + gap, x, y + h + bleed + len); // Bottom left
-  pdf.line(x + w, y - bleed - len, x + w, y - gap); // Top right
-  pdf.line(x + w, y + h + gap, x + w, y + h + bleed + len); // Bottom right
-}
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => resolve(img);
-  });
-}

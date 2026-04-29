@@ -1,191 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Text, Rect, Group } from 'react-konva';
-import QRCode from 'qrcode';
-import type { ProjectData } from '../../types/project';
+import { useRef, useState, useEffect } from 'react';
+import type { ProjectData } from '@/types/project';
+import { useImageLoader } from '@/hooks/useImageLoader';
+import { RowPreview } from './RowPreview';
+import { Stat } from './Stat';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function useLoadedImage(src?: string | null) {
-  const [img, setImg] = useState<HTMLImageElement | null>(null);
-  useEffect(() => {
-    if (!src) { setImg(null); return; }
-    const el = new Image();
-    el.src = src;
-    el.onload = () => setImg(el);
-  }, [src]);
-  return img;
-}
-
-// ── QRNode ──────────────────────────────────────────────────────────────────
-
-function QRNode({
-  value,
-  x,
-  y,
-  width,
-  height,
-}: {
-  value: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}) {
-  const [qrImg, setQrImg] = useState<HTMLImageElement | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-    QRCode.toDataURL(value, {
-      margin: 1,
-      width: 128, // Low res for preview
-      color: {
-        dark: '#000000',
-        light: '#ffffff00',
-      }
-    }).then(url => {
-      if (!isMounted) return;
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        if (isMounted) setQrImg(img);
-      };
-    }).catch(err => console.error('QR Preview failed', err));
-
-    return () => { isMounted = false; };
-  }, [value]);
-
-  const size = Math.min(width, height);
-  const qrX = x + (width - size) / 2;
-  const qrY = y + (height - size) / 2;
-
-  if (!qrImg) {
-    return (
-      <Group x={x} y={y}>
-        <Rect
-          width={width}
-          height={height}
-          fill="#f3f4f6"
-          stroke="#d1d5db"
-          strokeWidth={1}
-        />
-        <Text
-          width={width}
-          height={height}
-          text="..."
-          align="center"
-          verticalAlign="middle"
-        />
-      </Group>
-    );
-  }
-
-  return (
-    <KonvaImage
-      image={qrImg}
-      x={qrX}
-      y={qrY}
-      width={size}
-      height={size}
-      listening={false}
-    />
-  );
-}
-
-// ── RowPreview ────────────────────────────────────────────────────────────────
-
-function RowPreview({
-  rowIndex,
-  width = 280,
-  data,
-  bgImage,
-}: {
-  rowIndex: number;
-  width?: number;
-  data: ProjectData;
-  bgImage: HTMLImageElement | null;
-}) {
-  const { design, dataset, mapping } = data;
-  if (!design?.preview || !dataset || !mapping) return null;
-
-  const naturalW = bgImage?.naturalWidth ?? 1;
-  const naturalH = bgImage?.naturalHeight ?? 1;
-  const ratio = naturalH / naturalW;
-  const previewH = Math.round(width * ratio);
-
-  const scaleX = width / naturalW;
-  const scaleY = previewH / naturalH;
-
-  const row = dataset.rows[rowIndex] ?? [];
-  const headerIndex: Record<string, number> = {};
-  dataset.headers.forEach((h, i) => { headerIndex[h] = i; });
-
-  return (
-    <div className="flex flex-col gap-1 items-center">
-      <div
-        className="border border-outline-variant overflow-hidden bg-surface-container-low"
-        style={{ width: width, height: previewH }}
-      >
-        <Stage width={width} height={previewH} listening={false}>
-          <Layer>
-            {bgImage && (
-              <KonvaImage
-                image={bgImage}
-                x={0}
-                y={0}
-                width={width}
-                height={previewH}
-                listening={false}
-              />
-            )}
-            {mapping.map((field) => {
-              const colIdx = headerIndex[field.column] ?? -1;
-              const value = colIdx >= 0 && row[colIdx] !== undefined
-                ? String(row[colIdx])
-                : `[${field.column}]`;
-
-              if (field.type === 'qrcode') {
-                return (
-                  <QRNode
-                    key={field.id}
-                    value={value}
-                    x={field.x * scaleX}
-                    y={field.y * scaleY}
-                    width={field.width * scaleX}
-                    height={field.height * scaleY}
-                  />
-                );
-              }
-
-              return (
-                <Text
-                  key={field.id}
-                  x={field.x * scaleX}
-                  y={field.y * scaleY}
-                  width={field.width * scaleX}
-                  height={field.height * scaleY}
-                  text={value}
-                  fontSize={Math.round(field.fontSize * Math.min(scaleX, scaleY))}
-                  fontFamily={field.fontFamily}
-                  fill={field.color}
-                  align={field.align}
-                  verticalAlign="middle"
-                  ellipsis
-                  wrap="none"
-                  listening={false}
-                />
-              );
-            })}
-          </Layer>
-        </Stage>
-      </div>
-      <span className="text-[9px] font-bold uppercase tracking-widest text-secondary">
-        Data #{rowIndex + 1}
-      </span>
-    </div>
-  );
-}
-
-// ── Step4Result ───────────────────────────────────────────────────────────────
 
 export default function Step4Result({
   data,
@@ -196,7 +14,7 @@ export default function Step4Result({
   onBack: () => void;
   onComplete: () => void;
 }) {
-  const bgImage = useLoadedImage(data.design?.preview);
+  const bgImage = useImageLoader(data.design?.preview);
   const totalRows = data.dataset?.rows.length ?? 0;
   const mappedFields = data.mapping?.length ?? 0;
   
@@ -389,17 +207,6 @@ export default function Step4Result({
           Generate Dokumen
         </button>
       </div>
-    </div>
-  );
-}
-
-// ── Stat ─────────────────────────────────────────────────────────────────────
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-[9px] font-bold uppercase tracking-widest text-secondary">{label}</span>
-      <span className="text-sm md:text-base font-heading">{value}</span>
     </div>
   );
 }

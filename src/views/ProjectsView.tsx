@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjects, deleteProject as dbDeleteProject } from '../../lib/db';
-import type { ProjectData } from '../../types/project';
+import { getAllProjects, deleteProject as dbDeleteProject } from '@/lib/db';
+import type { ProjectData } from '@/types/project';
 
 export default function ProjectsView() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   async function loadProjects() {
-    setIsLoading(true);
     try {
       const data = await getAllProjects();
       setProjects(data.reverse());
@@ -24,9 +19,14 @@ export default function ProjectsView() {
     }
   }
 
+  useEffect(() => {
+    Promise.resolve().then(() => loadProjects());
+  }, []);
+
   async function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation();
     if (!confirm('Apakah Anda yakin ingin menghapus proyek ini?')) return;
+    setIsLoading(true);
     await dbDeleteProject(id);
     loadProjects();
   }

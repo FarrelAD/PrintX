@@ -36,7 +36,7 @@ export type ProjectData = {
   };
   dataset?: {
     headers: string[];
-    rows: any[][];
+    rows: (string | number | boolean | null)[][];
     fileName?: string;
   };
   mapping?: MappingField[];

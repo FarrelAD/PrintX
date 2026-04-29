@@ -1,7 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { ProjectData } from '../types/project';
+import type { ProjectData } from '@/types/project';
 
-interface PrintXDB extends DBSchema {
+type PrintXDB = DBSchema & {
   projects: {
     key: string;
     value: ProjectData;
