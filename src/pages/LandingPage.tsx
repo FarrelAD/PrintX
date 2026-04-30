@@ -20,16 +20,20 @@ export default function LandingPage() {
   return (
     <>
       <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
-        <div className="flex justify-between items-center py-8 px-margin max-w-[1440px] mx-auto flex-wrap gap-4 max-xs:px-margin max-xs:justify-center">
-          <div className="flex items-center gap-3 cursor-pointer">
-            <Logo size="lg" />
-            <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
+        <div className="flex justify-between items-center py-4 md:py-6 px-6 xs:px-margin max-w-[1440px] mx-auto gap-4">
+          <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => navigate('/')}>
+            <Logo size="md" />
+            <div className="text-xl md:text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <InstallPrompt variant="compact" className="py-3 px-6 text-sm" />
-            <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
-              MULAI SEKARANG
+          <div className="flex items-center gap-2 md:gap-4">
+            <InstallPrompt variant="compact" className="py-2.5 px-4 md:py-3 md:px-6 text-[10px] md:text-sm whitespace-nowrap" />
+            <button 
+              className="bg-primary text-on-primary py-2.5 px-4 md:py-3 md:px-6 font-semibold tracking-widest uppercase text-[10px] md:text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all whitespace-nowrap" 
+              onClick={() => navigate('/dashboard')}
+            >
+              <span className="hidden xs:inline">MULAI SEKARANG</span>
+              <span className="xs:hidden">MULAI</span>
             </button>
           </div>
         </div>
