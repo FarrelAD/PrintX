@@ -31,6 +31,7 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',
+        start_url: '/PrintX/dashboard',
         icons: [
           {
             src: 'pwa-192x192.png',

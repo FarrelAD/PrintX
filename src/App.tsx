@@ -7,11 +7,13 @@ import ProjectsView from '@/views/ProjectsView';
 import DatasetView from '@/views/DatasetView';
 import SettingsView from '@/views/SettingsView';
 import ProjectWizardView from '@/views/ProjectWizardView';
+import { PWAProvider } from '@/context/PWAContext';
 
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
+    <PWAProvider>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/og" element={<OGGenerator />} />
 
@@ -23,6 +25,7 @@ export default function App() {
           <Route path="project/:id" element={<ProjectWizardView />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </PWAProvider>
   );
 }

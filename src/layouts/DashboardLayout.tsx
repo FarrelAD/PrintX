@@ -1,5 +1,6 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import Logo from '@/components/Logo';
+import InstallPrompt from '@/components/InstallPrompt';
 
 export default function DashboardLayout() {
 
@@ -55,6 +56,11 @@ export default function DashboardLayout() {
             </NavLink>
           ))}
         </nav>
+
+        {/* PWA Install Prompt */}
+        <InstallPrompt />
+
+
       </aside>
 
       {/* Main Content Area */}
@@ -65,6 +71,7 @@ export default function DashboardLayout() {
             <Logo size="sm" />
             <div className="text-xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
           </Link>
+          <InstallPrompt variant="compact" />
         </header>
 
         {/* Content provided by Routes */}

@@ -1,8 +1,22 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
+import InstallPrompt from '@/components/InstallPrompt';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user opens the app via the installed PWA (standalone mode)
+    // we take them directly to the dashboard instead of showing the landing page.
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        (window.navigator as any).standalone === true;
+    
+    if (isStandalone) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <>
       <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
@@ -12,9 +26,12 @@ export default function LandingPage() {
             <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
           </div>
 
-          <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
-            MULAI SEKARANG
-          </button>
+          <div className="flex items-center gap-4">
+            <InstallPrompt variant="compact" className="py-3 px-6 text-sm" />
+            <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
+              MULAI SEKARANG
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -28,8 +45,9 @@ export default function LandingPage() {
             <p className="text-lg text-secondary mb-stack-md max-w-[480px]">
               Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.
             </p>
-            <div className="flex">
+            <div className="flex items-center gap-4">
               <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>Mulai Gratis</button>
+              <InstallPrompt variant="compact" className="py-3 px-6 text-sm" />
             </div>
           </div>
           <div className="col-span-12 lg:col-span-6 bg-surface-container border border-primary p-8 flex items-center justify-center">
@@ -84,6 +102,9 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* PWA Install Promotion */}
+        <InstallPrompt variant="landing" />
+
         {/* Feature Highlights */}
         <section className="border-b border-primary py-stack-lg">
           <div className="flex justify-between items-baseline mb-stack-md gap-4 max-md:flex-col max-md:gap-2">
@@ -122,9 +143,15 @@ export default function LandingPage() {
           <h2 className="text-[clamp(32px,6vw,48px)] mb-8 max-w-[800px] mx-auto">
             Mulai Buat Dokumen Pertama Anda
           </h2>
-          <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
-            Buka Aplikasi PrintX
-          </button>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
+            <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
+              Buka Aplikasi PrintX
+            </button>
+            <InstallPrompt 
+              variant="compact" 
+              className="py-6 px-12 text-base bg-white text-primary border-primary hover:bg-primary hover:text-white" 
+            />
+          </div>
         </section>
       </main>
 
