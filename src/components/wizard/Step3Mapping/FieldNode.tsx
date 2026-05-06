@@ -102,10 +102,11 @@ export function FieldNode({
           text={label}
           fontSize={field.fontSize * scale}
           fontFamily={field.fontFamily}
+          fontStyle={field.fontWeight === 'bold' ? 'bold' : 'normal'}
           fill={field.color}
           align={field.align}
           verticalAlign={field.verticalAlign}
-          ellipsis={!field.wrap}
+          ellipsis={false}
           wrap={field.wrap ? 'word' : 'none'}
           listening={false}
         />

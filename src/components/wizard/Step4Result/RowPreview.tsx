@@ -1,4 +1,4 @@
-import { Stage, Layer, Image as KonvaImage, Text } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Rect as KonvaRect, Text } from 'react-konva';
 import type { ProjectData } from '@/types/project';
 import { QRNode } from './QRNode';
 
@@ -36,7 +36,16 @@ export function RowPreview({
       >
         <Stage width={width} height={previewH} listening={false}>
           <Layer>
-            {bgImage && (
+            {/* Background Rect */}
+            <KonvaRect
+              x={0}
+              y={0}
+              width={width}
+              height={previewH}
+              fill={data.editorSettings?.canvasBgColor === 'transparent' ? '#ffffff' : (data.editorSettings?.canvasBgColor ?? '#ffffff')}
+            />
+
+            {bgImage && (data.editorSettings?.showDesign ?? true) && (
               <KonvaImage
                 image={bgImage}
                 x={0}
@@ -73,13 +82,14 @@ export function RowPreview({
                   width={field.width * scaleX}
                   height={field.height * scaleY}
                   text={value}
-                  fontSize={Math.round(field.fontSize * Math.min(scaleX, scaleY))}
+                  fontSize={field.fontSize * Math.min(scaleX, scaleY)}
                   fontFamily={field.fontFamily}
+                  fontStyle={field.fontWeight === 'bold' ? 'bold' : 'normal'}
                   fill={field.color}
                   align={field.align}
-                  verticalAlign="middle"
-                  ellipsis
-                  wrap="none"
+                  verticalAlign={field.verticalAlign || 'middle'}
+                  wrap={field.wrap ? 'word' : 'none'}
+                  ellipsis={false}
                   listening={false}
                 />
               );

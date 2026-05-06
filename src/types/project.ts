@@ -10,6 +10,7 @@ export type MappingField = {
   height: number;
   fontSize: number;
   fontFamily: string;
+  fontWeight?: 'normal' | 'bold';
   align: 'left' | 'center' | 'right';
   verticalAlign: 'top' | 'middle' | 'bottom';
   color: string;

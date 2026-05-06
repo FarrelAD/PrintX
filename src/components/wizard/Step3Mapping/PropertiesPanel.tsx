@@ -195,8 +195,25 @@ export function PropertiesPanel({
             </div>
           </div>
 
-          {/* Wrap Text */}
-          <div>
+          {/* Text Style: Bold + Wrap */}
+          <div className="flex gap-4 items-center">
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={field.fontWeight === 'bold'}
+                  onChange={(e) => onChange({ fontWeight: e.target.checked ? 'bold' : 'normal' })}
+                  className="peer h-4 w-4 cursor-pointer appearance-none border border-outline-variant transition-all checked:bg-primary checked:border-primary"
+                />
+                <span className="material-symbols-outlined absolute text-[12px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  check
+                </span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">
+                Bold
+              </span>
+            </label>
+
             <label className="flex items-center gap-2 cursor-pointer group">
               <div className="relative flex items-center">
                 <input
@@ -210,7 +227,7 @@ export function PropertiesPanel({
                 </span>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">
-                Text Wrapping
+                Wrap
               </span>
             </label>
           </div>

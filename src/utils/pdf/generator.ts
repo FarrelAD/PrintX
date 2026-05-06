@@ -114,11 +114,17 @@ export async function generateProfessionalPDF(
       const val    = String(row[headerIndex[field.column]] ?? '');
       const scaleX = canvas.width  / (bgImg.naturalWidth  || 1);
       const scaleY = canvas.height / (bgImg.naturalHeight || 1);
+      
+      const fontSizePx = Math.round(field.fontSize * scaleX);
+      const weight = field.fontWeight === 'bold' ? 'bold' : 'normal';
+      
+      ctx.font = `${weight} ${fontSizePx}px "${field.fontFamily}"`;
+      ctx.fillStyle = field.color;
 
-      const fx = field.x * scaleX;
-      const fy = field.y * scaleY;
-      const fw = field.width  * scaleX;
-      const fh = field.height * scaleY;
+      const fx = Math.round(field.x * scaleX);
+      const fy = Math.round(field.y * scaleY);
+      const fw = Math.round(field.width * scaleX);
+      const fh = Math.round(field.height * scaleY);
 
       if (field.type === 'qrcode') {
         try {
@@ -136,10 +142,7 @@ export async function generateProfessionalPDF(
           console.error('QR generation failed for value:', val, err);
         }
       } else {
-        ctx.fillStyle    = field.color;
-        const fontSize   = Math.round(field.fontSize * scaleX);
-        ctx.font         = `bold ${fontSize}px ${field.fontFamily}`;
-        ctx.textAlign    = field.align;
+        ctx.textAlign = field.align;
         ctx.textBaseline = field.verticalAlign || 'middle';
 
         let drawX = fx;
@@ -151,7 +154,17 @@ export async function generateProfessionalPDF(
         if (field.verticalAlign === 'bottom') drawY = fy + fh;
 
         if (field.wrap) {
-          drawWrappedText(ctx, val, drawX, fy + fh / 2, fw, fh, fontSize * 1.2, field.align, field.verticalAlign);
+          drawWrappedText(
+            ctx, 
+            val, 
+            drawX, 
+            fy + fh / 2, 
+            fw, 
+            fh, 
+            fontSizePx * 1.2, 
+            field.align, 
+            field.verticalAlign || 'middle'
+          );
         } else {
           ctx.fillText(val, drawX, drawY, fw);
         }
