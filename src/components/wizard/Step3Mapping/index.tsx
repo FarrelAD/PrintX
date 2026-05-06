@@ -116,6 +116,13 @@ export default function Step3Mapping({
     setSelectedId(null);
   }, []);
 
+  const handleClearAll = useCallback(() => {
+    if (window.confirm('Hapus semua bidang yang sudah ditempatkan?')) {
+      setFields([]);
+      setSelectedId(null);
+    }
+  }, []);
+
   // ── Derived ──
   const selectedField = fields.find((f) => f.id === selectedId) ?? null;
   const usedColumns = new Set(fields.map((f) => f.column));
@@ -172,9 +179,19 @@ export default function Step3Mapping({
             <span className="material-symbols-outlined text-sm">design_services</span>
             Kanvas Desain
             {hasMappings && (
-              <span className="ml-auto text-primary">
-                {fields.length} bidang
-              </span>
+              <div className="ml-auto flex items-center gap-3">
+                <span className="text-primary">
+                  {fields.length} bidang
+                </span>
+                <button
+                  onClick={handleClearAll}
+                  className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-bold"
+                  title="Hapus semua bidang"
+                >
+                  <span className="material-symbols-outlined text-[14px]">delete_sweep</span>
+                  <span>RESET</span>
+                </button>
+              </div>
             )}
           </div>
 
