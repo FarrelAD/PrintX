@@ -25,7 +25,9 @@ export default function ProjectWizardView() {
         setInitialData(null);
       });
     } else {
-      Promise.resolve().then(() => setInitialData(null)); // 'new' project
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name');
+      Promise.resolve().then(() => setInitialData(name ? { name, type: null } as any : null)); // 'new' project with name
     }
   }, [id]);
 

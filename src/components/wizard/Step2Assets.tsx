@@ -71,19 +71,8 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Aset Proyek</h2>
-      <p className="text-secondary text-center mb-8 px-4 text-xs md:text-sm">Beri nama proyek Anda dan unggah aset yang diperlukan.</p>
+      <p className="text-secondary text-center mb-8 px-4 text-xs md:text-sm">Unggah aset desain dan dataset yang diperlukan untuk memulai.</p>
 
-      {/* Project Name Input */}
-      <div className="max-w-md mx-auto mb-10">
-        <label className="text-[10px] font-bold uppercase tracking-widest text-secondary block mb-2">Nama Proyek</label>
-        <input 
-          type="text"
-          value={data.name || ''}
-          onChange={(e) => onUpdate({ ...data, name: e.target.value })}
-          placeholder="Contoh: Kartu ID Karyawan 2024"
-          className="w-full bg-white border-2 border-primary p-3 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all"
-        />
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Design Upload */}

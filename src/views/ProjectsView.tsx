@@ -1,12 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjects, deleteProject as dbDeleteProject } from '@/lib/db';
+import { getAllProjects, deleteProject as dbDeleteProject, saveProject as dbSaveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
+
+import NameModal from '@/components/ui/NameModal';
+import StatusDropdown from '@/components/ui/StatusDropdown';
 
 export default function ProjectsView() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    initialValue: string;
+    project?: ProjectData;
+  }>({
+    isOpen: false,
+    title: '',
+    initialValue: '',
+  });
+  const [activeTab, setActiveTab] = useState('Semua');
   const navigate = useNavigate();
+
 
   async function loadProjects() {
     try {
@@ -36,15 +51,82 @@ export default function ProjectsView() {
     loadProjects();
   }
 
+  async function updateProjectStatus(project: ProjectData, nextStatus: ProjectData['status']) {
+    setIsLoading(true);
+    try {
+      await dbSaveProject({ ...project, status: nextStatus, updatedAt: Date.now() });
+      await loadProjects();
+    } catch (err) {
+      console.error('Failed to change status:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const filteredProjects = projects.filter(p => {
+    if (activeTab === 'Semua') return true;
+    return (p.status || 'Draf') === activeTab;
+  });
+
+  const handleNewProject = () => {
+    setModalConfig({
+      isOpen: true,
+      title: 'Proyek Baru',
+      initialValue: '',
+    });
+  };
+
+  const handleRenameClick = (e: React.MouseEvent, project: ProjectData) => {
+    e.stopPropagation();
+    setModalConfig({
+      isOpen: true,
+      title: 'Ubah Nama',
+      initialValue: project.name || '',
+      project,
+    });
+  };
+
+  const handleModalConfirm = async (name: string) => {
+    const { project } = modalConfig;
+    setModalConfig(prev => ({ ...prev, isOpen: false }));
+    
+    if (project) {
+      // Rename case
+      if (name.trim() !== project.name) {
+        setIsLoading(true);
+        try {
+          await dbSaveProject({ ...project, name: name.trim() });
+          await loadProjects();
+        } catch (err) {
+          console.error('Failed to rename project:', err);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    } else {
+      // New project case
+      const url = name.trim() ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}` : '/dashboard/project/new';
+      navigate(url);
+    }
+  };
+
   return (
     <>
+      <NameModal 
+        isOpen={modalConfig.isOpen}
+        onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={handleModalConfirm}
+        title={modalConfig.title}
+        initialValue={modalConfig.initialValue}
+        placeholder="Nama proyek..."
+      />
       <div className="flex justify-between items-end mb-8 border-b border-primary pb-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tighter">Proyek Saya</h1>
           <p className="text-secondary text-sm mt-2">Kelola semua proyek cetak lokal Anda.</p>
         </div>
         <button 
-          onClick={() => navigate('/dashboard/project/new')}
+          onClick={handleNewProject}
           className="bg-primary text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-on-primary hover:text-primary border border-primary transition-colors flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-sm">add</span>
@@ -55,8 +137,12 @@ export default function ProjectsView() {
       {/* Navigation & Filter Bar */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 border-b border-primary/10 pb-6">
         <div className="flex gap-6 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
-          {['Semua', 'Draf', 'Siap Cetak', 'Selesai'].map((tab, i) => (
-            <button key={tab} className={`text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'}`}>
+          {['Semua', 'Draf', 'Sedang Dikerjakan', 'Siap Cetak', 'Selesai'].map((tab) => (
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab)}
+              className={`text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all pb-2 ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'}`}
+            >
               {tab}
             </button>
           ))}
@@ -69,39 +155,54 @@ export default function ProjectsView() {
 
       {/* Project Grid */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16">
-        {projects.map((project) => (
+        {filteredProjects.map((project) => (
           <div 
             key={project.id} 
             onClick={() => navigate(`/dashboard/project/${project.id}`)}
             className="group flex flex-col cursor-pointer"
           >
-            <div className="aspect-4/3 bg-surface-container border border-primary relative overflow-hidden mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
-              {project.design?.preview ? (
-                <img 
-                  src={project.design.preview} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
-                  alt={project.name} 
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
-                  <span className="text-[80px] material-symbols-outlined">description</span>
-                </div>
-              )}
+            <div className="aspect-4/3 bg-surface-container border border-primary relative mb-6 transition-all group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
+              <div className="absolute inset-0 overflow-hidden">
+                {project.design?.preview ? (
+                  <img 
+                    src={project.design.preview} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                    alt={project.name} 
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                    <span className="text-[80px] material-symbols-outlined">description</span>
+                  </div>
+                )}
+              </div>
               <div className="absolute top-0 left-0 p-4 flex justify-between w-full items-start">
                 <div className="text-[10px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id?.slice(0, 8)}</div>
-                <button 
-                  onClick={(e) => handleDelete(e, project.id!)}
-                  className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
-                >
-                  <span className="material-symbols-outlined text-sm">delete</span>
-                </button>
-              </div>
-              <div className={`absolute bottom-4 right-4 py-1.5 px-4 text-[10px] uppercase font-bold tracking-wider border border-primary ${project.status === 'Siap Cetak' ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
-                {project.status || 'Draf'}
+                <div className="flex gap-2">
+                  <button 
+                    onClick={(e) => handleRenameClick(e, project)}
+                    className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-surface-container transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                    title="Ubah Nama"
+                  >
+                    <span className="material-symbols-outlined text-sm">edit</span>
+                  </button>
+                  <button 
+                    onClick={(e) => handleDelete(e, project.id!)}
+                    className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                    title="Hapus Proyek"
+                  >
+                    <span className="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </div>
               </div>
             </div>
             
             <div className="flex flex-col">
+              <StatusDropdown 
+                currentStatus={project.status || 'Draf'}
+                onStatusChange={(newStatus) => updateProjectStatus(project, newStatus)}
+                className="mb-3 self-start"
+                direction="down"
+              />
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">{project.name || 'Proyek Tanpa Nama'}</h3>
                 <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity shrink-0">arrow_outward</span>
@@ -124,7 +225,7 @@ export default function ProjectsView() {
         
         {/* Empty State / Call to Action Card */}
         <div 
-          onClick={() => navigate('/dashboard/project/new')}
+          onClick={handleNewProject}
           className="hidden md:flex aspect-4/3 border border-primary border-dashed items-center justify-center flex-col gap-4 cursor-pointer hover:bg-surface-container transition-colors group"
         >
           <span className="material-symbols-outlined text-4xl text-secondary group-hover:scale-110 transition-transform">add_circle</span>

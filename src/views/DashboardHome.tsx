@@ -3,9 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAllProjects } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
+import NameModal from '@/components/ui/NameModal';
+
 export default function DashboardHome() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const navigate = useNavigate();
 
   async function loadProjects() {
@@ -33,12 +36,29 @@ export default function DashboardHome() {
 
   // Defensive checks for projects data
   const validProjects = projects.filter(p => p && typeof p === 'object');
-  const activeProjects = validProjects.filter(p => p.status !== 'Siap Cetak').length;
-  const completedProjects = validProjects.filter(p => p.status === 'Siap Cetak').length;
+  const activeProjects = validProjects.filter(p => !p.status || p.status === 'Draf' || p.status === 'Sedang Dikerjakan').length;
+  const readyProjects = validProjects.filter(p => p.status === 'Siap Cetak').length;
   const recentProjects = validProjects.slice(0, 3);
+  
+  const handleNewProject = () => {
+    setIsNameModalOpen(true);
+  };
+
+  const confirmNewProject = (name: string) => {
+    setIsNameModalOpen(false);
+    const url = name.trim() ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}` : '/dashboard/project/new';
+    navigate(url);
+  };
 
   return (
     <>
+      <NameModal 
+        isOpen={isNameModalOpen}
+        onClose={() => setIsNameModalOpen(false)}
+        onConfirm={confirmNewProject}
+        title="Proyek Baru"
+        placeholder="Nama proyek Anda..."
+      />
       <section className="mb-12 md:mb-20 border-b border-primary pb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
@@ -58,13 +78,13 @@ export default function DashboardHome() {
           </div>
           
           <div className="flex flex-col items-start md:items-end gap-4">
-            <Link 
-              to="/dashboard/project/new"
+            <button 
+              onClick={handleNewProject}
               className="group relative bg-primary text-on-primary py-4 px-8 font-semibold tracking-widest uppercase text-sm border border-primary overflow-hidden transition-all hover:bg-white hover:text-primary active:scale-95 flex items-center gap-3 w-full md:w-auto justify-center"
             >
               <span className="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">add</span>
               <span>Proyek Baru</span>
-            </Link>
+            </button>
             <div className="hidden md:flex gap-8 border-t border-primary/20 pt-4 w-full justify-end">
               <div className="text-right">
                 <div className="text-[10px] uppercase tracking-widest text-secondary">Total Proyek</div>
@@ -89,7 +109,7 @@ export default function DashboardHome() {
         <div className="border border-primary p-6 bg-surface-container">
           <span className="text-2xl material-symbols-outlined text-secondary mb-2">task_alt</span>
           <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Siap Cetak</div>
-          <div className="text-3xl font-heading">{completedProjects}</div>
+          <div className="text-3xl font-heading">{readyProjects}</div>
         </div>
         <div className="border border-primary p-6 bg-surface-container">
           <span className="text-2xl material-symbols-outlined text-secondary mb-2">storage</span>
@@ -135,7 +155,12 @@ export default function DashboardHome() {
                   <div className="absolute top-0 left-0 p-3">
                     <div className="text-[9px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id?.slice(0, 8)}</div>
                   </div>
-                  <div className={`absolute bottom-3 right-3 py-1 px-3 text-[9px] uppercase font-bold tracking-wider border border-primary ${project.status === 'Siap Cetak' ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
+                  <div className={`absolute bottom-3 right-3 py-1 px-3 text-[9px] uppercase font-bold tracking-wider border border-primary shadow-sm ${
+                    project.status === 'Siap Cetak' ? 'bg-primary text-white' : 
+                    project.status === 'Selesai' ? 'bg-black text-white border-black' :
+                    project.status === 'Sedang Dikerjakan' ? 'bg-surface-container-high text-primary' :
+                    'bg-white text-primary'
+                  }`}>
                     {project.status || 'Draf'}
                   </div>
                 </div>

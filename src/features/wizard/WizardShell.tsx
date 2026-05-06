@@ -7,6 +7,8 @@ import Step4Result from '@/components/wizard/Step4Result';
 import Step5Print from '@/components/wizard/Step5Print';
 import { saveProject } from '@/lib/db';
 
+import StatusDropdown from '@/components/ui/StatusDropdown';
+
 export default function WizardShell({ 
   initialData,
   onClose 
@@ -50,7 +52,7 @@ export default function WizardShell({
     <div className="flex flex-col min-h-full min-w-0">
       {/* Header Wizard */}
       <div className="flex justify-between items-center mb-8 md:mb-12">
-        <div>
+        <div className="flex items-center gap-4">
           <button 
             onClick={onClose}
             className="text-xs md:text-sm font-semibold uppercase tracking-widest flex items-center gap-1 md:gap-2 hover:text-secondary transition-colors whitespace-nowrap"
@@ -58,6 +60,24 @@ export default function WizardShell({
             <span className="material-symbols-outlined text-lg">arrow_back</span>
             Batal
           </button>
+          
+          {projectData.name && (
+            <>
+              <div className="h-4 w-px bg-outline-variant hidden sm:block" />
+              <div className="hidden sm:flex items-center gap-2 max-w-[100px] md:max-w-[200px]">
+                <span className="material-symbols-outlined text-base text-secondary">folder</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary truncate">
+                  {projectData.name}
+                </span>
+              </div>
+              <StatusDropdown 
+                currentStatus={projectData.status || 'Draf'}
+                onStatusChange={(status) => setProjectData(prev => ({ ...prev, status, updatedAt: Date.now() }))}
+                className="hidden md:block"
+                direction="down"
+              />
+            </>
+          )}
         </div>
         <div className="flex gap-2 md:gap-4 items-center">
           {steps.map((s) => (
