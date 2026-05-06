@@ -97,7 +97,18 @@ export async function generateProfessionalPDF(
 
     // A. Render high-res design to canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+
+    const showDesign = data.editorSettings?.showDesign ?? true;
+    const bgColor = data.editorSettings?.canvasBgColor ?? '#ffffff';
+
+    if (bgColor !== 'transparent') {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    if (showDesign) {
+      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+    }
 
     for (const field of mapping) {
       const val    = String(row[headerIndex[field.column]] ?? '');

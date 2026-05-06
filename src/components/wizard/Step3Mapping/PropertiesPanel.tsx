@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { MappingField } from '@/types/project';
 import { FONT_OPTIONS, ALIGN_OPTIONS, VERTICAL_ALIGN_OPTIONS } from './constants';
 
@@ -10,6 +11,31 @@ export function PropertiesPanel({
   onChange: (patch: Partial<MappingField>) => void;
   onDelete: () => void;
 }) {
+  const [tempFontSize, setTempFontSize] = useState(field.fontSize.toString());
+
+  // Sync local state when external field changes (e.g. via slider)
+  useEffect(() => {
+    setTempFontSize(field.fontSize.toString());
+  }, [field.fontSize]);
+
+  const handleFontSizeInput = (val: string) => {
+    setTempFontSize(val);
+    const num = Number(val);
+    if (!isNaN(num) && num > 0 && num <= 999) {
+      onChange({ fontSize: num });
+    }
+  };
+
+  const handleFontSizeBlur = () => {
+    const num = Number(tempFontSize);
+    if (tempFontSize === '' || isNaN(num) || num <= 0) {
+      setTempFontSize(field.fontSize.toString());
+    } else if (num > 999) {
+      onChange({ fontSize: 999 });
+      setTempFontSize('999');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {/* Field Type Toggle */}
@@ -80,18 +106,30 @@ export function PropertiesPanel({
           {/* Font size */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Ukuran Font — {field.fontSize}px
+              Ukuran Font (px)
             </label>
-            <input
-              type="range"
-              min={8}
-              max={72}
-              value={field.fontSize}
-              onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
-              className="w-full accent-primary"
-            />
-            <div className="flex justify-between text-[9px] text-secondary mt-0.5">
-              <span>8</span><span>72</span>
+            <div className="flex gap-3 items-center">
+              <input
+                type="text"
+                value={tempFontSize}
+                onChange={(e) => handleFontSizeInput(e.target.value)}
+                onBlur={handleFontSizeBlur}
+                onKeyDown={(e) => e.key === 'Enter' && handleFontSizeBlur()}
+                className="w-14 border border-outline-variant bg-white px-2 py-1.5 text-xs font-bold focus:outline-none focus:border-primary text-center"
+              />
+              <div className="flex-1">
+                <input
+                  type="range"
+                  min={8}
+                  max={200}
+                  value={field.fontSize}
+                  onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
+                  className="w-full accent-primary h-1.5 cursor-pointer"
+                />
+                <div className="flex justify-between text-[8px] text-secondary mt-0.5 px-0.5">
+                  <span>8</span><span>200</span>
+                </div>
+              </div>
             </div>
           </div>
 

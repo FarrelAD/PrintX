@@ -45,4 +45,8 @@ export type ProjectData = {
   };
   mapping?: MappingField[];
   printConfig?: PrintConfig;
+  editorSettings?: {
+    showDesign: boolean;
+    canvasBgColor: string;
+  };
 };

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { Stage, Layer, Image as KonvaImage, Transformer } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Rect as KonvaRect, Transformer } from 'react-konva';
 import type Konva from 'konva';
 import type { ProjectData, MappingField } from '@/types/project';
 import { useImageLoader } from '@/hooks/useImageLoader';
@@ -30,6 +30,8 @@ export default function Step3Mapping({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [dragOverCanvas, setDragOverCanvas] = useState(false);
   const [activeColumn, setActiveColumn] = useState<string | null>(null);
+  const [showDesign, setShowDesign] = useState(data.editorSettings?.showDesign ?? true);
+  const [canvasBgColor, setCanvasBgColor] = useState(data.editorSettings?.canvasBgColor ?? '#ffffff');
 
   // ── Refs ──
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,9 +60,13 @@ export default function Step3Mapping({
 
   // ── Sync to parent ──
   useEffect(() => {
-    onUpdate({ ...data, mapping: fields });
+    onUpdate({ 
+      ...data, 
+      mapping: fields,
+      editorSettings: { showDesign, canvasBgColor }
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields]);
+  }, [fields, showDesign, canvasBgColor]);
 
   const stageScale = bgImage ? stageSize.width / bgImage.naturalWidth : 1;
 
@@ -196,7 +202,52 @@ export default function Step3Mapping({
           </div>
 
           <div
-            ref={containerRef}
+            className="flex flex-col border border-outline-variant overflow-hidden"
+          >
+            {/* Background Toolbar */}
+            <div className="flex items-center gap-4 bg-surface-container px-3 py-2 border-b border-outline-variant">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowDesign(!showDesign)}
+                  className={`flex items-center gap-1.5 px-2 py-1 text-[9px] font-bold uppercase transition-colors ${
+                    showDesign ? 'bg-primary text-white' : 'bg-white text-secondary border border-outline-variant'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">
+                    {showDesign ? 'visibility' : 'visibility_off'}
+                  </span>
+                  {showDesign ? 'Desain On' : 'Desain Off'}
+                </button>
+              </div>
+              <div className="h-4 w-px bg-outline-variant" />
+              <div className="flex items-center gap-3">
+                <span className="text-[9px] font-bold uppercase text-secondary">BG Kanvas:</span>
+                <div className="flex gap-1.5">
+                  {[
+                    { label: 'Putih', value: '#ffffff' },
+                    { label: 'Abu', value: '#f3f4f6' },
+                    { label: 'Hitam', value: '#111827' },
+                    { label: 'Grid', value: 'transparent' },
+                  ].map((c) => (
+                    <button
+                      key={c.value}
+                      onClick={() => setCanvasBgColor(c.value)}
+                      title={c.label}
+                      className={`w-5 h-5 border transition-all ${
+                        canvasBgColor === c.value ? 'border-primary ring-1 ring-primary' : 'border-outline-variant'
+                      }`}
+                      style={{ 
+                        backgroundColor: c.value === 'transparent' ? '#fff' : c.value,
+                        backgroundImage: c.value === 'transparent' ? 'repeating-conic-gradient(#e5e7eb 0% 25%, transparent 0% 50%) 50% / 8px 8px' : 'none'
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div
+              ref={containerRef}
             onDragOver={(e) => { e.preventDefault(); setDragOverCanvas(true); }}
             onDragLeave={() => setDragOverCanvas(false)}
             onDrop={handleCanvasDrop}
@@ -249,8 +300,33 @@ export default function Step3Mapping({
                 }}
               >
                 <Layer>
+                  {/* Background rect */}
+                  <KonvaRect
+                    x={0}
+                    y={0}
+                    width={stageSize.width}
+                    height={stageSize.height}
+                    fill={canvasBgColor === 'transparent' ? '#ffffff' : canvasBgColor}
+                  />
+                  {canvasBgColor === 'transparent' && (
+                     <KonvaRect
+                      x={0}
+                      y={0}
+                      width={stageSize.width}
+                      height={stageSize.height}
+                      fillPatternImage={(() => {
+                        const c = document.createElement('canvas');
+                        c.width = 16; c.height = 16;
+                        const ctx = c.getContext('2d')!;
+                        ctx.fillStyle = '#f3f4f6';
+                        ctx.fillRect(0,0,8,8); ctx.fillRect(8,8,8,8);
+                        return c as unknown as HTMLImageElement;
+                      })()}
+                    />
+                  )}
+
                   {/* Background design image */}
-                  {bgImage && (
+                  {bgImage && showDesign && (
                     <KonvaImage
                       image={bgImage}
                       x={0}
@@ -317,61 +393,62 @@ export default function Step3Mapping({
               </div>
             )}
           </div>
-
-          {/* Empty canvas hint */}
-          {data.design?.preview && fields.length === 0 && (
-            <div className="flex items-center gap-2 text-[10px] text-secondary italic mt-1">
-              <span className="material-symbols-outlined text-sm">arrow_upward</span>
-              Seret kolom dari panel kiri ke atas kanvas desain
-            </div>
-          )}
         </div>
 
-        {/* ── Right: Properties Panel ── */}
-        <div className="w-full lg:w-56 shrink-0 flex flex-col gap-3">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">tune</span>
-            Properti Bidang
+        {/* Empty canvas hint */}
+        {data.design?.preview && fields.length === 0 && (
+          <div className="flex items-center gap-2 text-[10px] text-secondary italic mt-1">
+            <span className="material-symbols-outlined text-sm">arrow_upward</span>
+            Seret kolom dari panel kiri ke atas kanvas desain
           </div>
-
-          {!selectedField ? (
-            <div className="border border-dashed border-outline-variant p-6 text-center flex-1">
-              <span className="material-symbols-outlined text-2xl text-secondary mb-2 block">
-                touch_app
-              </span>
-              <p className="text-[10px] text-secondary italic">
-                Klik bidang di kanvas untuk mengeditnya
-              </p>
-            </div>
-          ) : (
-            <PropertiesPanel
-              field={selectedField}
-              onChange={(patch) => updateField(selectedField.id, patch)}
-              onDelete={() => deleteField(selectedField.id)}
-            />
-          )}
-        </div>
+        )}
       </div>
 
-      {/* ── Nav buttons ── */}
-      <div className="mt-10 flex justify-between gap-4">
-        <button
-          onClick={onBack}
-          className="flex-1 md:flex-none py-3 px-8 border border-primary text-[10px] md:text-sm font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
-        >
-          Kembali
-        </button>
-        <button
-          onClick={onNext}
-          disabled={!hasMappings}
-          title={!hasMappings ? 'Tambahkan minimal satu bidang ke kanvas terlebih dahulu' : ''}
-          className={`flex-1 md:flex-none py-3 px-12 bg-primary text-white text-[10px] md:text-sm font-bold uppercase tracking-widest transition-all ${
-            !hasMappings ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-90'
-          }`}
-        >
-          Pratinjau &amp; Selesai
-        </button>
+      {/* ── Right: Properties Panel ── */}
+      <div className="w-full lg:w-56 shrink-0 flex flex-col gap-3">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
+          <span className="material-symbols-outlined text-sm">tune</span>
+          Properti Bidang
+        </div>
+
+        {!selectedField ? (
+          <div className="border border-dashed border-outline-variant p-6 text-center flex-1">
+            <span className="material-symbols-outlined text-2xl text-secondary mb-2 block">
+              touch_app
+            </span>
+            <p className="text-[10px] text-secondary italic">
+              Klik bidang di kanvas untuk mengeditnya
+            </p>
+          </div>
+        ) : (
+          <PropertiesPanel
+            field={selectedField}
+            onChange={(patch) => updateField(selectedField.id, patch)}
+            onDelete={() => deleteField(selectedField.id)}
+          />
+        )}
       </div>
     </div>
-  );
+
+    {/* ── Nav buttons ── */}
+    <div className="mt-10 flex justify-between gap-4">
+      <button
+        onClick={onBack}
+        className="flex-1 md:flex-none py-3 px-8 border border-primary text-[10px] md:text-sm font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
+      >
+        Kembali
+      </button>
+      <button
+        onClick={onNext}
+        disabled={!hasMappings}
+        title={!hasMappings ? 'Tambahkan minimal satu bidang ke kanvas terlebih dahulu' : ''}
+        className={`flex-1 md:flex-none py-3 px-12 bg-primary text-white text-[10px] md:text-sm font-bold uppercase tracking-widest transition-all ${
+          !hasMappings ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-90'
+        }`}
+      >
+        Pratinjau &amp; Selesai
+      </button>
+    </div>
+  </div>
+);
 }
