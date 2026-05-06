@@ -4,6 +4,7 @@ import { registerSW } from 'virtual:pwa-register'
 import 'workbox-window'
 import './index.css'
 import App from './App.tsx'
+import './lib/i18n'
 
 // Register service worker
 registerSW({ immediate: true })

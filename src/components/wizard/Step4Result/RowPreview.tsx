@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Stage, Layer, Image as KonvaImage, Rect as KonvaRect, Text } from 'react-konva';
 import type { ProjectData } from '@/types/project';
 import { QRNode } from './QRNode';
@@ -13,6 +14,7 @@ export function RowPreview({
   data: ProjectData;
   bgImage: HTMLImageElement | null;
 }) {
+  const { t } = useTranslation();
   const { design, dataset, mapping } = data;
   if (!design?.preview || !dataset || !mapping) return null;
 
@@ -98,7 +100,7 @@ export function RowPreview({
         </Stage>
       </div>
       <span className="text-[9px] font-bold uppercase tracking-widest text-secondary">
-        Data #{rowIndex + 1}
+        {t('wizard.step4.data_count', { index: rowIndex + 1 })}
       </span>
     </div>
   );

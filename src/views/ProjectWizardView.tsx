@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import WizardShell from '@/features/wizard/WizardShell';
 import { getProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
 export default function ProjectWizardView() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [initialData, setInitialData] = useState<ProjectData | null | undefined>(undefined);
@@ -16,12 +18,12 @@ export default function ProjectWizardView() {
         if (project) {
           setInitialData(project);
         } else {
-          setError('Proyek tidak ditemukan.');
+          setError(t('common.error.project_not_found'));
           setInitialData(null);
         }
       }).catch(err => {
         console.error(err);
-        setError('Gagal memuat proyek.');
+        setError(t('common.error.failed_load_project'));
         setInitialData(null);
       });
     } else {
@@ -29,7 +31,7 @@ export default function ProjectWizardView() {
       const name = params.get('name');
       Promise.resolve().then(() => setInitialData(name ? { name, type: null } as any : null)); // 'new' project with name
     }
-  }, [id]);
+  }, [id, t]);
 
   if (initialData === undefined) {
     return <div className="py-20 flex justify-center"><span className="material-symbols-outlined animate-spin text-4xl text-primary">autorenew</span></div>;
@@ -44,7 +46,7 @@ export default function ProjectWizardView() {
           onClick={() => navigate('/dashboard')}
           className="mt-4 text-xs font-bold uppercase tracking-widest text-primary border-b border-primary"
         >
-          Kembali ke Dashboard
+          {t('common.error.back_to_dashboard')}
         </button>
       </div>
     );

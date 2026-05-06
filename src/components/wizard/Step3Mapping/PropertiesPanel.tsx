@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { MappingField } from '@/types/project';
 import { FONT_OPTIONS, ALIGN_OPTIONS, VERTICAL_ALIGN_OPTIONS } from './constants';
 
@@ -11,6 +12,7 @@ export function PropertiesPanel({
   onChange: (patch: Partial<MappingField>) => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation();
   const [tempFontSize, setTempFontSize] = useState(field.fontSize.toString());
 
   // Sync local state when external field changes (e.g. via slider)
@@ -41,7 +43,7 @@ export function PropertiesPanel({
       {/* Field Type Toggle */}
       <div>
         <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-          Tipe Bidang
+          {t('wizard.step3.properties.type')}
         </label>
         <div className="flex border border-outline-variant overflow-hidden">
           <button
@@ -52,7 +54,7 @@ export function PropertiesPanel({
                 : 'bg-white text-secondary hover:bg-surface-container'
             }`}
           >
-            Teks
+            {t('wizard.step3.properties.text')}
           </button>
           <button
             onClick={() => onChange({ type: 'qrcode' })}
@@ -62,7 +64,7 @@ export function PropertiesPanel({
                 : 'bg-white text-secondary hover:bg-surface-container'
             }`}
           >
-            QR Code
+            {t('wizard.step3.properties.qrcode')}
           </button>
         </div>
       </div>
@@ -70,7 +72,7 @@ export function PropertiesPanel({
       {/* Column name (read-only) */}
       <div>
         <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-          Kolom Terpilih
+          {t('wizard.step3.properties.selected_column')}
         </label>
         <div className="border border-primary bg-primary text-white px-3 py-2 text-xs font-bold uppercase tracking-widest truncate">
           {field.column}
@@ -80,14 +82,14 @@ export function PropertiesPanel({
       {field.type === 'qrcode' ? (
         <div className="p-3 bg-surface-container-high border border-primary/20 text-[10px] text-secondary leading-relaxed">
           <span className="material-symbols-outlined text-sm align-middle mr-1 text-primary">qr_code_2</span>
-          Data akan diubah menjadi QR Code secara otomatis saat proses cetak.
+          {t('wizard.step3.properties.qr_hint')}
         </div>
       ) : (
         <>
           {/* Font family */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Font
+              {t('wizard.step3.properties.font')}
             </label>
             <select
               value={field.fontFamily}
@@ -106,7 +108,7 @@ export function PropertiesPanel({
           {/* Font size */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Ukuran Font (px)
+              {t('wizard.step3.properties.font_size')}
             </label>
             <div className="flex gap-3 items-center">
               <input
@@ -136,7 +138,7 @@ export function PropertiesPanel({
           {/* Alignment */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Rata Teks
+              {t('wizard.step3.properties.alignment')}
             </label>
             <div className="flex border border-outline-variant overflow-hidden">
               {ALIGN_OPTIONS.map((a) => (
@@ -159,7 +161,7 @@ export function PropertiesPanel({
           {/* Vertical Alignment */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Rata Vertikal
+              {t('wizard.step3.properties.vertical_alignment')}
             </label>
             <div className="flex border border-outline-variant overflow-hidden">
               {VERTICAL_ALIGN_OPTIONS.map((a) => (
@@ -182,7 +184,7 @@ export function PropertiesPanel({
           {/* Color */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
-              Warna Teks
+              {t('wizard.step3.properties.color')}
             </label>
             <div className="flex gap-2 items-center">
               <input
@@ -210,7 +212,7 @@ export function PropertiesPanel({
                 </span>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">
-                Bold
+                {t('wizard.step3.properties.bold')}
               </span>
             </label>
 
@@ -227,7 +229,7 @@ export function PropertiesPanel({
                 </span>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">
-                Wrap
+                {t('wizard.step3.properties.wrap')}
               </span>
             </label>
           </div>
@@ -240,7 +242,7 @@ export function PropertiesPanel({
         className="mt-2 w-full py-2 border border-outline-variant text-[10px] font-bold uppercase tracking-widest text-secondary hover:border-red-500 hover:text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
       >
         <span className="material-symbols-outlined text-sm">delete</span>
-        Hapus Bidang
+        {t('wizard.step3.properties.delete_field')}
       </button>
     </div>
   );

@@ -1,14 +1,17 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/components/Logo';
 import InstallPrompt from '@/components/InstallPrompt';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function DashboardLayout() {
+  const { t } = useTranslation();
 
   const navItems = [
-    { to: '/dashboard', icon: 'dashboard', label: 'Dashboard', end: true },
-    { to: '/dashboard/projects', icon: 'folder', label: 'Proyek Saya' },
-    { to: '/dashboard/dataset', icon: 'database', label: 'Dataset' },
-    { to: '/dashboard/settings', icon: 'settings', label: 'Pengaturan' },
+    { to: '/dashboard', icon: 'dashboard', label: t('nav.dashboard'), end: true },
+    { to: '/dashboard/projects', icon: 'folder', label: t('nav.projects') },
+    { to: '/dashboard/dataset', icon: 'database', label: t('nav.dataset') },
+    { to: '/dashboard/settings', icon: 'settings', label: t('nav.settings') },
   ];
 
   const renderMobileLink = (item: { to: string, icon: string, label: string, end?: boolean }) => (
@@ -31,7 +34,7 @@ export default function DashboardLayout() {
     <div className="flex min-h-screen bg-background text-on-background">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-[280px] bg-white border-r border-primary flex-col sticky top-0 h-screen z-10">
-        <div className="p-8 border-b border-primary">
+        <div className="p-8 border-b border-primary flex justify-between items-center">
           <Link to="/" className="flex items-center gap-3 cursor-pointer">
             <Logo size="md" />
             <div className="text-2xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
@@ -57,10 +60,14 @@ export default function DashboardLayout() {
           ))}
         </nav>
 
-        {/* PWA Install Prompt */}
-        <InstallPrompt />
-
-
+        {/* Footer Sidebar */}
+        <div className="p-8 border-t border-primary/10 flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Language</span>
+            <LanguageSwitcher />
+          </div>
+          <InstallPrompt />
+        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -71,7 +78,10 @@ export default function DashboardLayout() {
             <Logo size="sm" />
             <div className="text-xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
           </Link>
-          <InstallPrompt variant="compact" />
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <InstallPrompt variant="compact" />
+          </div>
         </header>
 
         {/* Content provided by Routes */}
@@ -83,7 +93,7 @@ export default function DashboardLayout() {
       {/* Bottom Navigation for Mobile */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary h-20 z-100 flex justify-around items-center px-4 pb-safe">
         {navItems.slice(0, 2).map(renderMobileLink)}
-        {renderMobileLink({ to: '/dashboard/project/new', icon: 'add_box', label: 'Baru' })}
+        {renderMobileLink({ to: '/dashboard/project/new', icon: 'add_box', label: t('nav.new') })}
         {navItems.slice(2).map(renderMobileLink)}
       </nav>
     </div>

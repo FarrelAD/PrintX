@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Stage, Layer, Image as KonvaImage, Rect as KonvaRect, Transformer } from 'react-konva';
 import type Konva from 'konva';
 import type { ProjectData, MappingField } from '@/types/project';
@@ -26,6 +27,7 @@ export default function Step3Mapping({
   onNext: () => void;
   onBack: () => void;
 }) {
+  const { t } = useTranslation();
   const [fields, setFields] = useState<MappingField[]>(data.mapping ?? []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [dragOverCanvas, setDragOverCanvas] = useState(false);
@@ -65,7 +67,7 @@ export default function Step3Mapping({
       mapping: fields,
       editorSettings: { showDesign, canvasBgColor }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-disable
   }, [fields, showDesign, canvasBgColor]);
 
   const stageScale = bgImage ? stageSize.width / bgImage.naturalWidth : 1;
@@ -123,11 +125,11 @@ export default function Step3Mapping({
   }, []);
 
   const handleClearAll = useCallback(() => {
-    if (window.confirm('Hapus semua bidang yang sudah ditempatkan?')) {
+    if (window.confirm(t('wizard.step3.reset_confirm') || 'Hapus semua bidang yang sudah ditempatkan?')) {
       setFields([]);
       setSelectedId(null);
     }
-  }, []);
+  }, [t]);
 
   // ── Derived ──
   const selectedField = fields.find((f) => f.id === selectedId) ?? null;
@@ -137,9 +139,9 @@ export default function Step3Mapping({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Pemetaan Data</h2>
+      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">{t('wizard.step3.title')}</h2>
       <p className="text-secondary text-center mb-6 md:mb-8 text-xs md:text-sm px-4">
-        Seret kolom dari panel kiri ke atas desain untuk menempatkan bidang data.
+        {t('wizard.step3.desc')}
       </p>
 
       {/* ── Three-column layout ── */}
@@ -149,7 +151,7 @@ export default function Step3Mapping({
         <div className="w-full lg:w-56 shrink-0 flex flex-col gap-3">
           <div className="text-[10px] font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
             <span className="material-symbols-outlined text-sm">table_chart</span>
-            Kolom Dataset
+            {t('wizard.step3.panels.dataset_columns')}
           </div>
 
           {headers.length === 0 ? (
@@ -174,8 +176,8 @@ export default function Step3Mapping({
           <div className="mt-2 p-3 bg-surface-container border border-outline-variant text-[9px] text-secondary leading-relaxed">
             <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
             {activeColumn 
-              ? `Pilih "${activeColumn}" aktif. Klik di kanvas untuk menempatkan.`
-              : 'Seret kolom ke area kanvas atau klik untuk memilih (mobile).'}
+              ? t('wizard.step3.active_hint', { column: activeColumn }) || `Pilih "${activeColumn}" aktif. Klik di kanvas untuk menempatkan.`
+              : t('wizard.step3.toolbar.drag_hint')}
           </div>
         </div>
 
@@ -183,11 +185,11 @@ export default function Step3Mapping({
         <div className="flex-1 flex flex-col gap-2 min-w-0">
           <div className="text-[10px] font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
             <span className="material-symbols-outlined text-sm">design_services</span>
-            Kanvas Desain
+            {t('wizard.step3.panels.design_canvas') || 'Kanvas Desain'}
             {hasMappings && (
               <div className="ml-auto flex items-center gap-3">
                 <span className="text-primary">
-                  {fields.length} bidang
+                  {fields.length} {t('wizard.step3.fields_count') || 'bidang'}
                 </span>
                 <button
                   onClick={handleClearAll}
@@ -216,17 +218,17 @@ export default function Step3Mapping({
                   <span className="material-symbols-outlined text-[14px]">
                     {showDesign ? 'visibility' : 'visibility_off'}
                   </span>
-                  {showDesign ? 'Desain On' : 'Desain Off'}
+                  {showDesign ? (t('wizard.step3.design_on') || 'Desain On') : (t('wizard.step3.design_off') || 'Desain Off')}
                 </button>
               </div>
               <div className="h-4 w-px bg-outline-variant" />
               <div className="flex items-center gap-3">
-                <span className="text-[9px] font-bold uppercase text-secondary">BG Kanvas:</span>
+                <span className="text-[9px] font-bold uppercase text-secondary">{t('wizard.step3.canvas_bg') || 'BG Kanvas'}:</span>
                 <div className="flex gap-1.5">
                   {[
-                    { label: 'Putih', value: '#ffffff' },
-                    { label: 'Abu', value: '#f3f4f6' },
-                    { label: 'Hitam', value: '#111827' },
+                    { label: t('common.white') || 'Putih', value: '#ffffff' },
+                    { label: t('common.gray') || 'Abu', value: '#f3f4f6' },
+                    { label: t('common.black') || 'Hitam', value: '#111827' },
                     { label: 'Grid', value: 'transparent' },
                   ].map((c) => (
                     <button
@@ -315,12 +317,12 @@ export default function Step3Mapping({
                       width={stageSize.width}
                       height={stageSize.height}
                       fillPatternImage={(() => {
-                        const c = document.createElement('canvas');
-                        c.width = 16; c.height = 16;
-                        const ctx = c.getContext('2d')!;
-                        ctx.fillStyle = '#f3f4f6';
-                        ctx.fillRect(0,0,8,8); ctx.fillRect(8,8,8,8);
-                        return c as unknown as HTMLImageElement;
+                         const c = document.createElement('canvas');
+                         c.width = 16; c.height = 16;
+                         const ctx = c.getContext('2d')!;
+                         ctx.fillStyle = '#f3f4f6';
+                         ctx.fillRect(0,0,8,8); ctx.fillRect(8,8,8,8);
+                         return c as unknown as HTMLImageElement;
                       })()}
                     />
                   )}
@@ -372,14 +374,14 @@ export default function Step3Mapping({
             {!data.design?.preview && (
               <div className="absolute inset-0 flex items-center justify-center flex-col gap-2 text-secondary bg-surface-container/50">
                 <span className="material-symbols-outlined text-3xl">image_not_supported</span>
-                <span className="text-xs uppercase tracking-widest">Tidak ada desain dimuat</span>
+                <span className="text-xs uppercase tracking-widest">{t('wizard.step3.no_design_hint') || 'Tidak ada desain dimuat'}</span>
               </div>
             )}
 
             {dragOverCanvas && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bg-primary/10">
                 <div className="bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-2 shadow-lg">
-                  Lepaskan untuk menempatkan
+                  {t('wizard.step3.drop_hint') || 'Lepaskan untuk menempatkan'}
                 </div>
               </div>
             )}
@@ -388,7 +390,7 @@ export default function Step3Mapping({
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bg-secondary/10">
                 <div className="bg-secondary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 shadow-lg flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">touch_app</span>
-                  Klik di mana saja untuk menempatkan "{activeColumn}"
+                  {t('wizard.step3.click_hint', { column: activeColumn }) || `Klik di mana saja untuk menempatkan "${activeColumn}"`}
                 </div>
               </div>
             )}
@@ -399,7 +401,7 @@ export default function Step3Mapping({
         {data.design?.preview && fields.length === 0 && (
           <div className="flex items-center gap-2 text-[10px] text-secondary italic mt-1">
             <span className="material-symbols-outlined text-sm">arrow_upward</span>
-            Seret kolom dari panel kiri ke atas kanvas desain
+            {t('wizard.step3.empty_canvas_hint') || 'Seret kolom dari panel kiri ke atas kanvas desain'}
           </div>
         )}
       </div>
@@ -408,7 +410,7 @@ export default function Step3Mapping({
       <div className="w-full lg:w-56 shrink-0 flex flex-col gap-3">
         <div className="text-[10px] font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">tune</span>
-          Properti Bidang
+          {t('wizard.step3.properties.title')}
         </div>
 
         {!selectedField ? (
@@ -417,7 +419,7 @@ export default function Step3Mapping({
               touch_app
             </span>
             <p className="text-[10px] text-secondary italic">
-              Klik bidang di kanvas untuk mengeditnya
+              {t('wizard.step3.properties.empty_hint')}
             </p>
           </div>
         ) : (
@@ -436,17 +438,17 @@ export default function Step3Mapping({
         onClick={onBack}
         className="flex-1 md:flex-none py-3 px-8 border border-primary text-[10px] md:text-sm font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
       >
-        Kembali
+        {t('common.back')}
       </button>
       <button
         onClick={onNext}
         disabled={!hasMappings}
-        title={!hasMappings ? 'Tambahkan minimal satu bidang ke kanvas terlebih dahulu' : ''}
+        title={!hasMappings ? t('wizard.step3.mapping_required') || 'Tambahkan minimal satu bidang ke kanvas terlebih dahulu' : ''}
         className={`flex-1 md:flex-none py-3 px-12 bg-primary text-white text-[10px] md:text-sm font-bold uppercase tracking-widest transition-all ${
           !hasMappings ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-90'
         }`}
       >
-        Pratinjau &amp; Selesai
+        {t('wizard.step3.nav_next') || 'Pratinjau & Selesai'}
       </button>
     </div>
   </div>

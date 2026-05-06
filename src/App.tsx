@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LandingPage from '@/pages/LandingPage';
 import OGGenerator from '@/pages/OGGenerator';
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -11,6 +12,7 @@ import { PWAProvider } from '@/context/PWAContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function App() {
+  const { t } = useTranslation();
   return (
     <ErrorBoundary>
       <PWAProvider>
@@ -30,13 +32,13 @@ export default function App() {
           {/* Catch-all route to prevent white screen on routing errors */}
           <Route path="*" element={
             <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
-              <h1 className="text-4xl font-heading mb-4">404 - Halaman Tidak Ditemukan</h1>
-              <p className="text-secondary mb-8">Maaf, kami tidak dapat menemukan halaman yang Anda cari.</p>
+              <h1 className="text-4xl font-heading mb-4">{t('common.error.page_not_found')}</h1>
+              <p className="text-secondary mb-8">{t('common.error.page_not_found_desc')}</p>
               <button 
                 onClick={() => window.location.href = import.meta.env.BASE_URL}
                 className="bg-primary text-white px-8 py-3 uppercase tracking-widest font-bold"
               >
-                Kembali ke Beranda
+                {t('common.error.back_to_home')}
               </button>
               <div className="mt-12 text-[10px] text-secondary font-mono">
                 Debug Info: {window.location.pathname} | Base: {import.meta.env.BASE_URL}

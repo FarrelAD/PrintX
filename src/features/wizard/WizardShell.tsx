@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ProjectType, ProjectData } from '@/types/project';
 import Step1Category from '@/components/wizard/Step1Category';
 import Step2Assets from '@/components/wizard/Step2Assets';
@@ -16,6 +17,7 @@ export default function WizardShell({
   initialData?: ProjectData | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(initialData ? 2 : 1);
   const [projectData, setProjectData] = useState<ProjectData>(initialData || {
     type: null,
@@ -33,11 +35,11 @@ export default function WizardShell({
   }, [projectData]);
 
   const steps = [
-    { number: 1, title: 'Kategori' },
-    { number: 2, title: 'Aset' },
-    { number: 3, title: 'Pemetaan' },
-    { number: 4, title: 'Hasil' },
-    { number: 5, title: 'Cetak' },
+    { number: 1, title: t('wizard.steps.category') },
+    { number: 2, title: t('wizard.steps.assets') },
+    { number: 3, title: t('wizard.steps.mapping') },
+    { number: 4, title: t('wizard.steps.result') },
+    { number: 5, title: t('wizard.steps.print') },
   ];
 
   const handleTypeSelect = (type: ProjectType) => {
@@ -58,7 +60,7 @@ export default function WizardShell({
             className="text-xs md:text-sm font-semibold uppercase tracking-widest flex items-center gap-1 md:gap-2 hover:text-secondary transition-colors whitespace-nowrap"
           >
             <span className="material-symbols-outlined text-lg">arrow_back</span>
-            Batal
+            {t('common.cancel')}
           </button>
           
           {projectData.name && (
@@ -71,7 +73,7 @@ export default function WizardShell({
                 </span>
               </div>
               <StatusDropdown 
-                currentStatus={projectData.status || 'Draf'}
+                currentStatus={projectData.status || 'draft'}
                 onStatusChange={(status) => setProjectData(prev => ({ ...prev, status, updatedAt: Date.now() }))}
                 className="hidden md:block"
                 direction="down"
@@ -90,7 +92,7 @@ export default function WizardShell({
                     ? 'opacity-40 cursor-not-allowed' 
                     : 'cursor-pointer'
                 }`}
-                title={s.number > 1 && !projectData.type && step < s.number ? 'Pilih kategori terlebih dahulu' : `Ke langkah ${s.number}`}
+                title={s.number > 1 && !projectData.type && step < s.number ? t('wizard.tooltip_select_type') || 'Pilih kategori terlebih dahulu' : t('wizard.tooltip_go_to_step', { step: s.number })}
               >
                 <div className={`w-6 h-6 md:w-8 md:h-8 flex items-center justify-center border font-bold text-[10px] md:text-xs transition-all ${
                   step === s.number 

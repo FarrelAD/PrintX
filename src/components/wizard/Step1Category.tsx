@@ -1,18 +1,21 @@
+import { useTranslation } from 'react-i18next';
 import type { ProjectType } from '@/types/project';
 
 export default function Step1Category({ onSelect }: {
   onSelect: (type: ProjectType) => void
 }) {
+  const { t } = useTranslation();
+  
   const categories = [
-    { id: 'id_card', title: 'Kartu ID', icon: 'badge', desc: 'Kartu nama, ID karyawan, kartu anggota.' },
-    { id: 'certificate', title: 'Sertifikat', icon: 'workspace_premium', desc: 'Sertifikat pelatihan, piagam, ijazah.' },
-    { id: 'label', title: 'Label', icon: 'label', desc: 'Label pengiriman, barcode, stiker produk.' },
+    { id: 'id_card', title: t('wizard.step1.categories.id_card.title'), icon: 'badge', desc: t('wizard.step1.categories.id_card.desc') },
+    { id: 'certificate', title: t('wizard.step1.categories.certificate.title'), icon: 'workspace_premium', desc: t('wizard.step1.categories.certificate.desc') },
+    { id: 'label', title: t('wizard.step1.categories.label.title'), icon: 'label', desc: t('wizard.step1.categories.label.desc') },
   ];
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-heading mb-4 text-center px-4">Apa yang ingin Anda cetak?</h2>
-      <p className="text-xs md:text-sm text-secondary text-center mb-8 md:mb-12 px-6">Pilih kategori proyek untuk menyesuaikan alat pemrosesan kami.</p>
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-heading mb-4 text-center px-4">{t('wizard.step1.title')}</h2>
+      <p className="text-xs md:text-sm text-secondary text-center mb-8 md:mb-12 px-6">{t('wizard.step1.desc')}</p>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {categories.map((item) => (

@@ -1,0 +1,311 @@
+{
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "rename": "Rename",
+    "continue": "Continue",
+    "loading": "Loading...",
+    "search": "Search...",
+    "no_data": "No data available",
+    "new_project": "New Project",
+    "confirm_delete": "Are you sure you want to delete this project?",
+    "project_name_placeholder": "Project name...",
+    "create_now": "Create Now",
+    "error": {
+      "project_not_found": "Project not found.",
+      "failed_load_project": "Failed to load project.",
+      "back_to_dashboard": "Back to Dashboard",
+      "page_not_found": "404 - Page Not Found",
+      "page_not_found_desc": "Sorry, we couldn't find the page you're looking for.",
+      "back_to_home": "Back to Home"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "My Projects",
+    "dataset": "Dataset",
+    "settings": "Settings",
+    "new": "New"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview",
+    "desc": "Manage your mass printing workflow with precision. From design to data distribution in one place.",
+    "stats": {
+      "total": "Total Projects",
+      "storage": "Storage",
+      "active_drafts": "Active Drafts",
+      "ready_to_print": "Ready to Print",
+      "storage_status": "Storage Status",
+      "storage_safe": "Safe",
+      "view_all": "View All Projects"
+    },
+    "recent_projects": "Recent Projects",
+    "all_projects": "All Projects"
+  },
+  "projects": {
+    "title": "My Projects",
+    "desc": "Manage all your local print projects.",
+    "tabs": {
+      "all": "All",
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "ready": "Ready",
+      "finished": "Finished"
+    },
+    "empty": "No local projects yet",
+    "create_new": "Create New Project",
+    "copies": "Copies"
+  },
+  "status": {
+    "draft": "Draft",
+    "in_progress": "In Progress",
+    "ready": "Ready",
+    "finished": "Finished",
+    "change_status": "Change Status"
+  },
+  "wizard": {
+    "steps": {
+      "category": "Category",
+      "assets": "Assets",
+      "mapping": "Mapping",
+      "result": "Result",
+      "print": "Print"
+    },
+    "project": "Project",
+    "tooltip_select_type": "Please select a category first",
+    "tooltip_go_to_step": "Go to step {{step}}",
+    "step1": {
+      "title": "What do you want to print?",
+      "desc": "Select a project category to customize our processing tools.",
+      "categories": {
+        "id_card": {
+          "title": "ID Card",
+          "desc": "Business cards, employee IDs, membership cards."
+        },
+        "certificate": {
+          "title": "Certificate",
+          "desc": "Training certificates, awards, diplomas."
+        },
+        "label": {
+          "title": "Label",
+          "desc": "Shipping labels, barcodes, product stickers."
+        }
+      }
+    },
+    "step2": {
+      "title": "Project Assets",
+      "desc": "Upload design assets and required datasets to begin.",
+      "design": {
+        "title": "1. Base Design",
+        "upload": "Upload Design (JPG/PNG)",
+        "drop": "Drag file here or click to select",
+        "edit": "Change Design",
+        "delete": "Delete Design"
+      },
+      "data": {
+        "title": "2. Dataset",
+        "upload": "Upload Data (CSV/XLSX)",
+        "drop": "Drag file here or click to select",
+        "rows_found": "{{count}} Rows found",
+        "replace": "Replace",
+        "remove": "Remove"
+      },
+      "preview": {
+        "title": "Dataset Preview",
+        "showing": "Showing 15 rows",
+        "row": "ROW {{index}}",
+        "more": "And {{count}} more rows...",
+        "wide_desc": "Use a widescreen device for full preview."
+      }
+    },
+    "step3": {
+      "title": "Data Mapping",
+      "desc": "Visually connect your dataset columns to the design positions.",
+      "toolbar": {
+        "drag_hint": "Drag variables to add them to the design canvas.",
+        "add_image": "Add Image",
+        "add_qr": "Add QR Code"
+      },
+      "panels": {
+        "dataset_columns": "Dataset Columns",
+        "design_elements": "Design Elements"
+      },
+      "properties": {
+        "title": "Field Properties",
+        "empty_hint": "Click a field on the canvas to edit it",
+        "type": "Field Type",
+        "text": "Text",
+        "qrcode": "QR Code",
+        "selected_column": "Selected Column",
+        "qr_hint": "Data will be automatically converted to QR Code during printing.",
+        "font": "Font",
+        "font_size": "Font Size (px)",
+        "alignment": "Text Align",
+        "vertical_alignment": "Vertical Align",
+        "color": "Text Color",
+        "bold": "Bold",
+        "wrap": "Wrap",
+        "delete_field": "Delete Field"
+      }
+    },
+    "step4": {
+      "title": "Result Preview",
+      "desc": "Review every generated document before processing bulk printing.",
+      "stats": {
+        "total": "Total Documents",
+        "typography": "Typography Style",
+        "dynamic": "Dynamic Elements"
+      },
+      "data_count": "Record #{{index}}",
+      "list": {
+        "title": "Document List"
+      }
+    },
+    "step5": {
+      "title": "Print Configuration",
+      "desc": "Set up page layout and PDF parameters for the final result.",
+      "form": {
+        "paper_size": "Paper Size",
+        "orientation": "Orientation",
+        "margins": "Page Margins (mm)",
+        "spacing": "Item Spacing (mm)",
+        "portrait": "Portrait",
+        "landscape": "Landscape",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
+      },
+      "actions": {
+        "generate": "Generate PDF",
+        "finish": "Finish"
+      }
+    }
+  },
+  "pwa": {
+    "install_app": "Install App",
+    "install_now": "Install Now",
+    "get_app": "Get the App",
+    "desktop_edition": "Desktop & Mobile Edition",
+    "available_desktop": "Available for Desktop",
+    "title": "Bring PrintX Outside the Browser",
+    "desc": "One-click installation for instant access from taskbar or homescreen. More stable performance with full-screen mode.",
+    "access_title": "Instant App Mode Access",
+    "access_desc": "Open PrintX directly without distracting browser tabs."
+  },
+  "landing": {
+    "nav": {
+      "start": "Start",
+      "start_now": "Start Now"
+    },
+    "hero": {
+      "title": "Transform Your Spreadsheets Into Print-Ready Documents",
+      "subtitle": "Effortless mass printing solution for everyone. Create ID cards, certificates, and labels in seconds.",
+      "cta": "Start for Free"
+    },
+    "visual": {
+      "ready": "Ready to Print"
+    },
+    "problem": {
+      "title": "Manual Burden",
+      "desc": "Formatting documents manually is the old way. Copying data from spreadsheets to design software is error-prone, tedious, and hard to scale. PrintX bridges the gap between structured data and physical output seamlessly."
+    },
+    "steps": {
+      "1": {
+        "title": "1. Choose Template",
+        "desc": "Select from our archive-standard library or build your own custom grid-based layouts."
+      },
+      "2": {
+        "title": "2. Upload Data",
+        "desc": "Import your CSV, Excel, or Google Sheet. We handle data parsing and sanitization automatically."
+      },
+      "3": {
+        "title": "3. Export & Print",
+        "desc": "Generate print-ready PDFs with bleed marks and cut lines in just one click."
+      }
+    },
+    "features": {
+      "title": "System Capabilities",
+      "count": "04 Main Features",
+      "items": {
+        "drag": {
+          "title": "Drag & Drop Fields",
+          "desc": "Place dynamic variables anywhere on your canvas with pixel-perfect precision.",
+          "label": "Visual Editor"
+        },
+        "mapping": {
+          "title": "Auto Data Mapping",
+          "desc": "We detect header names and automatically connect them to your document fields.",
+          "label": "Intelligence"
+        },
+        "preview": {
+          "title": "Live Preview",
+          "desc": "View every data record instantly before you commit to bulk printing.",
+          "label": "Proofing"
+        },
+        "pdf": {
+          "title": "Bulk PDF Export",
+          "desc": "Optimized file sizes with perfect vector text rendering for any scale.",
+          "label": "Output"
+        }
+      }
+    },
+    "cases": {
+      "count": "Case",
+      "id": "ID Card",
+      "cert": "Certificate",
+      "label": "Label",
+      "invitation": "Invitation"
+    },
+    "cta": {
+      "title": "Start Creating Your First Document",
+      "button": "Open PrintX App"
+    },
+    "footer": {
+      "developed_by": "DEVELOPED BY",
+      "local": "100% Runs Locally"
+    }
+  },
+  "datasets": {
+    "title": "Dataset Management",
+    "desc": "List of all structured data from your projects.",
+    "table": {
+      "name": "Dataset Name",
+      "columns": "Columns (Headers)",
+      "total_rows": "Total Rows",
+      "project": "Used in Project",
+      "action": "Action",
+      "open": "Open Project",
+      "untitled": "Untitled Dataset",
+      "rows_count": "{{count}} ROWS",
+      "others": "+{{count}} others",
+      "columns_label": "Dataset Columns"
+    },
+    "empty": {
+      "title": "No datasets yet",
+      "desc": "Create a new project and upload your data to see it here."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "desc": "Configure your preferences and application data management.",
+    "data": {
+      "title": "Local Data Management",
+      "desc": "PrintX saves all your projects and design data directly in the browser using IndexedDB. You have full control over your data.",
+      "danger_zone": "Danger Zone",
+      "danger_desc": "Clearing all data will restore PrintX to its initial state. All designs, datasets, and print configurations will be permanently lost.",
+      "clear_button": "Clear All Local Data",
+      "confirm_clear": "WARNING: This action will delete all your local projects and datasets. Data cannot be recovered. Are you sure you want to proceed?",
+      "success_clear": "All local data has been successfully cleared.",
+      "error_clear": "Failed to clear data."
+    },
+    "info": {
+      "title": "App Information",
+      "version": "Version",
+      "license": "License",
+      "architecture": "Architecture"
+    }
+  }
+}

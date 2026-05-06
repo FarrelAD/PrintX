@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ProjectData, PrintConfig } from '@/types/project';
 import { generateProfessionalPDF } from '@/utils/pdf/generator';
 
@@ -25,6 +26,7 @@ export default function Step5Print({
   onUpdate: (data: ProjectData) => void;
   onComplete: () => void;
 }) {
+  const { t } = useTranslation();
   const [config, setConfig] = useState<PrintConfig>({ ...DEFAULT_CONFIG, ...data.printConfig });
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -83,7 +85,7 @@ export default function Step5Print({
       onComplete();
     } catch (err) {
       console.error('PDF Generation failed:', err);
-      alert('Gagal menghasilkan PDF. Silakan coba lagi.');
+      alert(t('wizard.step5.error_generate') || 'Gagal menghasilkan PDF. Silakan coba lagi.');
     } finally {
       setIsGenerating(false);
     }
@@ -91,9 +93,9 @@ export default function Step5Print({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Konfigurasi Cetak</h2>
+      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">{t('wizard.step5.title')}</h2>
       <p className="text-secondary text-center mb-8 text-xs md:text-sm px-4">
-        Atur ukuran kertas dan dimensi fisik untuk dokumen siap cetak.
+        {t('wizard.step5.desc')}
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -102,7 +104,7 @@ export default function Step5Print({
           <div className="p-6 bg-white border border-primary space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Ukuran Kertas</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.paper_size')}</label>
                 <select 
                   value={config.paperSize}
                   onChange={(e) => setConfig({ ...config, paperSize: e.target.value as PrintConfig['paperSize'] })}
@@ -114,19 +116,19 @@ export default function Step5Print({
                 </select>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Orientasi</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.orientation')}</label>
                 <div className="flex border-2 border-primary h-[42px]">
                   <button 
                     onClick={() => setConfig({ ...config, orientation: 'p' })}
                     className={`flex-1 text-[10px] font-bold uppercase ${config.orientation === 'p' ? 'bg-primary text-white' : 'hover:bg-surface-container'}`}
                   >
-                    Potret
+                    {t('wizard.step5.form.portrait')}
                   </button>
                   <button 
                     onClick={() => setConfig({ ...config, orientation: 'l' })}
                     className={`flex-1 text-[10px] font-bold uppercase ${config.orientation === 'l' ? 'bg-primary text-white' : 'hover:bg-surface-container'}`}
                   >
-                    Lanskap
+                    {t('wizard.step5.form.landscape')}
                   </button>
                 </div>
               </div>
@@ -134,7 +136,7 @@ export default function Step5Print({
 
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-outline-variant relative">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Lebar Desain (cm)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.design_width') || 'Lebar Desain (cm)'}</label>
                 <input 
                   type="number" 
                   step="0.1"
@@ -144,7 +146,7 @@ export default function Step5Print({
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Tinggi Desain (cm)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.design_height') || 'Tinggi Desain (cm)'}</label>
                 <input 
                   type="number" 
                   step="0.1"
@@ -158,7 +160,7 @@ export default function Step5Print({
               <button 
                 onClick={() => setLockAspectRatio(!lockAspectRatio)}
                 className={`absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-1 w-8 h-8 rounded-full border-2 bg-white flex items-center justify-center transition-all z-10 ${lockAspectRatio ? 'border-primary text-primary' : 'border-outline-variant text-secondary opacity-50'}`}
-                title={lockAspectRatio ? 'Kunci Rasio Aspek' : 'Rasio Aspek Bebas'}
+                title={lockAspectRatio ? (t('wizard.step5.lock_ratio') || 'Kunci Rasio Aspek') : (t('wizard.step5.unlock_ratio') || 'Rasio Aspek Bebas')}
               >
                 <span className="material-symbols-outlined text-sm">
                   {lockAspectRatio ? 'link' : 'link_off'}
@@ -167,7 +169,7 @@ export default function Step5Print({
             </div>
 
             <div className="flex flex-col gap-1.5 pt-4 border-t border-outline-variant">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">Bleed / Margin Potong (mm)</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.bleed') || 'Bleed / Margin Potong (mm)'}</label>
               <input 
                 type="range" 
                 min="0" 
@@ -192,7 +194,7 @@ export default function Step5Print({
                   onChange={(e) => setConfig({ ...config, showCropMarks: e.target.checked })}
                   className="w-4 h-4 accent-primary"
                 />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Tanda Potong (Crop Marks)</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.crop_marks') || 'Tanda Potong (Crop Marks)'}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input 
@@ -201,14 +203,14 @@ export default function Step5Print({
                   onChange={(e) => setConfig({ ...config, nUp: e.target.checked })}
                   className="w-4 h-4 accent-primary"
                 />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Optimasi Layout (N-Up)</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step5.form.n_up') || 'Optimasi Layout (N-Up)'}</span>
               </label>
             </div>
 
             {config.nUp && (
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-outline-variant animate-in fade-in slide-in-from-top-2">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">Gap Horizontal (mm)</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">{t('wizard.step5.form.horizontal_gap') || 'Gap Horizontal (mm)'}</label>
                   <input 
                     type="number" 
                     value={config.gapHorizontalMm || ''}
@@ -218,7 +220,7 @@ export default function Step5Print({
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">Gap Vertikal (mm)</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">{t('wizard.step5.form.vertical_gap') || 'Gap Vertikal (mm)'}</label>
                   <input 
                     type="number" 
                     value={config.gapVerticalMm || ''}
@@ -254,15 +256,15 @@ export default function Step5Print({
             </div>
             
             <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-secondary">
-              <span>Preview Layout Kertas</span>
-              <span>{config.paperSize} {config.orientation === 'p' ? 'Portrait' : 'Landscape'}</span>
+              <span>{t('wizard.step5.preview_label') || 'Preview Layout Kertas'}</span>
+              <span>{config.paperSize} {config.orientation === 'p' ? t('wizard.step5.form.portrait') : t('wizard.step5.form.landscape')}</span>
             </div>
           </div>
 
           <div className="p-4 bg-primary text-white space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">Estimasi Hasil</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">{t('wizard.step5.result_estimate') || 'Estimasi Hasil'}</p>
             <p className="text-xl font-heading">
-              {data.dataset?.rows.length ?? 0} Dokumen • 300 DPI • CMYK Ready
+              {data.dataset?.rows.length ?? 0} {t('wizard.step5.documents_label') || 'Dokumen'} • 300 DPI • CMYK Ready
             </p>
           </div>
         </div>
@@ -282,9 +284,9 @@ export default function Step5Print({
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-heading mb-1">Menghasilkan Dokumen...</h3>
+              <h3 className="text-xl font-heading mb-1">{t('wizard.step5.generating_title') || 'Menghasilkan Dokumen...'}</h3>
               <p className="text-xs text-secondary uppercase tracking-widest font-bold">
-                Memproses {data.dataset?.rows.length} data dengan resolusi tinggi
+                {t('wizard.step5.processing_desc', { count: data.dataset?.rows.length }) || `Memproses ${data.dataset?.rows.length} data dengan resolusi tinggi`}
               </p>
             </div>
             <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
@@ -304,14 +306,14 @@ export default function Step5Print({
           disabled={isGenerating}
           className="w-full md:w-auto py-2.5 px-6 md:py-3 md:px-8 border border-primary text-[10px] md:text-sm font-bold uppercase tracking-widest hover:bg-surface-container transition-colors order-2 md:order-1"
         >
-          Kembali
+          {t('common.back')}
         </button>
         <button
           onClick={handleGenerate}
           disabled={isGenerating}
           className="w-full md:w-auto py-3.5 px-8 md:py-4 md:px-16 bg-primary text-white text-xs md:text-base font-bold uppercase tracking-widest transition-all brutalist-shadow order-1 md:order-2 hover:opacity-90 active:scale-[0.98]"
         >
-          {isGenerating ? 'Memproses...' : 'Download PDF Siap Cetak'}
+          {isGenerating ? (t('wizard.step5.actions.processing') || 'Memproses...') : (t('wizard.step5.actions.generate') || 'Download PDF Siap Cetak')}
         </button>
       </div>
     </div>

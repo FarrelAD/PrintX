@@ -28,6 +28,21 @@ export function getDB() {
   return dbPromise;
 }
 
+const STATUS_MAP: Record<string, string> = {
+  'Draf': 'draft',
+  'Sedang Dikerjakan': 'in_progress',
+  'Siap Cetak': 'ready',
+  'Selesai': 'finished'
+};
+
+function migrateProject(project: ProjectData): ProjectData {
+  if (!project) return project;
+  if (project.status && STATUS_MAP[project.status]) {
+    return { ...project, status: STATUS_MAP[project.status] as any };
+  }
+  return project;
+}
+
 export async function saveProject(project: ProjectData) {
   const db = await getDB();
   const id = project.id || crypto.randomUUID();
@@ -35,20 +50,22 @@ export async function saveProject(project: ProjectData) {
     ...project,
     id,
     updatedAt: Date.now(),
-    status: project.status || 'Draf',
+    status: (project.status && STATUS_MAP[project.status] ? STATUS_MAP[project.status] : project.status) || 'draft',
   };
-  await db.put('projects', updatedProject);
-  return updatedProject;
+  await db.put('projects', updatedProject as ProjectData);
+  return updatedProject as ProjectData;
 }
 
 export async function getProject(id: string) {
   const db = await getDB();
-  return db.get('projects', id);
+  const project = await db.get('projects', id);
+  return project ? migrateProject(project) : undefined;
 }
 
 export async function getAllProjects() {
   const db = await getDB();
-  return db.getAllFromIndex('projects', 'by-date');
+  const projects = await db.getAllFromIndex('projects', 'by-date');
+  return projects.map(migrateProject);
 }
 
 export async function deleteProject(id: string) {

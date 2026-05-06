@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/components/Logo';
 import InstallPrompt from '@/components/InstallPrompt';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function LandingPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,13 +30,16 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
             <InstallPrompt variant="compact" className="py-2.5 px-4 md:py-3 md:px-6 text-[10px] md:text-sm whitespace-nowrap" />
             <button 
               className="bg-primary text-on-primary py-2.5 px-4 md:py-3 md:px-6 font-semibold tracking-widest uppercase text-[10px] md:text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all whitespace-nowrap" 
               onClick={() => navigate('/dashboard')}
             >
-              <span className="hidden xs:inline">MULAI SEKARANG</span>
-              <span className="xs:hidden">MULAI</span>
+              <span className="hidden xs:inline">{t('landing.nav.start_now')}</span>
+              <span className="xs:hidden">{t('landing.nav.start')}</span>
             </button>
           </div>
         </div>
@@ -44,13 +50,13 @@ export default function LandingPage() {
         <section className="grid grid-cols-12 gap-gutter py-stack-lg border-b border-primary">
           <div className="col-span-12 lg:col-span-6 flex flex-col justify-center">
             <h1 className="text-[clamp(40px,5vw,64px)] leading-[1.1] tracking-tight mb-stack-sm font-heading">
-              Ubah Spreadsheet Anda Menjadi Dokumen Siap Cetak
+              {t('landing.hero.title')}
             </h1>
             <p className="text-lg text-secondary mb-stack-md max-w-[480px]">
-              Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.
+              {t('landing.hero.subtitle')}
             </p>
             <div className="flex items-center gap-4">
-              <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>Mulai Gratis</button>
+              <button className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>{t('landing.hero.cta')}</button>
               <InstallPrompt variant="compact" className="py-3 px-6 text-sm" />
             </div>
           </div>
@@ -67,7 +73,7 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-heading">Jane Doe</h3>
                   <p className="text-[12px] uppercase tracking-widest text-[#666]">Senior Lead</p>
                   <div className="absolute -top-2 -right-2 bg-black text-white text-[8px] px-2 py-1 uppercase">
-                    Siap Cetak
+                    {t('landing.visual.ready')}
                   </div>
                 </div>
               </div>
@@ -78,11 +84,11 @@ export default function LandingPage() {
         {/* Problem Section */}
         <section className="border-b border-primary py-stack-lg grid grid-cols-12 gap-gutter">
           <div className="col-span-12 md:col-span-4 md:border-r border-primary md:pr-gutter max-md:border-b max-md:pb-stack-sm max-md:mb-stack-sm">
-            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">Beban Manual</h2>
+            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">{t('landing.problem.title')}</h2>
           </div>
           <div className="col-span-12 md:col-span-8 text-lg text-secondary">
             <p>
-              Memformat dokumen secara manual adalah cara lama. Menyalin data dari spreadsheet ke perangkat lunak desain sangat rawan kesalahan, membosankan, dan sulit dikembangkan. PrintX menjembatani celah antara data terstruktur dan hasil fisik tanpa hambatan.
+              {t('landing.problem.desc')}
             </p>
           </div>
         </section>
@@ -91,18 +97,18 @@ export default function LandingPage() {
         <section className="grid grid-cols-1 md:grid-cols-3 border-b border-primary">
           <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
             <span className="material-symbols-outlined text-[48px] mb-stack-sm">dashboard</span>
-            <h3 className="text-2xl mb-2">1. Pilih Templat</h3>
-            <p className="text-secondary">Pilih dari perpustakaan standar arsip kami atau bangun tata letak berbasis grid kustom Anda sendiri.</p>
+            <h3 className="text-2xl mb-2">{t('landing.steps.1.title')}</h3>
+            <p className="text-secondary">{t('landing.steps.1.desc')}</p>
           </div>
           <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
             <span className="material-symbols-outlined text-[48px] mb-stack-sm">upload_file</span>
-            <h3 className="text-2xl mb-2">2. Unggah Data</h3>
-            <p className="text-secondary">Masukkan CSV, Excel, atau Google Sheet Anda. Kami menangani parsing dan sanitasi data secara otomatis.</p>
+            <h3 className="text-2xl mb-2">{t('landing.steps.2.title')}</h3>
+            <p className="text-secondary">{t('landing.steps.2.desc')}</p>
           </div>
           <div className="p-12 border-b md:border-b-0 md:border-r border-primary last:border-none hover:bg-surface-container transition-colors">
             <span className="material-symbols-outlined text-[48px] mb-stack-sm">print</span>
-            <h3 className="text-2xl mb-2">3. Ekspor &amp; Cetak</h3>
-            <p className="text-secondary">Hasilkan PDF siap cetak dengan tanda bleed dan garis potong hanya dalam satu klik.</p>
+            <h3 className="text-2xl mb-2">{t('landing.steps.3.title')}</h3>
+            <p className="text-secondary">{t('landing.steps.3.desc')}</p>
           </div>
         </section>
 
@@ -112,21 +118,21 @@ export default function LandingPage() {
         {/* Feature Highlights */}
         <section className="border-b border-primary py-stack-lg">
           <div className="flex justify-between items-baseline mb-stack-md gap-4 max-md:flex-col max-md:gap-2">
-            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">Kemampuan Sistem</h2>
-            <div className="text-[12px] text-secondary uppercase tracking-[0.2em]">04 Fitur Utama</div>
+            <h2 className="text-[clamp(24px,4vw,32px)] uppercase tracking-tight mb-stack-sm">{t('landing.features.title')}</h2>
+            <div className="text-[12px] text-secondary uppercase tracking-[0.2em]">{t('landing.features.count')}</div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mt-stack-md">
             {[
-              { icon: 'drag_pan', title: 'Tarik & Lepas Bidang', desc: 'Tempatkan variabel dinamis di mana pun pada kanvas Anda dengan presisi piksel yang sempurna.', label: 'Visual Editor' },
-              { icon: 'auto_awesome', title: 'Pemetaan Data Otomatis', desc: 'Kami mendeteksi nama header dan secara otomatis menghubungkannya ke bidang dokumen Anda.', label: 'Inteligensi' },
-              { icon: 'visibility', title: 'Pratinjau Langsung', desc: 'Lihat setiap data rekaman secara instan sebelum Anda melakukan proses cetak massal.', label: 'Proofing' },
-              { icon: 'picture_as_pdf', title: 'Ekspor PDF Massal', desc: 'Ukuran file yang dioptimalkan dengan rendering teks vektor sempurna untuk skala apa pun.', label: 'Output' }
-            ].map((f, i) => (
-              <div key={i} className="border border-primary p-8 flex flex-col h-full">
+              { icon: 'drag_pan', key: 'drag' },
+              { icon: 'auto_awesome', key: 'mapping' },
+              { icon: 'visibility', key: 'preview' },
+              { icon: 'picture_as_pdf', key: 'pdf' }
+            ].map((f) => (
+              <div key={f.key} className="border border-primary p-8 flex flex-col h-full">
                 <span className="material-symbols-outlined text-[32px] mb-4">{f.icon}</span>
-                <h4 className="text-2xl mb-4">{f.title}</h4>
-                <p className="text-secondary mb-8">{f.desc}</p>
-                <div className="mt-auto pt-4 border-t border-outline-variant text-[12px] uppercase tracking-widest font-semibold">{f.label}</div>
+                <h4 className="text-2xl mb-4">{t(`landing.features.items.${f.key}.title`)}</h4>
+                <p className="text-secondary mb-8">{t(`landing.features.items.${f.key}.desc`)}</p>
+                <div className="mt-auto pt-4 border-t border-outline-variant text-[12px] uppercase tracking-widest font-semibold">{t(`landing.features.items.${f.key}.label`)}</div>
               </div>
             ))}
           </div>
@@ -134,10 +140,15 @@ export default function LandingPage() {
 
         {/* Use Cases */}
         <section className="grid grid-cols-2 lg:grid-cols-4 border-y border-primary">
-          {['Kartu ID', 'Sertifikat', 'Label', 'Undangan'].map((u, i) => (
-            <div key={i} className={`p-8 text-center border-r border-primary last:border-none ${i === 1 && 'max-md:border-r-0'} ${i < 2 && 'max-md:border-b'}`}>
-              <div className="text-[12px] text-[#666] uppercase mb-2">Kasus 0{i + 1}</div>
-              <h3 className="text-2xl">{u}</h3>
+          {[
+            { key: 'id' },
+            { key: 'cert' },
+            { key: 'label' },
+            { key: 'invitation' }
+          ].map((u, i) => (
+            <div key={u.key} className={`p-8 text-center border-r border-primary last:border-none ${i === 1 && 'max-md:border-r-0'} ${i < 2 && 'max-md:border-b'}`}>
+              <div className="text-[12px] text-[#666] uppercase mb-2">{t('landing.cases.count')} 0{i + 1}</div>
+              <h3 className="text-2xl">{t(`landing.cases.${u.key}`)}</h3>
             </div>
           ))}
         </section>
@@ -145,11 +156,11 @@ export default function LandingPage() {
         {/* Final CTA */}
         <section className="text-center py-16">
           <h2 className="text-[clamp(32px,6vw,48px)] mb-8 max-w-[800px] mx-auto">
-            Mulai Buat Dokumen Pertama Anda
+            {t('landing.cta.title')}
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
             <button className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all" onClick={() => navigate('/dashboard')}>
-              Buka Aplikasi PrintX
+              {t('landing.cta.button')}
             </button>
             <InstallPrompt 
               variant="compact" 
@@ -167,12 +178,12 @@ export default function LandingPage() {
               <div className="text-2xl font-bold tracking-tighter uppercase">PRINTX</div>
             </div>
             <div className="font-heading text-[12px] uppercase tracking-widest">
-              © {new Date().getFullYear()} PRINTX. DIKEMBANGKAN OLEH <a href="https://github.com/FarrelAD/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">FARREL AD</a>.
+              © {new Date().getFullYear()} PRINTX. {t('landing.footer.developed_by')} <a href="https://github.com/FarrelAD/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">FARREL AD</a>.
             </div>
           </div>
           <div className="flex items-center gap-2 text-[12px] uppercase tracking-widest text-primary font-bold bg-surface-container px-4 py-2">
             <span className="material-symbols-outlined text-[16px]">lock</span>
-            100% Berjalan Lokal
+            {t('landing.footer.local')}
           </div>
         </div>
       </footer>

@@ -1,0 +1,311 @@
+{
+  "common": {
+    "back": "Kembali",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "rename": "Ubah Nama",
+    "continue": "Lanjutkan",
+    "loading": "Memuat...",
+    "search": "Cari...",
+    "no_data": "Tidak ada data",
+    "new_project": "Proyek Baru",
+    "confirm_delete": "Apakah Anda yakin ingin menghapus proyek ini?",
+    "project_name_placeholder": "Nama proyek...",
+    "create_now": "Buat Sekarang",
+    "error": {
+      "project_not_found": "Proyek tidak ditemukan.",
+      "failed_load_project": "Gagal memuat proyek.",
+      "back_to_dashboard": "Kembali ke Dashboard",
+      "page_not_found": "404 - Halaman Tidak Ditemukan",
+      "page_not_found_desc": "Maaf, kami tidak dapat menemukan halaman yang Anda cari.",
+      "back_to_home": "Kembali ke Beranda"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "Proyek Saya",
+    "dataset": "Dataset",
+    "settings": "Pengaturan",
+    "new": "Baru"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Ringkasan",
+    "desc": "Kelola alur kerja cetak massal Anda dengan presisi. Mulai dari desain hingga distribusi data dalam satu tempat.",
+    "stats": {
+      "total": "Total Proyek",
+      "storage": "Penyimpanan",
+      "active_drafts": "Draf Aktif",
+      "ready_to_print": "Siap Cetak",
+      "storage_status": "Status Storage",
+      "storage_safe": "Aman",
+      "view_all": "Lihat Semua Proyek"
+    },
+    "recent_projects": "Proyek Terakhir",
+    "all_projects": "Semua Proyek"
+  },
+  "projects": {
+    "title": "Proyek Saya",
+    "desc": "Kelola semua proyek cetak lokal Anda.",
+    "tabs": {
+      "all": "Semua",
+      "draft": "Draf",
+      "in_progress": "Sedang Dikerjakan",
+      "ready": "Siap Cetak",
+      "finished": "Selesai"
+    },
+    "empty": "Belum ada proyek lokal",
+    "create_new": "Buat Proyek Baru",
+    "copies": "Salinan"
+  },
+  "status": {
+    "draft": "Draf",
+    "in_progress": "Sedang Dikerjakan",
+    "ready": "Siap Cetak",
+    "finished": "Selesai",
+    "change_status": "Ubah Status"
+  },
+  "wizard": {
+    "steps": {
+      "category": "Kategori",
+      "assets": "Aset",
+      "mapping": "Pemetaan",
+      "result": "Hasil",
+      "print": "Cetak"
+    },
+    "project": "Proyek",
+    "tooltip_select_type": "Pilih kategori terlebih dahulu",
+    "tooltip_go_to_step": "Ke langkah {{step}}",
+    "step1": {
+      "title": "Apa yang ingin Anda cetak?",
+      "desc": "Pilih kategori proyek untuk menyesuaikan alat pemrosesan kami.",
+      "categories": {
+        "id_card": {
+          "title": "Kartu ID",
+          "desc": "Kartu nama, ID karyawan, kartu anggota."
+        },
+        "certificate": {
+          "title": "Sertifikat",
+          "desc": "Sertifikat pelatihan, piagam, ijazah."
+        },
+        "label": {
+          "title": "Label",
+          "desc": "Label pengiriman, barcode, stiker produk."
+        }
+      }
+    },
+    "step2": {
+      "title": "Aset Proyek",
+      "desc": "Unggah aset desain dan dataset yang diperlukan untuk memulai.",
+      "design": {
+        "title": "1. Desain Dasar",
+        "upload": "Unggah Desain (JPG/PNG)",
+        "drop": "Seret file ke sini atau klik untuk memilih",
+        "edit": "Ganti Desain",
+        "delete": "Hapus Desain"
+      },
+      "data": {
+        "title": "2. Dataset",
+        "upload": "Unggah Data (CSV/XLSX)",
+        "drop": "Seret file ke sini atau klik untuk memilih",
+        "rows_found": "{{count}} Baris ditemukan",
+        "replace": "Ganti",
+        "remove": "Hapus"
+      },
+      "preview": {
+        "title": "Pratinjau Dataset",
+        "showing": "Menampilkan 15 baris",
+        "row": "BARIS {{index}}",
+        "more": "Dan {{count}} baris lainnya...",
+        "wide_desc": "Gunakan perangkat layar lebar untuk pratinjau lengkap."
+      }
+    },
+    "step3": {
+      "title": "Pemetaan Data",
+      "desc": "Hubungkan kolom dataset Anda ke posisi desain secara visual.",
+      "toolbar": {
+        "drag_hint": "Tarik variabel untuk menambahkannya ke kanvas desain.",
+        "add_image": "Tambah Gambar",
+        "add_qr": "Tambah QR Code"
+      },
+      "panels": {
+        "dataset_columns": "Kolom Dataset",
+        "design_elements": "Elemen Desain"
+      },
+      "properties": {
+        "title": "Properti Bidang",
+        "empty_hint": "Klik bidang di kanvas untuk mengeditnya",
+        "type": "Tipe Bidang",
+        "text": "Teks",
+        "qrcode": "QR Code",
+        "selected_column": "Kolom Terpilih",
+        "qr_hint": "Data akan diubah menjadi QR Code secara otomatis saat proses cetak.",
+        "font": "Font",
+        "font_size": "Ukuran Font (px)",
+        "alignment": "Rata Teks",
+        "vertical_alignment": "Rata Vertikal",
+        "color": "Warna Teks",
+        "bold": "Bold",
+        "wrap": "Wrap",
+        "delete_field": "Hapus Bidang"
+      }
+    },
+    "step4": {
+      "title": "Pratinjau Hasil",
+      "desc": "Tinjau setiap dokumen yang dihasilkan sebelum memproses pencetakan massal.",
+      "stats": {
+        "total": "Total Dokumen",
+        "typography": "Gaya Tipografi",
+        "dynamic": "Elemen Dinamis"
+      },
+      "data_count": "Data #{{index}}",
+      "list": {
+        "title": "Daftar Dokumen"
+      }
+    },
+    "step5": {
+      "title": "Konfigurasi Cetak",
+      "desc": "Atur tata letak halaman dan parameter PDF untuk hasil akhir.",
+      "form": {
+        "paper_size": "Ukuran Kertas",
+        "orientation": "Orientasi",
+        "margins": "Margin Halaman (mm)",
+        "spacing": "Jarak Antar Item (mm)",
+        "portrait": "Potret",
+        "landscape": "Lanskap",
+        "horizontal": "Horizontal",
+        "vertical": "Vertikal"
+      },
+      "actions": {
+        "generate": "Hasilkan PDF",
+        "finish": "Selesai"
+      }
+    }
+  },
+  "pwa": {
+    "install_app": "Pasang App",
+    "install_now": "Pasang Sekarang",
+    "get_app": "Dapatkan App",
+    "desktop_edition": "Edisi Desktop & Mobile",
+    "available_desktop": "Tersedia untuk Desktop",
+    "title": "Bawa PrintX ke Luar Browser",
+    "desc": "Instalasi satu klik untuk akses instan dari taskbar atau homescreen. Performa lebih stabil dengan mode layar penuh.",
+    "access_title": "Akses Instan Mode App",
+    "access_desc": "Buka PrintX langsung tanpa tab browser yang mengganggu."
+  },
+  "landing": {
+    "nav": {
+      "start": "Mulai",
+      "start_now": "Mulai Sekarang"
+    },
+    "hero": {
+      "title": "Ubah Spreadsheet Anda Menjadi Dokumen Siap Cetak",
+      "subtitle": "Solusi cetak dokumen massal yang mudah untuk siapa saja. Buat kartu ID, sertifikat, dan label dalam hitungan detik.",
+      "cta": "Mulai Gratis"
+    },
+    "visual": {
+      "ready": "Siap Cetak"
+    },
+    "problem": {
+      "title": "Beban Manual",
+      "desc": "Memformat dokumen secara manual adalah cara lama. Menyalin data dari spreadsheet ke perangkat lunak desain sangat rawan kesalahan, membosankan, dan sulit dikembangkan. PrintX menjembatani celah antara data terstruktur dan hasil fisik tanpa hambatan."
+    },
+    "steps": {
+      "1": {
+        "title": "1. Pilih Templat",
+        "desc": "Pilih dari perpustakaan standar kami atau bangun tata letak berbasis grid kustom Anda sendiri."
+      },
+      "2": {
+        "title": "2. Unggah Data",
+        "desc": "Masukkan CSV, Excel, atau Google Sheet Anda. Kami menangani parsing dan sanitasi data secara otomatis."
+      },
+      "3": {
+        "title": "3. Ekspor & Cetak",
+        "desc": "Hasilkan PDF siap cetak dengan tanda bleed dan garis potong hanya dalam satu klik."
+      }
+    },
+    "features": {
+      "title": "Kemampuan Sistem",
+      "count": "04 Fitur Utama",
+      "items": {
+        "drag": {
+          "title": "Tarik & Lepas Bidang",
+          "desc": "Tempatkan variabel dinamis di mana pun pada kanvas Anda dengan presisi piksel yang sempurna.",
+          "label": "Visual Editor"
+        },
+        "mapping": {
+          "title": "Pemetaan Data Otomatis",
+          "desc": "Kami mendeteksi nama header dan secara otomatis menghubungkannya ke bidang dokumen Anda.",
+          "label": "Inteligensi"
+        },
+        "preview": {
+          "title": "Pratinjau Langsung",
+          "desc": "Lihat setiap data rekaman secara instan sebelum Anda melakukan proses cetak massal.",
+          "label": "Proofing"
+        },
+        "pdf": {
+          "title": "Ekspor PDF Massal",
+          "desc": "Ukuran file yang dioptimalkan dengan rendering teks vektor sempurna untuk skala apa pun.",
+          "label": "Output"
+        }
+      }
+    },
+    "cases": {
+      "count": "Kasus",
+      "id": "Kartu ID",
+      "cert": "Sertifikat",
+      "label": "Label",
+      "invitation": "Undangan"
+    },
+    "cta": {
+      "title": "Mulai Buat Dokumen Pertama Anda",
+      "button": "Buka Aplikasi PrintX"
+    },
+    "footer": {
+      "developed_by": "DIKEMBANGKAN OLEH",
+      "local": "100% Berjalan Lokal"
+    }
+  },
+  "datasets": {
+    "title": "Manajemen Dataset",
+    "desc": "Daftar semua data terstruktur dari proyek Anda.",
+    "table": {
+      "name": "Nama Dataset",
+      "columns": "Kolom (Headers)",
+      "total_rows": "Total Baris",
+      "project": "Digunakan Di Proyek",
+      "action": "Aksi",
+      "open": "Buka Proyek",
+      "untitled": "Dataset Tanpa Nama",
+      "rows_count": "{{count}} BARIS",
+      "others": "+{{count}} lainnya",
+      "columns_label": "Kolom Dataset"
+    },
+    "empty": {
+      "title": "Belum ada dataset",
+      "desc": "Buat proyek baru dan unggah data Anda untuk melihatnya di sini."
+    }
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "desc": "Konfigurasi preferensi dan manajemen data aplikasi Anda.",
+    "data": {
+      "title": "Manajemen Data Lokal",
+      "desc": "PrintX menyimpan semua proyek dan data desain Anda langsung di browser menggunakan IndexedDB. Anda mengontrol penuh data Anda.",
+      "danger_zone": "Zona Bahaya",
+      "danger_desc": "Menghapus semua data akan mengembalikan PrintX ke kondisi awal. Semua desain, dataset, dan konfigurasi cetak akan hilang secara permanen.",
+      "clear_button": "Hapus Semua Data Lokal",
+      "confirm_clear": "PERINGATAN: Tindakan ini akan menghapus semua proyek dan dataset lokal Anda. Data tidak dapat dipulihkan. Apakah Anda yakin ingin melanjutkan?",
+      "success_clear": "Semua data lokal telah berhasil dihapus.",
+      "error_clear": "Gagal menghapus data."
+    },
+    "info": {
+      "title": "Informasi Aplikasi",
+      "version": "Versi",
+      "license": "Lisensi",
+      "architecture": "Arsitektur"
+    }
+  }
+}

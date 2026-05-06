@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import type { ProjectData } from '@/types/project';
 
@@ -8,6 +9,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
   onNext: () => void,
   onBack: () => void
 }) {
+  const { t } = useTranslation();
   const designInputRef = useRef<HTMLInputElement>(null);
   const dataInputRef = useRef<HTMLInputElement>(null);
 
@@ -70,14 +72,14 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">Aset Proyek</h2>
-      <p className="text-secondary text-center mb-8 px-4 text-xs md:text-sm">Unggah aset desain dan dataset yang diperlukan untuk memulai.</p>
+      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">{t('wizard.step2.title')}</h2>
+      <p className="text-secondary text-center mb-8 px-4 text-xs md:text-sm">{t('wizard.step2.desc')}</p>
 
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Design Upload */}
         <div className="border border-primary p-6 md:p-8 bg-white flex flex-col">
-          <h3 className="text-lg font-heading mb-4 uppercase tracking-tight">1. Desain Dasar</h3>
+          <h3 className="text-lg font-heading mb-4 uppercase tracking-tight">{t('wizard.step2.design.title')}</h3>
           <input 
             type="file" 
             ref={designInputRef} 
@@ -92,8 +94,8 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
               className="border-2 border-dashed border-outline-variant p-8 md:p-12 text-center flex flex-col items-center group cursor-pointer hover:border-primary transition-colors flex-1"
             >
               <span className="material-symbols-outlined text-4xl mb-4 text-secondary group-hover:text-primary transition-colors">image</span>
-              <p className="text-sm font-semibold uppercase tracking-widest mb-2">Unggah Desain (JPG/PNG)</p>
-              <p className="text-[10px] text-secondary">Seret file ke sini atau klik untuk memilih</p>
+              <p className="text-sm font-semibold uppercase tracking-widest mb-2">{t('wizard.step2.design.upload')}</p>
+              <p className="text-[10px] text-secondary">{t('wizard.step2.design.drop')}</p>
             </div>
           ) : (
             <div className="relative group border border-outline-variant bg-surface-container-low aspect-video flex items-center justify-center overflow-hidden">
@@ -102,14 +104,14 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
                 <button 
                   onClick={() => designInputRef.current?.click()}
                   className="bg-white text-primary p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
-                  title="Ganti Desain"
+                  title={t('wizard.step2.design.edit') || 'Ganti Desain'}
                 >
                   <span className="material-symbols-outlined">edit</span>
                 </button>
                 <button 
                   onClick={removeDesign}
                   className="bg-white text-error p-2 rounded-full hover:bg-error hover:text-white transition-colors"
-                  title="Hapus Desain"
+                  title={t('wizard.step2.design.delete') || 'Hapus Desain'}
                 >
                   <span className="material-symbols-outlined">delete</span>
                 </button>
@@ -123,7 +125,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
 
         {/* Data Upload */}
         <div className="border border-primary p-6 md:p-8 bg-white flex flex-col">
-          <h3 className="text-lg font-heading mb-4 uppercase tracking-tight">2. Dataset</h3>
+          <h3 className="text-lg font-heading mb-4 uppercase tracking-tight">{t('wizard.step2.data.title')}</h3>
           <input 
             type="file" 
             ref={dataInputRef} 
@@ -138,26 +140,26 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
               className="border-2 border-dashed border-outline-variant p-8 md:p-12 text-center flex flex-col items-center group cursor-pointer hover:border-primary transition-colors flex-1"
             >
               <span className="material-symbols-outlined text-4xl mb-4 text-secondary group-hover:text-primary transition-colors">table_chart</span>
-              <p className="text-sm font-semibold uppercase tracking-widest mb-2">Unggah Data (CSV/XLSX)</p>
-              <p className="text-[10px] text-secondary">Seret file ke sini atau klik untuk memilih</p>
+              <p className="text-sm font-semibold uppercase tracking-widest mb-2">{t('wizard.step2.data.upload')}</p>
+              <p className="text-[10px] text-secondary">{t('wizard.step2.data.drop')}</p>
             </div>
           ) : (
             <div className="border border-primary bg-surface-container-low p-6 flex-1 flex flex-col items-center justify-center text-center">
               <span className="material-symbols-outlined text-4xl mb-2 text-primary">check_circle</span>
               <p className="text-sm font-bold uppercase tracking-widest truncate max-w-full mb-1">{data.dataset.fileName}</p>
-              <p className="text-[10px] text-secondary uppercase tracking-widest mb-4">{data.dataset.rows.length} Baris ditemukan</p>
+              <p className="text-[10px] text-secondary uppercase tracking-widest mb-4">{t('wizard.step2.data.rows_found', { count: data.dataset.rows.length })}</p>
               <div className="flex gap-4">
                 <button 
                   onClick={() => dataInputRef.current?.click()}
                   className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline"
                 >
-                  Ganti
+                  {t('wizard.step2.data.replace')}
                 </button>
                 <button 
                   onClick={removeData}
                   className="text-[10px] font-bold uppercase tracking-widest text-error hover:underline"
                 >
-                  Hapus
+                  {t('wizard.step2.data.remove')}
                 </button>
               </div>
             </div>
@@ -169,8 +171,8 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
       {data.dataset && (
         <div className="mt-8 border border-primary bg-white p-4 md:p-8 animate-in fade-in slide-in-from-top-4 duration-500 w-full overflow-hidden">
           <div className="flex justify-between items-end mb-4 px-1">
-            <h3 className="text-base md:text-lg font-heading uppercase tracking-tight">Pratinjau Dataset</h3>
-            <p className="text-[9px] md:text-[10px] font-bold text-secondary uppercase tracking-widest">Menampilkan 15 baris</p>
+            <h3 className="text-base md:text-lg font-heading uppercase tracking-tight">{t('wizard.step2.preview.title')}</h3>
+            <p className="text-[9px] md:text-[10px] font-bold text-secondary uppercase tracking-widest">{t('wizard.step2.preview.showing')}</p>
           </div>
 
           {/* Desktop Preview Table */}
@@ -204,7 +206,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
             {data.dataset.rows.slice(0, 5).map((row, i) => (
               <div key={i} className="border border-outline-variant bg-surface-container-lowest p-4">
                 <div className="flex justify-between items-center mb-3 border-b border-outline-variant pb-2">
-                  <span className="text-[10px] font-bold text-primary font-mono bg-white border border-primary px-2 py-0.5">BARIS {i + 1}</span>
+                  <span className="text-[10px] font-bold text-primary font-mono bg-white border border-primary px-2 py-0.5">{t('wizard.step2.preview.row', { index: i + 1 })}</span>
                 </div>
                 <div className="space-y-3">
                   {data.dataset?.headers.map((header, j) => (
@@ -220,8 +222,8 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
             ))}
             {data.dataset.rows.length > 5 && (
               <div className="text-center py-4 border border-dashed border-outline-variant">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Dan {data.dataset.rows.length - 5} baris lainnya...</p>
-                <p className="text-[8px] text-secondary mt-1">Gunakan perangkat layar lebar untuk pratinjau lengkap.</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('wizard.step2.preview.more', { count: data.dataset.rows.length - 5 })}</p>
+                <p className="text-[8px] text-secondary mt-1">{t('wizard.step2.preview.wide_desc')}</p>
               </div>
             )}
           </div>
@@ -233,7 +235,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
           onClick={onBack}
           className="flex-1 md:flex-none py-2.5 px-6 md:py-3 md:px-8 border border-primary text-[10px] md:text-sm font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
         >
-          Kembali
+          {t('common.back')}
         </button>
         <button 
           onClick={onNext}
@@ -242,7 +244,7 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
             (!data.design || !data.dataset) ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-90'
           }`}
         >
-          Lanjutkan
+          {t('common.continue')}
         </button>
       </div>
     </div>

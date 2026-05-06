@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getAllProjects, deleteProject as dbDeleteProject, saveProject as dbSaveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
@@ -7,6 +8,7 @@ import NameModal from '@/components/ui/NameModal';
 import StatusDropdown from '@/components/ui/StatusDropdown';
 
 export default function ProjectsView() {
+  const { t, i18n } = useTranslation();
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalConfig, setModalConfig] = useState<{
@@ -19,14 +21,13 @@ export default function ProjectsView() {
     title: '',
     initialValue: '',
   });
-  const [activeTab, setActiveTab] = useState('Semua');
+  const [activeTab, setActiveTab] = useState('all');
   const navigate = useNavigate();
 
 
   async function loadProjects() {
     try {
       const data = await getAllProjects();
-      console.log('ProjectsView: Loaded projects:', data);
       if (!Array.isArray(data)) {
         setProjects([]);
         return;
@@ -45,7 +46,7 @@ export default function ProjectsView() {
 
   async function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation();
-    if (!confirm('Apakah Anda yakin ingin menghapus proyek ini?')) return;
+    if (!confirm(t('common.confirm_delete') || 'Apakah Anda yakin ingin menghapus proyek ini?')) return;
     setIsLoading(true);
     await dbDeleteProject(id);
     loadProjects();
@@ -64,14 +65,14 @@ export default function ProjectsView() {
   }
 
   const filteredProjects = projects.filter(p => {
-    if (activeTab === 'Semua') return true;
-    return (p.status || 'Draf') === activeTab;
+    if (activeTab === 'all') return true;
+    return (p.status || 'draft') === activeTab;
   });
 
   const handleNewProject = () => {
     setModalConfig({
       isOpen: true,
-      title: 'Proyek Baru',
+      title: t('common.new_project'),
       initialValue: '',
     });
   };
@@ -80,7 +81,7 @@ export default function ProjectsView() {
     e.stopPropagation();
     setModalConfig({
       isOpen: true,
-      title: 'Ubah Nama',
+      title: t('common.rename'),
       initialValue: project.name || '',
       project,
     });
@@ -110,6 +111,14 @@ export default function ProjectsView() {
     }
   };
 
+  const tabs = [
+    { key: 'all', label: t('projects.tabs.all') },
+    { key: 'draft', label: t('projects.tabs.draft') },
+    { key: 'in_progress', label: t('projects.tabs.in_progress') },
+    { key: 'ready', label: t('projects.tabs.ready') },
+    { key: 'finished', label: t('projects.tabs.finished') },
+  ];
+
   return (
     <>
       <NameModal 
@@ -118,38 +127,38 @@ export default function ProjectsView() {
         onConfirm={handleModalConfirm}
         title={modalConfig.title}
         initialValue={modalConfig.initialValue}
-        placeholder="Nama proyek..."
+        placeholder={t('common.project_name_placeholder') || 'Nama proyek...'}
       />
       <div className="flex justify-between items-end mb-8 border-b border-primary pb-4">
         <div>
-          <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tighter">Proyek Saya</h1>
-          <p className="text-secondary text-sm mt-2">Kelola semua proyek cetak lokal Anda.</p>
+          <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tighter">{t('projects.title')}</h1>
+          <p className="text-secondary text-sm mt-2">{t('projects.desc')}</p>
         </div>
         <button 
           onClick={handleNewProject}
           className="bg-primary text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-on-primary hover:text-primary border border-primary transition-colors flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-sm">add</span>
-          Proyek Baru
+          {t('common.new_project')}
         </button>
       </div>
 
       {/* Navigation & Filter Bar */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 border-b border-primary/10 pb-6">
         <div className="flex gap-6 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
-          {['Semua', 'Draf', 'Sedang Dikerjakan', 'Siap Cetak', 'Selesai'].map((tab) => (
+          {tabs.map((tab) => (
             <button 
-              key={tab} 
-              onClick={() => setActiveTab(tab)}
-              className={`text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all pb-2 ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'}`}
+              key={tab.key} 
+              onClick={() => setActiveTab(tab.key)}
+              className={`text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all pb-2 ${activeTab === tab.key ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'}`}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
         <div className="hidden md:flex items-center gap-4 w-full md:w-64 border-b border-primary/20 pb-1">
           <span className="material-symbols-outlined text-secondary text-lg">search</span>
-          <input type="text" placeholder="Cari proyek..." className="bg-transparent border-none outline-none text-sm w-full font-body" />
+          <input type="text" placeholder={t('common.search') || 'Cari...'} className="bg-transparent border-none outline-none text-sm w-full font-body" />
         </div>
       </section>
 
@@ -181,14 +190,14 @@ export default function ProjectsView() {
                   <button 
                     onClick={(e) => handleRenameClick(e, project)}
                     className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-surface-container transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
-                    title="Ubah Nama"
+                    title={t('common.rename') || 'Ubah Nama'}
                   >
                     <span className="material-symbols-outlined text-sm">edit</span>
                   </button>
                   <button 
                     onClick={(e) => handleDelete(e, project.id!)}
                     className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
-                    title="Hapus Proyek"
+                    title={t('common.delete') || 'Hapus Proyek'}
                   >
                     <span className="material-symbols-outlined text-sm">delete</span>
                   </button>
@@ -198,28 +207,28 @@ export default function ProjectsView() {
             
             <div className="flex flex-col">
               <StatusDropdown 
-                currentStatus={project.status || 'Draf'}
+                currentStatus={project.status || 'draft'}
                 onStatusChange={(newStatus) => updateProjectStatus(project, newStatus)}
                 className="mb-3 self-start"
                 direction="down"
               />
               <div className="flex justify-between items-start mb-2">
-                <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">{project.name || 'Proyek Tanpa Nama'}</h3>
+                <h3 className="text-2xl md:text-3xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">{project.name || (t('projects.untitled') || 'Proyek Tanpa Nama')}</h3>
                 <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity shrink-0">arrow_outward</span>
               </div>
               <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-secondary font-bold border-t border-primary/10 pt-3 mt-auto">
-                <span>{project.dataset?.rows.length || 0} Salinan</span>
+                <span>{project.dataset?.rows.length || 0} {t('projects.copies')}</span>
                 <span className="w-1 h-1 bg-primary rounded-full"></span>
-                <span>{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) : '-'}</span>
+                <span>{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { day: '2-digit', month: 'short' }) : '-'}</span>
               </div>
             </div>
           </div>
         ))}
 
-        {projects.length === 0 && !isLoading && (
+        {filteredProjects.length === 0 && !isLoading && (
           <div className="col-span-full border-2 border-dashed border-outline-variant py-20 flex flex-col items-center justify-center text-secondary opacity-50">
             <span className="material-symbols-outlined text-6xl mb-4">folder_open</span>
-            <p className="text-sm font-bold uppercase tracking-widest">Belum ada proyek lokal</p>
+            <p className="text-sm font-bold uppercase tracking-widest">{t('projects.empty')}</p>
           </div>
         )}
         
@@ -229,7 +238,7 @@ export default function ProjectsView() {
           className="hidden md:flex aspect-4/3 border border-primary border-dashed items-center justify-center flex-col gap-4 cursor-pointer hover:bg-surface-container transition-colors group"
         >
           <span className="material-symbols-outlined text-4xl text-secondary group-hover:scale-110 transition-transform">add_circle</span>
-          <span className="text-xs uppercase tracking-widest font-bold text-secondary">Buat Proyek Baru</span>
+          <span className="text-xs uppercase tracking-widest font-bold text-secondary">{t('projects.create_new')}</span>
         </div>
       </section>
     </>
