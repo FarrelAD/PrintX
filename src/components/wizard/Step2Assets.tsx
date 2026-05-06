@@ -179,26 +179,28 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
       {/* Full-width Data Preview */}
       {data.dataset && (
         <div className="mt-8 border border-primary bg-white p-4 md:p-8 animate-in fade-in slide-in-from-top-4 duration-500 w-full overflow-hidden">
-          <div className="flex justify-between items-end mb-4">
+          <div className="flex justify-between items-end mb-4 px-1">
             <h3 className="text-base md:text-lg font-heading uppercase tracking-tight">Pratinjau Dataset</h3>
             <p className="text-[9px] md:text-[10px] font-bold text-secondary uppercase tracking-widest">Menampilkan 15 baris</p>
           </div>
-          <div className="border border-outline-variant overflow-x-auto w-full">
+
+          {/* Desktop Preview Table */}
+          <div className="hidden md:block border border-outline-variant overflow-x-auto w-full">
             <table className="w-full text-xs text-left border-collapse">
               <thead className="bg-surface-container-low border-b border-outline-variant">
                 <tr>
-                  <th className="p-2 md:p-3 border-r border-outline-variant w-8 md:w-10 text-center font-bold text-secondary">#</th>
+                  <th className="p-3 border-r border-outline-variant w-10 text-center font-bold text-secondary">#</th>
                   {data.dataset.headers.map((h, i) => (
-                    <th key={i} className="p-2 md:p-3 font-bold uppercase tracking-tight whitespace-nowrap border-r border-outline-variant last:border-0">{h}</th>
+                    <th key={i} className="p-3 font-bold uppercase tracking-tight whitespace-nowrap border-r border-outline-variant last:border-0">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {data.dataset.rows.slice(0, 15).map((row, i) => (
                   <tr key={i} className="border-b border-outline-variant/30 last:border-0 hover:bg-surface-container-lowest transition-colors">
-                    <td className="p-2 md:p-3 border-r border-outline-variant text-center text-secondary font-mono text-[9px] md:text-[10px]">{i + 1}</td>
+                    <td className="p-3 border-r border-outline-variant text-center text-secondary font-mono text-[10px]">{i + 1}</td>
                     {data.dataset?.headers.map((_, j) => (
-                      <td key={j} className="p-2 md:p-3 text-secondary whitespace-nowrap border-r border-outline-variant last:border-0">
+                      <td key={j} className="p-3 text-secondary whitespace-nowrap border-r border-outline-variant last:border-0">
                         {row[j] !== undefined ? String(row[j]) : '-'}
                       </td>
                     ))}
@@ -206,6 +208,33 @@ export default function Step2Assets({ data, onUpdate, onNext, onBack }: {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Preview Cards */}
+          <div className="md:hidden flex flex-col gap-4">
+            {data.dataset.rows.slice(0, 5).map((row, i) => (
+              <div key={i} className="border border-outline-variant bg-surface-container-lowest p-4">
+                <div className="flex justify-between items-center mb-3 border-b border-outline-variant pb-2">
+                  <span className="text-[10px] font-bold text-primary font-mono bg-white border border-primary px-2 py-0.5">BARIS {i + 1}</span>
+                </div>
+                <div className="space-y-3">
+                  {data.dataset?.headers.map((header, j) => (
+                    <div key={j} className="grid grid-cols-3 gap-2">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-secondary truncate">{header}</span>
+                      <span className="text-[10px] text-primary col-span-2 wrap-break-word">
+                        {row[j] !== undefined ? String(row[j]) : '-'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {data.dataset.rows.length > 5 && (
+              <div className="text-center py-4 border border-dashed border-outline-variant">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Dan {data.dataset.rows.length - 5} baris lainnya...</p>
+                <p className="text-[8px] text-secondary mt-1">Gunakan perangkat layar lebar untuk pratinjau lengkap.</p>
+              </div>
+            )}
           </div>
         </div>
       )}
