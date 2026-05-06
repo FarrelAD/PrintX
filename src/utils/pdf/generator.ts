@@ -67,11 +67,15 @@ export async function generateProfessionalPDF(
 
   // 2. Imposition layout calculation
   const margin_mm    = 10; // Safety margin for printer
-  const stepX        = designW_mm + (config.nUp ? 2 : 20);
-  const stepY        = designH_mm + (config.nUp ? 2 : 20);
-  const cols         = config.nUp ? Math.floor((paperW - 2 * margin_mm) / stepX) : 1;
-  const rowsPerPage  = config.nUp ? Math.floor((paperH - 2 * margin_mm) / stepY) : 1;
+  const stepX        = designW_mm + (config.nUp ? (config.gapHorizontalMm ?? 0) : 20);
+  const stepY        = designH_mm + (config.nUp ? (config.gapVerticalMm ?? 0) : 20);
+  const cols         = config.nUp ? Math.max(1, Math.floor((paperW - 2 * margin_mm) / stepX)) : 1;
+  const rowsPerPage  = config.nUp ? Math.max(1, Math.floor((paperH - 2 * margin_mm) / stepY)) : 1;
   const itemsPerPage = cols * rowsPerPage;
+
+  if (itemsPerPage === 0) {
+    throw new Error('Ukuran desain atau gap terlalu besar untuk ukuran kertas yang dipilih.');
+  }
 
   // 3. Render each row
   for (let i = 0; i < totalRows; i++) {
@@ -122,15 +126,24 @@ export async function generateProfessionalPDF(
         }
       } else {
         ctx.fillStyle    = field.color;
-        ctx.font         = `bold ${Math.round(field.fontSize * scaleX)}px ${field.fontFamily}`;
+        const fontSize   = Math.round(field.fontSize * scaleX);
+        ctx.font         = `bold ${fontSize}px ${field.fontFamily}`;
         ctx.textAlign    = field.align;
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = field.verticalAlign || 'middle';
 
         let drawX = fx;
         if (field.align === 'center') drawX = fx + fw / 2;
         if (field.align === 'right')  drawX = fx + fw;
 
-        ctx.fillText(val, drawX, fy + fh / 2, fw);
+        let drawY = fy + fh / 2;
+        if (field.verticalAlign === 'top')    drawY = fy;
+        if (field.verticalAlign === 'bottom') drawY = fy + fh;
+
+        if (field.wrap) {
+          drawWrappedText(ctx, val, drawX, fy + fh / 2, fw, fh, fontSize * 1.2, field.align, field.verticalAlign);
+        } else {
+          ctx.fillText(val, drawX, drawY, fw);
+        }
       }
     }
 
@@ -157,4 +170,56 @@ export async function generateProfessionalPDF(
   }
 
   pdf.save(`PrintX_Export_${Date.now()}.pdf`);
+}
+
+/**
+ * Helper to draw wrapped text on canvas
+ */
+function drawWrappedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  maxHeight: number,
+  lineHeight: number,
+  _align: 'left' | 'center' | 'right',
+  verticalAlign: 'top' | 'middle' | 'bottom' = 'middle'
+) {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = words[0];
+
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i];
+    const metrics = ctx.measureText(currentLine + ' ' + word);
+    if (metrics.width < maxWidth) {
+      currentLine += ' ' + word;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  lines.push(currentLine);
+
+  // Vertical alignment calculation (y is the center of the box)
+  const totalHeight = lines.length * lineHeight;
+  let startY = y - totalHeight / 2 + lineHeight / 2; // Default to middle
+
+  if (verticalAlign === 'top') {
+    startY = (y - maxHeight / 2) + lineHeight / 2;
+  } else if (verticalAlign === 'bottom') {
+    startY = (y + maxHeight / 2) - totalHeight + lineHeight / 2;
+  }
+
+  // Set baseline to middle for line-by-line drawing consistency
+  ctx.textBaseline = 'middle';
+
+  // Don't draw beyond maxHeight if possible (simple clip-like behavior)
+  lines.forEach((line, index) => {
+    if ((index + 1) * lineHeight <= maxHeight + lineHeight / 2) {
+      ctx.fillText(line, x, startY);
+      startY += lineHeight;
+    }
+  });
 }

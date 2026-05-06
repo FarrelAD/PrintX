@@ -104,9 +104,9 @@ export function FieldNode({
           fontFamily={field.fontFamily}
           fill={field.color}
           align={field.align}
-          verticalAlign="middle"
-          ellipsis
-          wrap="none"
+          verticalAlign={field.verticalAlign}
+          ellipsis={!field.wrap}
+          wrap={field.wrap ? 'word' : 'none'}
           listening={false}
         />
       )}

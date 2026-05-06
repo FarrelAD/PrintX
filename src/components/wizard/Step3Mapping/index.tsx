@@ -95,7 +95,9 @@ export default function Step3Mapping({
         fontSize: DEFAULT_FONT_SIZE,
         fontFamily: 'Inter',
         align: 'left',
+        verticalAlign: 'middle',
         color: '#000000',
+        wrap: false,
       };
       setFields((prev) => [...prev, newField]);
       setSelectedId(newField.id);
@@ -199,7 +201,9 @@ export default function Step3Mapping({
                   fontSize: DEFAULT_FONT_SIZE,
                   fontFamily: 'Inter',
                   align: 'left',
+                  verticalAlign: 'middle',
                   color: '#000000',
+                  wrap: false,
                 };
                 setFields((prev) => [...prev, newField]);
                 setSelectedId(newField.id);

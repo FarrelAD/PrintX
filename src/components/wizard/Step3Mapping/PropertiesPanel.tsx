@@ -1,5 +1,5 @@
 import type { MappingField } from '@/types/project';
-import { FONT_OPTIONS, ALIGN_OPTIONS } from './constants';
+import { FONT_OPTIONS, ALIGN_OPTIONS, VERTICAL_ALIGN_OPTIONS } from './constants';
 
 export function PropertiesPanel({
   field,
@@ -118,6 +118,29 @@ export function PropertiesPanel({
             </div>
           </div>
 
+          {/* Vertical Alignment */}
+          <div>
+            <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
+              Rata Vertikal
+            </label>
+            <div className="flex border border-outline-variant overflow-hidden">
+              {VERTICAL_ALIGN_OPTIONS.map((a) => (
+                <button
+                  key={a.value}
+                  onClick={() => onChange({ verticalAlign: a.value })}
+                  title={a.value}
+                  className={`flex-1 py-2 flex items-center justify-center transition-colors ${
+                    field.verticalAlign === a.value
+                      ? 'bg-primary text-white'
+                      : 'bg-white text-secondary hover:bg-surface-container'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">{a.icon}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Color */}
           <div>
             <label className="text-[9px] font-bold uppercase tracking-widest text-secondary block mb-1">
@@ -132,6 +155,26 @@ export function PropertiesPanel({
               />
               <span className="text-xs font-mono text-secondary">{field.color.toUpperCase()}</span>
             </div>
+          </div>
+
+          {/* Wrap Text */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={!!field.wrap}
+                  onChange={(e) => onChange({ wrap: e.target.checked })}
+                  className="peer h-4 w-4 cursor-pointer appearance-none border border-outline-variant transition-all checked:bg-primary checked:border-primary"
+                />
+                <span className="material-symbols-outlined absolute text-[12px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  check
+                </span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">
+                Text Wrapping
+              </span>
+            </label>
           </div>
         </>
       )}

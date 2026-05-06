@@ -10,6 +10,8 @@ const DEFAULT_CONFIG: PrintConfig = {
   bleedMm: 3,
   showCropMarks: true,
   nUp: true,
+  gapHorizontalMm: 2,
+  gapVerticalMm: 2,
 };
 
 export default function Step5Print({
@@ -23,7 +25,7 @@ export default function Step5Print({
   onUpdate: (data: ProjectData) => void;
   onComplete: () => void;
 }) {
-  const [config, setConfig] = useState<PrintConfig>(data.printConfig || DEFAULT_CONFIG);
+  const [config, setConfig] = useState<PrintConfig>({ ...DEFAULT_CONFIG, ...data.printConfig });
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [lockAspectRatio, setLockAspectRatio] = useState(true);
@@ -202,6 +204,31 @@ export default function Step5Print({
                 <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Optimasi Layout (N-Up)</span>
               </label>
             </div>
+
+            {config.nUp && (
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-outline-variant animate-in fade-in slide-in-from-top-2">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">Gap Horizontal (mm)</label>
+                  <input 
+                    type="number" 
+                    value={config.gapHorizontalMm || ''}
+                    onChange={(e) => setConfig({ ...config, gapHorizontalMm: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                    className="p-2.5 border-2 border-primary text-sm font-bold focus:outline-none"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-secondary text-left">Gap Vertikal (mm)</label>
+                  <input 
+                    type="number" 
+                    value={config.gapVerticalMm || ''}
+                    onChange={(e) => setConfig({ ...config, gapVerticalMm: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                    className="p-2.5 border-2 border-primary text-sm font-bold focus:outline-none"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

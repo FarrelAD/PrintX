@@ -11,22 +11,31 @@ export default function DashboardHome() {
   async function loadProjects() {
     try {
       const data = await getAllProjects();
-      setProjects(data.reverse()); // Newest first
+      console.log('Dashboard: Loaded projects:', data);
+      if (!Array.isArray(data)) {
+        console.warn('Dashboard: Expected array of projects, got:', typeof data);
+        setProjects([]);
+        return;
+      }
+      // Create a copy before reversing to avoid mutation of source data
+      setProjects([...data].reverse());
     } catch (err) {
-      console.error('Failed to load projects:', err);
+      console.error('Dashboard: Failed to load projects:', err);
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    Promise.resolve().then(() => loadProjects());
+    loadProjects();
   }, []);
 
 
-  const activeProjects = projects.filter(p => p.status !== 'Siap Cetak').length;
-  const completedProjects = projects.filter(p => p.status === 'Siap Cetak').length;
-  const recentProjects = projects.slice(0, 3);
+  // Defensive checks for projects data
+  const validProjects = projects.filter(p => p && typeof p === 'object');
+  const activeProjects = validProjects.filter(p => p.status !== 'Siap Cetak').length;
+  const completedProjects = validProjects.filter(p => p.status === 'Siap Cetak').length;
+  const recentProjects = validProjects.slice(0, 3);
 
   return (
     <>

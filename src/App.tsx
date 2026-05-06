@@ -8,24 +8,44 @@ import DatasetView from '@/views/DatasetView';
 import SettingsView from '@/views/SettingsView';
 import ProjectWizardView from '@/views/ProjectWizardView';
 import { PWAProvider } from '@/context/PWAContext';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function App() {
   return (
-    <PWAProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/og" element={<OGGenerator />} />
+    <ErrorBoundary>
+      <PWAProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/og" element={<OGGenerator />} />
 
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="projects" element={<ProjectsView />} />
-          <Route path="dataset" element={<DatasetView />} />
-          <Route path="settings" element={<SettingsView />} />
-          <Route path="project/:id" element={<ProjectWizardView />} />
-        </Route>
-      </Routes>
-      </BrowserRouter>
-    </PWAProvider>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="projects" element={<ProjectsView />} />
+            <Route path="dataset" element={<DatasetView />} />
+            <Route path="settings" element={<SettingsView />} />
+            <Route path="project/:id" element={<ProjectWizardView />} />
+          </Route>
+          
+          {/* Catch-all route to prevent white screen on routing errors */}
+          <Route path="*" element={
+            <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+              <h1 className="text-4xl font-heading mb-4">404 - Halaman Tidak Ditemukan</h1>
+              <p className="text-secondary mb-8">Maaf, kami tidak dapat menemukan halaman yang Anda cari.</p>
+              <button 
+                onClick={() => window.location.href = import.meta.env.BASE_URL}
+                className="bg-primary text-white px-8 py-3 uppercase tracking-widest font-bold"
+              >
+                Kembali ke Beranda
+              </button>
+              <div className="mt-12 text-[10px] text-secondary font-mono">
+                Debug Info: {window.location.pathname} | Base: {import.meta.env.BASE_URL}
+              </div>
+            </div>
+          } />
+        </Routes>
+        </BrowserRouter>
+      </PWAProvider>
+    </ErrorBoundary>
   );
 }

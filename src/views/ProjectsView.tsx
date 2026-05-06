@@ -11,16 +11,21 @@ export default function ProjectsView() {
   async function loadProjects() {
     try {
       const data = await getAllProjects();
-      setProjects(data.reverse());
+      console.log('ProjectsView: Loaded projects:', data);
+      if (!Array.isArray(data)) {
+        setProjects([]);
+        return;
+      }
+      setProjects([...data].reverse());
     } catch (err) {
-      console.error('Failed to load projects:', err);
+      console.error('ProjectsView: Failed to load projects:', err);
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    Promise.resolve().then(() => loadProjects());
+    loadProjects();
   }, []);
 
   async function handleDelete(e: React.MouseEvent, id: string) {

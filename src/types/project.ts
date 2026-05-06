@@ -11,7 +11,9 @@ export type MappingField = {
   fontSize: number;
   fontFamily: string;
   align: 'left' | 'center' | 'right';
+  verticalAlign: 'top' | 'middle' | 'bottom';
   color: string;
+  wrap?: boolean;
 };
 
 export type PrintConfig = {
@@ -22,6 +24,8 @@ export type PrintConfig = {
   bleedMm: number;
   showCropMarks: boolean;
   nUp: boolean;
+  gapHorizontalMm: number;
+  gapVerticalMm: number;
 };
 
 export type ProjectData = {
