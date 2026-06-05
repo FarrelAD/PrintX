@@ -6,7 +6,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/PrintX/',
+  base: process.env.BASE_URL || '/',
   optimizeDeps: {
     include: ['workbox-window']
   },
@@ -31,7 +31,7 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/PrintX/dashboard',
+        start_url: '/dashboard',
         icons: [
           {
             src: 'pwa-192x192.png',
