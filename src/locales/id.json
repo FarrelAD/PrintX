@@ -14,6 +14,7 @@
     "confirm_delete": "Apakah Anda yakin ingin menghapus proyek ini?",
     "project_name_placeholder": "Nama proyek...",
     "create_now": "Buat Sekarang",
+    "saved": "Tersimpan",
     "error": {
       "project_not_found": "Proyek tidak ditemukan.",
       "failed_load_project": "Gagal memuat proyek.",
@@ -196,6 +197,13 @@
     "access_desc": "Buka PrintX langsung tanpa tab browser yang mengganggu."
   },
   "landing": {
+    "seo": {
+      "title": "PrintX | Solusi Cetak Dokumen Massal & Mail Merge",
+      "description": "PrintX adalah aplikasi web PWA lokal untuk mencetak dokumen massal seperti kartu ID, sertifikat, dan label secara otomatis dari spreadsheet. 100% aman dan berjalan di browser Anda.",
+      "keywords": "cetak massal, mail merge, cetak sertifikat otomatis, id card massal, printx, lokal pwa, excel ke pdf",
+      "og_title": "PrintX | Solusi Cetak Dokumen Massal & Mail Merge",
+      "og_description": "Ubah data spreadsheet Anda menjadi dokumen PDF siap cetak dalam hitungan detik. 100% aman, bisa offline, dan berjalan langsung di browser."
+    },
     "nav": {
       "start": "Mulai",
       "start_now": "Mulai Sekarang"

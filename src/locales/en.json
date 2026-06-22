@@ -14,6 +14,7 @@
     "confirm_delete": "Are you sure you want to delete this project?",
     "project_name_placeholder": "Project name...",
     "create_now": "Create Now",
+    "saved": "Saved",
     "error": {
       "project_not_found": "Project not found.",
       "failed_load_project": "Failed to load project.",
@@ -196,6 +197,13 @@
     "access_desc": "Open PrintX directly without distracting browser tabs."
   },
   "landing": {
+    "seo": {
+      "title": "PrintX | Bulk Document Printing & Mail Merge Solution",
+      "description": "PrintX is a secure, local-first web app (PWA) to automatically print bulk ID cards, certificates, and labels from spreadsheets. 100% runs in your browser.",
+      "keywords": "bulk document printing, mail merge, automatic certificate generator, mass ID card printing, printx, local pwa, excel to PDF",
+      "og_title": "PrintX | Bulk Document Printing & Mail Merge Solution",
+      "og_description": "Convert spreadsheet data into print-ready PDF documents in seconds. 100% secure, offline-capable, and runs directly in your browser."
+    },
     "nav": {
       "start": "Start",
       "start_now": "Start Now"

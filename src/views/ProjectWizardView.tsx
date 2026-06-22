@@ -53,11 +53,14 @@ export default function ProjectWizardView() {
   }
 
   return (
-    <div className="max-w-full mx-auto pb-10">
-      <WizardShell 
-        initialData={initialData} 
-        onClose={() => navigate('/dashboard')} 
-      />
-    </div>
+    <>
+      <title>{initialData?.name || t('wizard.project')} | PrintX</title>
+      <div className="max-w-full mx-auto pb-10">
+        <WizardShell 
+          initialData={initialData} 
+          onClose={() => navigate('/dashboard')} 
+        />
+      </div>
+    </>
   );
 }

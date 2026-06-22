@@ -29,6 +29,7 @@ export default function DatasetView() {
 
   return (
     <>
+      <title>{t('nav.dataset')} | PrintX</title>
       <div className="flex justify-between items-end mb-8 border-b border-primary pb-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tighter">{t('datasets.title')}</h1>

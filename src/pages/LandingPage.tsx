@@ -13,7 +13,7 @@ export default function LandingPage() {
     // If user opens the app via the installed PWA (standalone mode)
     // we take them directly to the dashboard instead of showing the landing page.
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                        (window.navigator as any).standalone === true;
+                        ('standalone' in window.navigator && (window.navigator as Navigator & { standalone?: boolean }).standalone === true);
     
     if (isStandalone) {
       navigate('/dashboard', { replace: true });
@@ -22,6 +22,20 @@ export default function LandingPage() {
 
   return (
     <>
+      <title>{t('landing.seo.title')}</title>
+      <meta name="description" content={t('landing.seo.description')} />
+      <meta name="keywords" content={t('landing.seo.keywords')} />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:title" content={t('landing.seo.og_title')} />
+      <meta property="og:description" content={t('landing.seo.og_description')} />
+      
+      {/* Twitter */}
+      <meta name="twitter:title" content={t('landing.seo.og_title')} />
+      <meta name="twitter:description" content={t('landing.seo.og_description')} />
+      
+      <link rel="canonical" href="https://printx.farrelad.com/" />
+
       <nav className="bg-on-primary border-b border-primary w-full sticky top-0 z-100">
         <div className="flex justify-between items-center py-4 md:py-6 px-6 xs:px-margin max-w-[1440px] mx-auto gap-4">
           <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => navigate('/')}>

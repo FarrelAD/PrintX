@@ -60,6 +60,7 @@ export default function DashboardHome() {
 
   return (
     <>
+      <title>{t('nav.dashboard')} | PrintX</title>
       <NameModal 
         isOpen={isNameModalOpen}
         onClose={() => setIsNameModalOpen(false)}

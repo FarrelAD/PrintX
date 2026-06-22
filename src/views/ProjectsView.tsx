@@ -121,6 +121,7 @@ export default function ProjectsView() {
 
   return (
     <>
+      <title>{t('nav.projects')} | PrintX</title>
       <NameModal 
         isOpen={modalConfig.isOpen}
         onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
