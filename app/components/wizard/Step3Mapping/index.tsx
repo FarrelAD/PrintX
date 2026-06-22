@@ -67,7 +67,7 @@ export default function Step3Mapping({
       mapping: fields,
       editorSettings: { showDesign, canvasBgColor }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-disable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fields, showDesign, canvasBgColor]);
 
   const stageScale = bgImage ? stageSize.width / bgImage.naturalWidth : 1;

@@ -21,9 +21,9 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./app/*"]
     },
     "rootDirs": [".", "./.react-router/types"]
   },
-  "include": ["src", "app", ".react-router/types/**/*"]
+  "include": ["app", ".react-router/types/**/*"]
 }
