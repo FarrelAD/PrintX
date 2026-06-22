@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Stage, Layer, Image as KonvaImage, Rect as KonvaRect, Text } from 'react-konva';
+import {
+  Stage,
+  Layer,
+  Image as KonvaImage,
+  Rect as KonvaRect,
+  Text,
+} from 'react-konva';
 import type { ProjectData } from '@/types/project';
 import { QRNode } from './QRNode';
 
@@ -28,7 +34,9 @@ export function RowPreview({
 
   const row = dataset.rows[rowIndex] ?? [];
   const headerIndex: Record<string, number> = {};
-  dataset.headers.forEach((h, i) => { headerIndex[h] = i; });
+  dataset.headers.forEach((h, i) => {
+    headerIndex[h] = i;
+  });
 
   return (
     <div className="flex flex-col gap-1 items-center">
@@ -44,7 +52,11 @@ export function RowPreview({
               y={0}
               width={width}
               height={previewH}
-              fill={data.editorSettings?.canvasBgColor === 'transparent' ? '#ffffff' : (data.editorSettings?.canvasBgColor ?? '#ffffff')}
+              fill={
+                data.editorSettings?.canvasBgColor === 'transparent'
+                  ? '#ffffff'
+                  : (data.editorSettings?.canvasBgColor ?? '#ffffff')
+              }
             />
 
             {bgImage && (data.editorSettings?.showDesign ?? true) && (
@@ -59,9 +71,10 @@ export function RowPreview({
             )}
             {mapping.map((field) => {
               const colIdx = headerIndex[field.column] ?? -1;
-              const value = colIdx >= 0 && row[colIdx] !== undefined
-                ? String(row[colIdx])
-                : `[${field.column}]`;
+              const value =
+                colIdx >= 0 && row[colIdx] !== undefined
+                  ? String(row[colIdx])
+                  : `[${field.column}]`;
 
               if (field.type === 'qrcode') {
                 return (

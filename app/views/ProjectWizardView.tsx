@@ -9,40 +9,54 @@ export default function ProjectWizardView() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [initialData, setInitialData] = useState<ProjectData | null | undefined>(undefined);
+  const [initialData, setInitialData] = useState<
+    ProjectData | null | undefined
+  >(undefined);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id && id !== 'new') {
-      getProject(id).then(project => {
-        if (project) {
-          setInitialData(project);
-        } else {
-          setError(t('common.error.project_not_found'));
+      getProject(id)
+        .then((project) => {
+          if (project) {
+            setInitialData(project);
+          } else {
+            setError(t('common.error.project_not_found'));
+            setInitialData(null);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setError(t('common.error.failed_load_project'));
           setInitialData(null);
-        }
-      }).catch(err => {
-        console.error(err);
-        setError(t('common.error.failed_load_project'));
-        setInitialData(null);
-      });
+        });
     } else {
       const params = new URLSearchParams(window.location.search);
       const name = params.get('name');
-      Promise.resolve().then(() => setInitialData(name ? { name, type: null } as any : null)); // 'new' project with name
+      Promise.resolve().then(() =>
+        setInitialData(name ? ({ name, type: null } as any) : null),
+      ); // 'new' project with name
     }
   }, [id, t]);
 
   if (initialData === undefined) {
-    return <div className="py-20 flex justify-center"><span className="material-symbols-outlined animate-spin text-4xl text-primary">autorenew</span></div>;
+    return (
+      <div className="py-20 flex justify-center">
+        <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+          autorenew
+        </span>
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <span className="material-symbols-outlined text-6xl text-error mb-4">error</span>
+        <span className="material-symbols-outlined text-6xl text-error mb-4">
+          error
+        </span>
         <h2 className="text-2xl font-heading mb-2">{error}</h2>
-        <button 
+        <button
           onClick={() => navigate('/dashboard')}
           className="mt-4 text-xs font-bold uppercase tracking-widest text-primary border-b border-primary"
         >
@@ -56,9 +70,9 @@ export default function ProjectWizardView() {
     <>
       <title>{initialData?.name || t('wizard.project')} | PrintX</title>
       <div className="max-w-full mx-auto pb-10">
-        <WizardShell 
-          initialData={initialData} 
-          onClose={() => navigate('/dashboard')} 
+        <WizardShell
+          initialData={initialData}
+          onClose={() => navigate('/dashboard')}
         />
       </div>
     </>

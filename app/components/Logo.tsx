@@ -1,4 +1,7 @@
-export default function Logo({ size = 'md', className = '' }: {
+export default function Logo({
+  size = 'md',
+  className = '',
+}: {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }) {
@@ -9,10 +12,10 @@ export default function Logo({ size = 'md', className = '' }: {
   };
 
   return (
-    <div 
+    <div
       className={`bg-primary text-on-primary flex items-center justify-center font-heading font-bold shrink-0 ${sizeClasses[size]} ${className}`}
     >
       <span className="leading-none mt-[0.1em]">X</span>
     </div>
   );
-};
+}

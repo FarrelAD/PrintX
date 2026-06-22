@@ -11,16 +11,16 @@ i18n
   .init({
     resources: {
       id: { translation: id },
-      en: { translation: en }
+      en: { translation: en },
     },
     fallbackLng: 'id',
     interpolation: {
-      escapeValue: false
+      escapeValue: false,
     },
     detection: {
       order: ['querystring', 'localStorage', 'navigator'],
-      caches: ['localStorage']
-    }
+      caches: ['localStorage'],
+    },
   });
 
 // Synchronize document language attribute with current language for SEO

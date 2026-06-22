@@ -33,7 +33,15 @@ export type ProjectData = {
   id?: string;
   name?: string;
   updatedAt?: number;
-  status?: 'draft' | 'in_progress' | 'ready' | 'finished' | 'Draf' | 'Sedang Dikerjakan' | 'Siap Cetak' | 'Selesai';
+  status?:
+    | 'draft'
+    | 'in_progress'
+    | 'ready'
+    | 'finished'
+    | 'Draf'
+    | 'Sedang Dikerjakan'
+    | 'Siap Cetak'
+    | 'Selesai';
   type: ProjectType;
   design?: {
     preview: string | null;

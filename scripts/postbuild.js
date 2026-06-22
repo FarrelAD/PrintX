@@ -8,9 +8,13 @@ const fallbackHtml = path.join(clientDir, '404.html');
 try {
   if (fs.existsSync(dashboardHtml)) {
     fs.copyFileSync(dashboardHtml, fallbackHtml);
-    console.log('Post-build: Successfully copied dashboard index.html to 404.html for routing fallback.');
+    console.log(
+      'Post-build: Successfully copied dashboard index.html to 404.html for routing fallback.',
+    );
   } else {
-    console.warn(`Post-build warning: Dashboard HTML file not found at ${dashboardHtml}`);
+    console.warn(
+      `Post-build warning: Dashboard HTML file not found at ${dashboardHtml}`,
+    );
   }
 } catch (err) {
   console.error('Post-build error copying file:', err);

@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { usePWAInstall } from '@/context/PWAContext';
 
-export default function InstallPrompt({ variant = 'sidebar', className = '' }: {
+export default function InstallPrompt({
+  variant = 'sidebar',
+  className = '',
+}: {
   variant?: 'sidebar' | 'compact' | 'landing';
   className?: string;
 }) {
@@ -11,13 +14,16 @@ export default function InstallPrompt({ variant = 'sidebar', className = '' }: {
   if (!isInstallable) return null;
 
   if (variant === 'compact') {
-    const defaultClasses = "bg-white text-primary py-2.5 px-5 text-[10px] border border-primary hover:bg-primary hover:text-white";
+    const defaultClasses =
+      'bg-white text-primary py-2.5 px-5 text-[10px] border border-primary hover:bg-primary hover:text-white';
     return (
       <button
         onClick={handleInstall}
         className={`flex items-center gap-2 font-bold uppercase tracking-[0.15em] transition-all active:scale-95 shrink-0 ${className || defaultClasses}`}
       >
-        <span className="material-symbols-outlined text-[18px]">install_mobile</span>
+        <span className="material-symbols-outlined text-[18px]">
+          install_mobile
+        </span>
         <span>{t('pwa.install_app')}</span>
       </button>
     );
@@ -63,22 +69,26 @@ export default function InstallPrompt({ variant = 'sidebar', className = '' }: {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-2 h-2 bg-primary animate-pulse"></span>
-          <span className="text-[9px] font-bold tracking-[0.3em] uppercase opacity-60">{t('pwa.available_desktop')}</span>
+          <span className="text-[9px] font-bold tracking-[0.3em] uppercase opacity-60">
+            {t('pwa.available_desktop')}
+          </span>
         </div>
-        
+
         <h4 className="font-heading font-bold text-base leading-tight uppercase">
           {t('pwa.access_title')}
         </h4>
-        
+
         <p className="text-[10px] text-secondary leading-normal uppercase tracking-wider font-bold">
           {t('pwa.access_desc')}
         </p>
-        
+
         <button
           onClick={handleInstall}
           className="bg-primary text-on-primary py-4 px-4 text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-white hover:text-primary border border-primary active:scale-95 flex items-center justify-center gap-3 mt-2"
         >
-          <span className="material-symbols-outlined text-sm">install_desktop</span>
+          <span className="material-symbols-outlined text-sm">
+            install_desktop
+          </span>
           <span>{t('pwa.get_app')}</span>
         </button>
       </div>

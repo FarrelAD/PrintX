@@ -1,8 +1,8 @@
-import { PassThrough } from "node:stream";
-import type { EntryContext } from "react-router";
-import { createReadableStreamFromReadable } from "@react-router/node";
-import { ServerRouter } from "react-router";
-import { renderToPipeableStream } from "react-dom/server";
+import { PassThrough } from 'node:stream';
+import type { EntryContext } from 'react-router';
+import { createReadableStreamFromReadable } from '@react-router/node';
+import { ServerRouter } from 'react-router';
+import { renderToPipeableStream } from 'react-dom/server';
 
 export default function handleRequest(
   request: Request,
@@ -19,13 +19,13 @@ export default function handleRequest(
           shellRendered = true;
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set('Content-Type', 'text/html');
 
           resolve(
             new Response(stream, {
               headers: responseHeaders,
               status: responseStatusCode,
-            })
+            }),
           );
 
           pipe(body);
@@ -39,7 +39,7 @@ export default function handleRequest(
             console.error(error);
           }
         },
-      }
+      },
     );
 
     setTimeout(abort, 5000);

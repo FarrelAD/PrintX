@@ -8,13 +8,23 @@ export default function DashboardLayout() {
   const { t } = useTranslation();
 
   const navItems = [
-    { to: '/dashboard', icon: 'dashboard', label: t('nav.dashboard'), end: true },
+    {
+      to: '/dashboard',
+      icon: 'dashboard',
+      label: t('nav.dashboard'),
+      end: true,
+    },
     { to: '/dashboard/projects', icon: 'folder', label: t('nav.projects') },
     { to: '/dashboard/dataset', icon: 'database', label: t('nav.dataset') },
     { to: '/dashboard/settings', icon: 'settings', label: t('nav.settings') },
   ];
 
-  const renderMobileLink = (item: { to: string, icon: string, label: string, end?: boolean }) => (
+  const renderMobileLink = (item: {
+    to: string;
+    icon: string;
+    label: string;
+    end?: boolean;
+  }) => (
     <NavLink
       key={item.to}
       to={item.to}
@@ -26,7 +36,9 @@ export default function DashboardLayout() {
       }
     >
       <span className="text-2xl material-symbols-outlined">{item.icon}</span>
-      <span className="text-[10px] uppercase font-semibold tracking-wider">{item.label}</span>
+      <span className="text-[10px] uppercase font-semibold tracking-wider">
+        {item.label}
+      </span>
     </NavLink>
   );
 
@@ -37,7 +49,9 @@ export default function DashboardLayout() {
         <div className="p-8 border-b border-primary flex justify-between items-center">
           <Link to="/" className="flex items-center gap-3 cursor-pointer">
             <Logo size="md" />
-            <div className="text-2xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
+            <div className="text-2xl font-bold tracking-tighter uppercase text-primary">
+              PRINTX
+            </div>
           </Link>
         </div>
         <nav className="flex-1 py-6 flex flex-col">
@@ -63,7 +77,9 @@ export default function DashboardLayout() {
         {/* Footer Sidebar */}
         <div className="p-8 border-t border-primary/10 flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Language</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">
+              Language
+            </span>
             <LanguageSwitcher />
           </div>
           <InstallPrompt />
@@ -76,7 +92,9 @@ export default function DashboardLayout() {
         <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-primary z-50 px-6 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 cursor-pointer">
             <Logo size="sm" />
-            <div className="text-xl font-bold tracking-tighter uppercase text-primary">PRINTX</div>
+            <div className="text-xl font-bold tracking-tighter uppercase text-primary">
+              PRINTX
+            </div>
           </Link>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
@@ -93,7 +111,11 @@ export default function DashboardLayout() {
       {/* Bottom Navigation for Mobile */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary h-20 z-100 flex justify-around items-center px-4 pb-safe">
         {navItems.slice(0, 2).map(renderMobileLink)}
-        {renderMobileLink({ to: '/dashboard/project/new', icon: 'add_box', label: t('nav.new') })}
+        {renderMobileLink({
+          to: '/dashboard/project/new',
+          icon: 'add_box',
+          label: t('nav.new'),
+        })}
         {navItems.slice(2).map(renderMobileLink)}
       </nav>
     </div>

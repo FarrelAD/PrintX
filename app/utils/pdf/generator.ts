@@ -7,9 +7,9 @@ import { drawCropMarks } from './cropMarks';
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const PAPER_SIZES: Record<string, { w: number; h: number }> = {
-  A4:     { w: 210, h: 297 },
-  A3:     { w: 297, h: 420 },
-  SRA3:   { w: 320, h: 450 },
+  A4: { w: 210, h: 297 },
+  A3: { w: 297, h: 420 },
+  SRA3: { w: 320, h: 450 },
   Custom: { w: 210, h: 297 },
 };
 
@@ -56,25 +56,33 @@ export async function generateProfessionalPDF(
   const bleed_mm = config.bleedMm;
 
   // Canvas size includes bleed on all sides
-  canvas.width  = Math.round((designW_mm + 2 * bleed_mm) * DPI_SCALE);
+  canvas.width = Math.round((designW_mm + 2 * bleed_mm) * DPI_SCALE);
   canvas.height = Math.round((designH_mm + 2 * bleed_mm) * DPI_SCALE);
 
   const totalRows = dataset.rows.length;
 
   // Build a fast header → column-index lookup
   const headerIndex: Record<string, number> = {};
-  dataset.headers.forEach((h, i) => { headerIndex[h] = i; });
+  dataset.headers.forEach((h, i) => {
+    headerIndex[h] = i;
+  });
 
   // 2. Imposition layout calculation
-  const margin_mm    = 10; // Safety margin for printer
-  const stepX        = designW_mm + (config.nUp ? (config.gapHorizontalMm ?? 0) : 20);
-  const stepY        = designH_mm + (config.nUp ? (config.gapVerticalMm ?? 0) : 20);
-  const cols         = config.nUp ? Math.max(1, Math.floor((paperW - 2 * margin_mm) / stepX)) : 1;
-  const rowsPerPage  = config.nUp ? Math.max(1, Math.floor((paperH - 2 * margin_mm) / stepY)) : 1;
+  const margin_mm = 10; // Safety margin for printer
+  const stepX = designW_mm + (config.nUp ? (config.gapHorizontalMm ?? 0) : 20);
+  const stepY = designH_mm + (config.nUp ? (config.gapVerticalMm ?? 0) : 20);
+  const cols = config.nUp
+    ? Math.max(1, Math.floor((paperW - 2 * margin_mm) / stepX))
+    : 1;
+  const rowsPerPage = config.nUp
+    ? Math.max(1, Math.floor((paperH - 2 * margin_mm) / stepY))
+    : 1;
   const itemsPerPage = cols * rowsPerPage;
 
   if (itemsPerPage === 0) {
-    throw new Error('Ukuran desain atau gap terlalu besar untuk ukuran kertas yang dipilih.');
+    throw new Error(
+      'Ukuran desain atau gap terlalu besar untuk ukuran kertas yang dipilih.',
+    );
   }
 
   // 3. Render each row
@@ -90,10 +98,12 @@ export async function generateProfessionalPDF(
     const rowIdx = Math.floor(itemInPageIndex / cols);
 
     // Center the grid on the paper
-    const gridW  = cols * stepX;
-    const gridH  = rowsPerPage * stepY;
-    const startX = (paperW - gridW) / 2 + colIdx * stepX + stepX / 2 - designW_mm / 2;
-    const startY = (paperH - gridH) / 2 + rowIdx * stepY + stepY / 2 - designH_mm / 2;
+    const gridW = cols * stepX;
+    const gridH = rowsPerPage * stepY;
+    const startX =
+      (paperW - gridW) / 2 + colIdx * stepX + stepX / 2 - designW_mm / 2;
+    const startY =
+      (paperH - gridH) / 2 + rowIdx * stepY + stepY / 2 - designH_mm / 2;
 
     // A. Render high-res design to canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -111,13 +121,13 @@ export async function generateProfessionalPDF(
     }
 
     for (const field of mapping) {
-      const val    = String(row[headerIndex[field.column]] ?? '');
-      const scaleX = canvas.width  / (bgImg.naturalWidth  || 1);
+      const val = String(row[headerIndex[field.column]] ?? '');
+      const scaleX = canvas.width / (bgImg.naturalWidth || 1);
       const scaleY = canvas.height / (bgImg.naturalHeight || 1);
-      
+
       const fontSizePx = Math.round(field.fontSize * scaleX);
       const weight = field.fontWeight === 'bold' ? 'bold' : 'normal';
-      
+
       ctx.font = `${weight} ${fontSizePx}px "${field.fontFamily}"`;
       ctx.fillStyle = field.color;
 
@@ -133,10 +143,10 @@ export async function generateProfessionalPDF(
             width: Math.min(fw, fh),
             color: { dark: '#000000', light: '#ffffff00' },
           });
-          const qrImg  = await loadImage(qrDataUrl);
+          const qrImg = await loadImage(qrDataUrl);
           const qrSize = Math.min(fw, fh);
-          const qrX    = fx + (fw - qrSize) / 2;
-          const qrY    = fy + (fh - qrSize) / 2;
+          const qrX = fx + (fw - qrSize) / 2;
+          const qrY = fy + (fh - qrSize) / 2;
           ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
         } catch (err) {
           console.error('QR generation failed for value:', val, err);
@@ -147,23 +157,23 @@ export async function generateProfessionalPDF(
 
         let drawX = fx;
         if (field.align === 'center') drawX = fx + fw / 2;
-        if (field.align === 'right')  drawX = fx + fw;
+        if (field.align === 'right') drawX = fx + fw;
 
         let drawY = fy + fh / 2;
-        if (field.verticalAlign === 'top')    drawY = fy;
+        if (field.verticalAlign === 'top') drawY = fy;
         if (field.verticalAlign === 'bottom') drawY = fy + fh;
 
         if (field.wrap) {
           drawWrappedText(
-            ctx, 
-            val, 
-            drawX, 
-            fy + fh / 2, 
-            fw, 
-            fh, 
-            fontSizePx * 1.2, 
-            field.align, 
-            field.verticalAlign || 'middle'
+            ctx,
+            val,
+            drawX,
+            fy + fh / 2,
+            fw,
+            fh,
+            fontSizePx * 1.2,
+            field.align,
+            field.verticalAlign || 'middle',
           );
         } else {
           ctx.fillText(val, drawX, drawY, fw);
@@ -208,7 +218,7 @@ function drawWrappedText(
   maxHeight: number,
   lineHeight: number,
   _align: 'left' | 'center' | 'right',
-  verticalAlign: 'top' | 'middle' | 'bottom' = 'middle'
+  verticalAlign: 'top' | 'middle' | 'bottom' = 'middle',
 ) {
   const words = text.split(' ');
   const lines: string[] = [];
@@ -231,9 +241,9 @@ function drawWrappedText(
   let startY = y - totalHeight / 2 + lineHeight / 2; // Default to middle
 
   if (verticalAlign === 'top') {
-    startY = (y - maxHeight / 2) + lineHeight / 2;
+    startY = y - maxHeight / 2 + lineHeight / 2;
   } else if (verticalAlign === 'bottom') {
-    startY = (y + maxHeight / 2) - totalHeight + lineHeight / 2;
+    startY = y + maxHeight / 2 - totalHeight + lineHeight / 2;
   }
 
   // Set baseline to middle for line-by-line drawing consistency

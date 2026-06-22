@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MappingField } from '@/types/project';
-import { FONT_OPTIONS, ALIGN_OPTIONS, VERTICAL_ALIGN_OPTIONS } from './constants';
+import {
+  FONT_OPTIONS,
+  ALIGN_OPTIONS,
+  VERTICAL_ALIGN_OPTIONS,
+} from './constants';
 
 export function PropertiesPanel({
   field,
@@ -81,7 +85,9 @@ export function PropertiesPanel({
 
       {field.type === 'qrcode' ? (
         <div className="p-3 bg-surface-container-high border border-primary/20 text-[10px] text-secondary leading-relaxed">
-          <span className="material-symbols-outlined text-sm align-middle mr-1 text-primary">qr_code_2</span>
+          <span className="material-symbols-outlined text-sm align-middle mr-1 text-primary">
+            qr_code_2
+          </span>
           {t('wizard.step3.properties.qr_hint')}
         </div>
       ) : (
@@ -98,7 +104,11 @@ export function PropertiesPanel({
               style={{ fontFamily: field.fontFamily }}
             >
               {FONT_OPTIONS.map((f) => (
-                <option key={f.value} value={f.value} style={{ fontFamily: f.value }}>
+                <option
+                  key={f.value}
+                  value={f.value}
+                  style={{ fontFamily: f.value }}
+                >
                   {f.label}
                 </option>
               ))}
@@ -125,11 +135,14 @@ export function PropertiesPanel({
                   min={8}
                   max={200}
                   value={field.fontSize}
-                  onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
+                  onChange={(e) =>
+                    onChange({ fontSize: Number(e.target.value) })
+                  }
                   className="w-full accent-primary h-1.5 cursor-pointer"
                 />
                 <div className="flex justify-between text-[8px] text-secondary mt-0.5 px-0.5">
-                  <span>8</span><span>200</span>
+                  <span>8</span>
+                  <span>200</span>
                 </div>
               </div>
             </div>
@@ -152,7 +165,9 @@ export function PropertiesPanel({
                       : 'bg-white text-secondary hover:bg-surface-container'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm">{a.icon}</span>
+                  <span className="material-symbols-outlined text-sm">
+                    {a.icon}
+                  </span>
                 </button>
               ))}
             </div>
@@ -175,7 +190,9 @@ export function PropertiesPanel({
                       : 'bg-white text-secondary hover:bg-surface-container'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm">{a.icon}</span>
+                  <span className="material-symbols-outlined text-sm">
+                    {a.icon}
+                  </span>
                 </button>
               ))}
             </div>
@@ -193,7 +210,9 @@ export function PropertiesPanel({
                 onChange={(e) => onChange({ color: e.target.value })}
                 className="w-10 h-9 border border-outline-variant cursor-pointer bg-white p-0.5"
               />
-              <span className="text-xs font-mono text-secondary">{field.color.toUpperCase()}</span>
+              <span className="text-xs font-mono text-secondary">
+                {field.color.toUpperCase()}
+              </span>
             </div>
           </div>
 
@@ -204,7 +223,11 @@ export function PropertiesPanel({
                 <input
                   type="checkbox"
                   checked={field.fontWeight === 'bold'}
-                  onChange={(e) => onChange({ fontWeight: e.target.checked ? 'bold' : 'normal' })}
+                  onChange={(e) =>
+                    onChange({
+                      fontWeight: e.target.checked ? 'bold' : 'normal',
+                    })
+                  }
                   className="peer h-4 w-4 cursor-pointer appearance-none border border-outline-variant transition-all checked:bg-primary checked:border-primary"
                 />
                 <span className="material-symbols-outlined absolute text-[12px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">

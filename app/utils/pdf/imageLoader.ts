@@ -8,6 +8,7 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
     img.crossOrigin = 'anonymous'; // Important for canvas
     img.src = src;
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Gagal memuat gambar: ${src.substring(0, 50)}...`));
+    img.onerror = () =>
+      reject(new Error(`Gagal memuat gambar: ${src.substring(0, 50)}...`));
   });
 }

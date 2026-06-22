@@ -7,7 +7,9 @@ type PWAContextType = {
 
 const PWAContext = createContext<PWAContextType | undefined>(undefined);
 
-export const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PWAProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
@@ -36,7 +38,7 @@ export const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       setIsInstallable(false);
     }

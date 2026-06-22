@@ -1,10 +1,10 @@
-import { Routes, Route } from "react-router";
-import DashboardLayout from "@/layouts/DashboardLayout";
-import DashboardHome from "@/views/DashboardHome";
-import ProjectsView from "@/views/ProjectsView";
-import DatasetView from "@/views/DatasetView";
-import SettingsView from "@/views/SettingsView";
-import ProjectWizardView from "@/views/ProjectWizardView";
+import { Routes, Route } from 'react-router';
+import DashboardLayout from '@/layouts/DashboardLayout';
+import DashboardHome from '@/views/DashboardHome';
+import ProjectsView from '@/views/ProjectsView';
+import DatasetView from '@/views/DatasetView';
+import SettingsView from '@/views/SettingsView';
+import ProjectWizardView from '@/views/ProjectWizardView';
 
 // React Router v7: loader that runs ONLY in the browser
 export async function clientLoader() {
@@ -16,8 +16,12 @@ export function HydrateFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white text-center p-8">
       <div className="flex flex-col items-center">
-        <span className="material-symbols-outlined text-4xl animate-spin text-primary mb-4">autorenew</span>
-        <div className="font-heading text-lg tracking-widest uppercase">Memuat Dashboard...</div>
+        <span className="material-symbols-outlined text-4xl animate-spin text-primary mb-4">
+          autorenew
+        </span>
+        <div className="font-heading text-lg tracking-widest uppercase">
+          Memuat Dashboard...
+        </div>
       </div>
     </div>
   );

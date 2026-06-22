@@ -5,7 +5,6 @@ import { useImageLoader } from '@/hooks/useImageLoader';
 import { RowPreview } from './RowPreview';
 import { Stat } from './Stat';
 
-
 export default function Step4Result({
   data,
   onBack,
@@ -19,7 +18,7 @@ export default function Step4Result({
   const bgImage = useImageLoader(data.design?.preview);
   const totalRows = data.dataset?.rows.length ?? 0;
   const mappedFields = data.mapping?.length ?? 0;
-  
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,8 +39,10 @@ export default function Step4Result({
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') setCurrentIndex(prev => Math.max(0, prev - 1));
-      if (e.key === 'ArrowRight') setCurrentIndex(prev => Math.min(totalRows - 1, prev + 1));
+      if (e.key === 'ArrowLeft')
+        setCurrentIndex((prev) => Math.max(0, prev - 1));
+      if (e.key === 'ArrowRight')
+        setCurrentIndex((prev) => Math.min(totalRows - 1, prev + 1));
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -53,8 +54,11 @@ export default function Step4Result({
       const activeBtn = scrollRef.current.children[currentIndex] as HTMLElement;
       if (activeBtn) {
         scrollRef.current.scrollTo({
-          left: activeBtn.offsetLeft - scrollRef.current.offsetWidth / 2 + activeBtn.offsetWidth / 2,
-          behavior: 'smooth'
+          left:
+            activeBtn.offsetLeft -
+            scrollRef.current.offsetWidth / 2 +
+            activeBtn.offsetWidth / 2,
+          behavior: 'smooth',
         });
       }
     }
@@ -64,13 +68,15 @@ export default function Step4Result({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">{t('wizard.step4.title')}</h2>
+      <h2 className="text-2xl md:text-4xl font-heading mb-2 text-center">
+        {t('wizard.step4.title')}
+      </h2>
       <p className="text-secondary text-center mb-6 md:mb-8 text-xs md:text-sm px-4">
         {t('wizard.step4.desc')}
       </p>
 
       {/* Carousel Preview Area */}
-      <div 
+      <div
         ref={containerRef}
         className="border border-primary bg-white p-4 md:p-8 mb-6 relative"
       >
@@ -81,8 +87,10 @@ export default function Step4Result({
             </span>
             <p className="text-sm text-secondary">
               {mappedFields === 0
-                ? t('wizard.step4.error_no_mapping') || 'Tidak ada bidang yang dipetakan. Kembali ke langkah Pemetaan.'
-                : t('wizard.step4.error_no_data') || 'Tidak ada data ditemukan. Kembali ke langkah Aset.'}
+                ? t('wizard.step4.error_no_mapping') ||
+                  'Tidak ada bidang yang dipetakan. Kembali ke langkah Pemetaan.'
+                : t('wizard.step4.error_no_data') ||
+                  'Tidak ada data ditemukan. Kembali ke langkah Aset.'}
             </p>
           </div>
         ) : (
@@ -90,15 +98,22 @@ export default function Step4Result({
             {/* Main Stage */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
               <div className="flex items-center justify-center gap-4 md:contents">
-                <button 
-                  onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) => Math.max(0, prev - 1))
+                  }
                   disabled={currentIndex === 0}
                   className={`w-12 h-12 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-primary hover:bg-surface-container transition-all ${currentIndex === 0 ? 'opacity-20 cursor-not-allowed' : ''}`}
                 >
-                  <span className="material-symbols-outlined">chevron_left</span>
+                  <span className="material-symbols-outlined">
+                    chevron_left
+                  </span>
                 </button>
 
-                <div className="flex-1 flex justify-center animate-in fade-in zoom-in-95 duration-300" key={currentIndex}>
+                <div
+                  className="flex-1 flex justify-center animate-in fade-in zoom-in-95 duration-300"
+                  key={currentIndex}
+                >
                   <RowPreview
                     rowIndex={currentIndex}
                     data={data}
@@ -107,12 +122,16 @@ export default function Step4Result({
                   />
                 </div>
 
-                <button 
-                  onClick={() => setCurrentIndex(prev => Math.min(totalRows - 1, prev + 1))}
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) => Math.min(totalRows - 1, prev + 1))
+                  }
                   disabled={currentIndex === totalRows - 1}
                   className={`w-12 h-12 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-primary hover:bg-surface-container transition-all ${currentIndex === totalRows - 1 ? 'opacity-20 cursor-not-allowed' : ''}`}
                 >
-                  <span className="material-symbols-outlined">chevron_right</span>
+                  <span className="material-symbols-outlined">
+                    chevron_right
+                  </span>
                 </button>
               </div>
             </div>
@@ -129,17 +148,19 @@ export default function Step4Result({
                   </span>
                 </div>
               </div>
-              
-              <div 
+
+              <div
                 ref={scrollRef}
                 className="flex gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
               >
                 {Array.from({ length: totalRows }, (_, i) => (
-                  <button 
-                    key={i} 
+                  <button
+                    key={i}
                     onClick={() => setCurrentIndex(i)}
                     className={`shrink-0 transition-all duration-300 p-1 border-2 ${
-                      i === currentIndex ? 'border-primary scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
+                      i === currentIndex
+                        ? 'border-primary scale-110 shadow-lg'
+                        : 'border-transparent opacity-40 hover:opacity-100'
                     }`}
                   >
                     <RowPreview
@@ -154,7 +175,7 @@ export default function Step4Result({
 
               {/* Slider for quick jump */}
               <div className="px-2 py-4 md:py-0">
-                <input 
+                <input
                   type="range"
                   min={0}
                   max={totalRows - 1}
@@ -172,13 +193,10 @@ export default function Step4Result({
       <div className="p-5 bg-surface-container-high border border-primary mb-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Stat
-            label={t('wizard.project') || "Tipe Proyek"}
+            label={t('wizard.project') || 'Tipe Proyek'}
             value={(data.type ?? '-').replace('_', ' ').toUpperCase()}
           />
-          <Stat
-            label={t('wizard.step4.stats.total')}
-            value={`${totalRows}`}
-          />
+          <Stat label={t('wizard.step4.stats.total')} value={`${totalRows}`} />
           <Stat
             label={t('wizard.step4.stats.dynamic')}
             value={`${mappedFields}`}
@@ -201,7 +219,12 @@ export default function Step4Result({
         <button
           onClick={onComplete}
           disabled={!hasMappings}
-          title={!hasMappings ? t('wizard.step4.complete_mapping_hint') || 'Lengkapi pemetaan data terlebih dahulu' : ''}
+          title={
+            !hasMappings
+              ? t('wizard.step4.complete_mapping_hint') ||
+                'Lengkapi pemetaan data terlebih dahulu'
+              : ''
+          }
           className={`w-full md:w-auto py-3.5 px-8 md:py-4 md:px-16 bg-primary text-white text-xs md:text-base font-bold uppercase tracking-widest transition-all brutalist-shadow order-1 md:order-2 ${
             !hasMappings ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-90'
           }`}

@@ -7,7 +7,7 @@ type PrintXDB = DBSchema & {
     value: ProjectData;
     indexes: { 'by-date': number };
   };
-}
+};
 
 const DB_NAME = 'printx_db';
 const DB_VERSION = 1;
@@ -29,10 +29,10 @@ export function getDB() {
 }
 
 const STATUS_MAP: Record<string, string> = {
-  'Draf': 'draft',
+  Draf: 'draft',
   'Sedang Dikerjakan': 'in_progress',
   'Siap Cetak': 'ready',
-  'Selesai': 'finished'
+  Selesai: 'finished',
 };
 
 function migrateProject(project: ProjectData): ProjectData {
@@ -50,7 +50,10 @@ export async function saveProject(project: ProjectData) {
     ...project,
     id,
     updatedAt: Date.now(),
-    status: (project.status && STATUS_MAP[project.status] ? STATUS_MAP[project.status] : project.status) || 'draft',
+    status:
+      (project.status && STATUS_MAP[project.status]
+        ? STATUS_MAP[project.status]
+        : project.status) || 'draft',
   };
   await db.put('projects', updatedProject as ProjectData);
   return updatedProject as ProjectData;

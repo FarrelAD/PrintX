@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import { Text, Rect, Group, Image as KonvaImage } from 'react-konva';
 import QRCode from 'qrcode';
 
-export function QRNode({ value, x, y, width, height }: {
+export function QRNode({
+  value,
+  x,
+  y,
+  width,
+  height,
+}: {
   value: string;
   x: number;
   y: number;
@@ -19,17 +25,21 @@ export function QRNode({ value, x, y, width, height }: {
       color: {
         dark: '#000000',
         light: '#ffffff00',
-      }
-    }).then(url => {
-      if (!isMounted) return;
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        if (isMounted) setQrImg(img);
-      };
-    }).catch(err => console.error('QR Preview failed', err));
+      },
+    })
+      .then((url) => {
+        if (!isMounted) return;
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          if (isMounted) setQrImg(img);
+        };
+      })
+      .catch((err) => console.error('QR Preview failed', err));
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [value]);
 
   const size = Math.min(width, height);

@@ -33,27 +33,33 @@ export default function DashboardHome() {
   }, []);
 
   // Defensive checks for projects data
-  const validProjects = projects.filter(p => p && typeof p === 'object');
-  const activeProjects = validProjects.filter(p => !p.status || p.status === 'draft' || p.status === 'in_progress').length;
-  const readyProjects = validProjects.filter(p => p.status === 'ready').length;
+  const validProjects = projects.filter((p) => p && typeof p === 'object');
+  const activeProjects = validProjects.filter(
+    (p) => !p.status || p.status === 'draft' || p.status === 'in_progress',
+  ).length;
+  const readyProjects = validProjects.filter(
+    (p) => p.status === 'ready',
+  ).length;
   const recentProjects = validProjects.slice(0, 3);
-  
+
   const handleNewProject = () => {
     setIsNameModalOpen(true);
   };
 
   const confirmNewProject = (name: string) => {
     setIsNameModalOpen(false);
-    const url = name.trim() ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}` : '/dashboard/project/new';
+    const url = name.trim()
+      ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}`
+      : '/dashboard/project/new';
     navigate(url);
   };
 
   const getStatusKey = (status: ProjectData['status']): string => {
     const map: Record<string, string> = {
-      'Draf': 'draft',
+      Draf: 'draft',
       'Sedang Dikerjakan': 'in_progress',
       'Siap Cetak': 'ready',
-      'Selesai': 'finished'
+      Selesai: 'finished',
     };
     return map[status as string] || (status as string) || 'draft';
   };
@@ -61,46 +67,61 @@ export default function DashboardHome() {
   return (
     <>
       <title>{t('nav.dashboard')} | PrintX</title>
-      <NameModal 
+      <NameModal
         isOpen={isNameModalOpen}
         onClose={() => setIsNameModalOpen(false)}
         onConfirm={confirmNewProject}
         title={t('common.new_project')}
-        placeholder={t('common.project_name_placeholder') || 'Nama proyek Anda...'}
+        placeholder={
+          t('common.project_name_placeholder') || 'Nama proyek Anda...'
+        }
       />
       <section className="mb-12 md:mb-20 border-b border-primary pb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-[10px] uppercase font-bold tracking-[0.2em] bg-primary text-white px-2 py-0.5">Vol. 01</span>
+              <span className="text-[10px] uppercase font-bold tracking-[0.2em] bg-primary text-white px-2 py-0.5">
+                Vol. 01
+              </span>
               <span className="text-[10px] uppercase font-semibold tracking-widest text-secondary">
-                {new Date().toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { day: '2-digit', month: 'long', year: 'numeric' })}
+                {new Date().toLocaleDateString(
+                  i18n.language === 'id' ? 'id-ID' : 'en-US',
+                  { day: '2-digit', month: 'long', year: 'numeric' },
+                )}
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading leading-[0.9] tracking-tighter mb-4">
               {t('dashboard.title')} <br className="hidden md:block" />
-              <span className="font-serif-display">{t('dashboard.subtitle')}</span>
+              <span className="font-serif-display">
+                {t('dashboard.subtitle')}
+              </span>
             </h1>
             <p className="text-secondary text-sm md:text-base max-w-md">
               {t('dashboard.desc')}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-start md:items-end gap-4">
-            <button 
+            <button
               onClick={handleNewProject}
               className="group relative bg-primary text-on-primary py-4 px-8 font-semibold tracking-widest uppercase text-sm border border-primary overflow-hidden transition-all hover:bg-white hover:text-primary active:scale-95 flex items-center gap-3 w-full md:w-auto justify-center"
             >
-              <span className="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">add</span>
+              <span className="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">
+                add
+              </span>
               <span>{t('common.new_project')}</span>
             </button>
             <div className="hidden md:flex gap-8 border-t border-primary/20 pt-4 w-full justify-end">
               <div className="text-right">
-                <div className="text-[10px] uppercase tracking-widest text-secondary">{t('dashboard.stats.total')}</div>
+                <div className="text-[10px] uppercase tracking-widest text-secondary">
+                  {t('dashboard.stats.total')}
+                </div>
                 <div className="font-heading text-xl">{projects.length}</div>
               </div>
               <div className="text-right">
-                <div className="text-[10px] uppercase tracking-widest text-secondary">{t('dashboard.stats.storage')}</div>
+                <div className="text-[10px] uppercase tracking-widest text-secondary">
+                  {t('dashboard.stats.storage')}
+                </div>
                 <div className="font-heading text-xl">LOCAL</div>
               </div>
             </div>
@@ -111,77 +132,129 @@ export default function DashboardHome() {
       {/* Stats Grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
         <div className="border border-primary p-6 bg-surface-container">
-          <span className="text-2xl material-symbols-outlined text-secondary mb-2">work_history</span>
-          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{t('dashboard.stats.active_drafts')}</div>
+          <span className="text-2xl material-symbols-outlined text-secondary mb-2">
+            work_history
+          </span>
+          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">
+            {t('dashboard.stats.active_drafts')}
+          </div>
           <div className="text-3xl font-heading">{activeProjects}</div>
         </div>
         <div className="border border-primary p-6 bg-surface-container">
-          <span className="text-2xl material-symbols-outlined text-secondary mb-2">task_alt</span>
-          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{t('dashboard.stats.ready_to_print')}</div>
+          <span className="text-2xl material-symbols-outlined text-secondary mb-2">
+            task_alt
+          </span>
+          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">
+            {t('dashboard.stats.ready_to_print')}
+          </div>
           <div className="text-3xl font-heading">{readyProjects}</div>
         </div>
         <div className="border border-primary p-6 bg-surface-container">
-          <span className="text-2xl material-symbols-outlined text-secondary mb-2">storage</span>
-          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{t('dashboard.stats.storage_status')}</div>
-          <div className="text-3xl font-heading">{t('dashboard.stats.storage_safe')}</div>
+          <span className="text-2xl material-symbols-outlined text-secondary mb-2">
+            storage
+          </span>
+          <div className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">
+            {t('dashboard.stats.storage_status')}
+          </div>
+          <div className="text-3xl font-heading">
+            {t('dashboard.stats.storage_safe')}
+          </div>
         </div>
-        <div className="border border-primary p-6 bg-surface-container flex flex-col justify-between items-start cursor-pointer hover:bg-surface-container-high transition-colors" onClick={() => navigate('/dashboard/projects')}>
-          <span className="text-2xl material-symbols-outlined text-primary mb-2">folder_open</span>
-          <div className="text-[10px] uppercase tracking-widest text-primary font-bold mb-1">{t('dashboard.stats.view_all')}</div>
-          <span className="material-symbols-outlined text-primary self-end">arrow_forward</span>
+        <div
+          className="border border-primary p-6 bg-surface-container flex flex-col justify-between items-start cursor-pointer hover:bg-surface-container-high transition-colors"
+          onClick={() => navigate('/dashboard/projects')}
+        >
+          <span className="text-2xl material-symbols-outlined text-primary mb-2">
+            folder_open
+          </span>
+          <div className="text-[10px] uppercase tracking-widest text-primary font-bold mb-1">
+            {t('dashboard.stats.view_all')}
+          </div>
+          <span className="material-symbols-outlined text-primary self-end">
+            arrow_forward
+          </span>
         </div>
       </section>
 
       {/* Recent Projects */}
       <section className="mb-12">
         <div className="flex justify-between items-end mb-6 border-b border-primary/20 pb-4">
-          <h2 className="text-2xl font-heading uppercase">{t('dashboard.recent_projects')}</h2>
-          <Link to="/dashboard/projects" className="text-xs uppercase font-bold tracking-widest text-primary hover:underline">{t('dashboard.all_projects')} &rarr;</Link>
+          <h2 className="text-2xl font-heading uppercase">
+            {t('dashboard.recent_projects')}
+          </h2>
+          <Link
+            to="/dashboard/projects"
+            className="text-xs uppercase font-bold tracking-widest text-primary hover:underline"
+          >
+            {t('dashboard.all_projects')} &rarr;
+          </Link>
         </div>
-        
+
         {isLoading ? (
-          <div className="py-12 flex justify-center"><span className="material-symbols-outlined animate-spin text-4xl text-primary">autorenew</span></div>
+          <div className="py-12 flex justify-center">
+            <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+              autorenew
+            </span>
+          </div>
         ) : recentProjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
             {recentProjects.map((project) => {
               const statusKey = getStatusKey(project.status || 'draft');
               return (
-                <div 
-                  key={project.id} 
+                <div
+                  key={project.id}
                   onClick={() => navigate(`/dashboard/project/${project.id}`)}
                   className="group flex flex-col cursor-pointer"
                 >
                   <div className="aspect-4/3 bg-surface-container border border-primary relative overflow-hidden mb-4 transition-all group-hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-x-1 group-hover:-translate-y-1">
                     {project.design?.preview ? (
-                      <img 
-                        src={project.design.preview} 
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
-                        alt={project.name} 
+                      <img
+                        src={project.design.preview}
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        alt={project.name}
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
-                        <span className="text-[80px] material-symbols-outlined">description</span>
+                        <span className="text-[80px] material-symbols-outlined">
+                          description
+                        </span>
                       </div>
                     )}
                     <div className="absolute top-0 left-0 p-3">
-                      <div className="text-[9px] font-mono bg-white border border-primary px-2 py-0.5">ID: {project.id?.slice(0, 8)}</div>
+                      <div className="text-[9px] font-mono bg-white border border-primary px-2 py-0.5">
+                        ID: {project.id?.slice(0, 8)}
+                      </div>
                     </div>
-                    <div className={`absolute bottom-3 right-3 py-1 px-3 text-[9px] uppercase font-bold tracking-wider border border-primary shadow-sm ${
-                      statusKey === 'ready' ? 'bg-primary text-white' : 
-                      statusKey === 'finished' ? 'bg-black text-white border-black' :
-                      statusKey === 'in_progress' ? 'bg-surface-container-high text-primary' :
-                      'bg-white text-primary'
-                    }`}>
+                    <div
+                      className={`absolute bottom-3 right-3 py-1 px-3 text-[9px] uppercase font-bold tracking-wider border border-primary shadow-sm ${
+                        statusKey === 'ready'
+                          ? 'bg-primary text-white'
+                          : statusKey === 'finished'
+                            ? 'bg-black text-white border-black'
+                            : statusKey === 'in_progress'
+                              ? 'bg-surface-container-high text-primary'
+                              : 'bg-white text-primary'
+                      }`}
+                    >
                       {t(`status.${statusKey}`)}
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col">
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">{project.name || (t('projects.untitled') || 'Proyek Tanpa Nama')}</h3>
+                      <h3 className="text-xl font-heading leading-tight group-hover:italic transition-all truncate pr-4">
+                        {project.name ||
+                          t('projects.untitled') ||
+                          'Proyek Tanpa Nama'}
+                      </h3>
                     </div>
                     <div className="text-[10px] uppercase tracking-widest text-secondary font-bold">
-                      {project.updatedAt ? new Date(project.updatedAt).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { day: '2-digit', month: 'short' }) : '-'}
+                      {project.updatedAt
+                        ? new Date(project.updatedAt).toLocaleDateString(
+                            i18n.language === 'id' ? 'id-ID' : 'en-US',
+                            { day: '2-digit', month: 'short' },
+                          )
+                        : '-'}
                     </div>
                   </div>
                 </div>
@@ -190,9 +263,18 @@ export default function DashboardHome() {
           </div>
         ) : (
           <div className="border border-dashed border-outline-variant py-16 flex flex-col items-center justify-center text-secondary">
-            <span className="material-symbols-outlined text-4xl mb-3">inbox</span>
-            <p className="text-xs font-bold uppercase tracking-widest">{t('projects.empty')}</p>
-            <Link to="/dashboard/project/new" className="mt-4 text-xs font-bold text-primary uppercase border-b border-primary pb-0.5">{t('common.create_now') || 'Buat Sekarang'}</Link>
+            <span className="material-symbols-outlined text-4xl mb-3">
+              inbox
+            </span>
+            <p className="text-xs font-bold uppercase tracking-widest">
+              {t('projects.empty')}
+            </p>
+            <Link
+              to="/dashboard/project/new"
+              className="mt-4 text-xs font-bold text-primary uppercase border-b border-primary pb-0.5"
+            >
+              {t('common.create_now') || 'Buat Sekarang'}
+            </Link>
           </div>
         )}
       </section>

@@ -17,7 +17,10 @@ export const ALIGN_OPTIONS: { value: MappingField['align']; icon: string }[] = [
   { value: 'right', icon: 'format_align_right' },
 ];
 
-export const VERTICAL_ALIGN_OPTIONS: { value: MappingField['verticalAlign']; icon: string }[] = [
+export const VERTICAL_ALIGN_OPTIONS: {
+  value: MappingField['verticalAlign'];
+  icon: string;
+}[] = [
   { value: 'top', icon: 'vertical_align_top' },
   { value: 'middle', icon: 'vertical_align_center' },
   { value: 'bottom', icon: 'vertical_align_bottom' },

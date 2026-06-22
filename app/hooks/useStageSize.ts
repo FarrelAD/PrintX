@@ -17,7 +17,10 @@ export function useStageSize(
   containerRef: RefObject<HTMLElement | null>,
   bgImage: HTMLImageElement | null,
 ): StageSize {
-  const [stageSize, setStageSize] = useState<StageSize>({ width: 0, height: 0 });
+  const [stageSize, setStageSize] = useState<StageSize>({
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     const measure = () => {
