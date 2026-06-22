@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
 import type { ProjectType, ProjectData } from '@/types/project';
 import Step1Category from '@/components/wizard/Step1Category';
 import Step2Assets from '@/components/wizard/Step2Assets';
@@ -18,21 +19,57 @@ export default function WizardShell({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [step, setStep] = useState(initialData ? 2 : 1);
   const [projectData, setProjectData] = useState<ProjectData>(initialData || {
     type: null,
   });
+  const [isSaving, setIsSaving] = useState(false);
+  const lastSavedData = useRef<string>(JSON.stringify(initialData || {}));
 
   // Auto-save on data change
   useEffect(() => {
-    if (projectData.type) {
+    // Only save if we have a type (started the project) or if it's already an existing project
+    if (!projectData.type && !projectData.id) return;
+
+    const currentDataStr = JSON.stringify(projectData);
+    if (currentDataStr === lastSavedData.current) return;
+
+    const timer = setTimeout(() => {
+      setIsSaving(true);
       saveProject(projectData).then(updated => {
-        if (!projectData.id) {
+        lastSavedData.current = JSON.stringify(updated);
+        
+        // If this was a "new" project and we just got an ID, update the URL
+        if (!projectData.id && updated.id) {
           setProjectData(prev => ({ ...prev, id: updated.id }));
+          const searchParams = new URLSearchParams(location.search);
+          navigate(`/dashboard/project/${updated.id}?${searchParams.toString()}`, { replace: true });
         }
+        
+        setIsSaving(false);
+      }).catch(err => {
+        console.error('Failed to auto-save:', err);
+        setIsSaving(false);
       });
-    }
-  }, [projectData]);
+    }, 1000); // Debounce saves by 1s
+
+    return () => clearTimeout(timer);
+  }, [projectData, location.search, navigate]);
+
+  // Prevent accidental close during save
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isSaving) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isSaving]);
 
   const steps = [
     { number: 1, title: t('wizard.steps.category') },
@@ -50,6 +87,10 @@ export default function WizardShell({
   const handleNext = () => setStep((s) => Math.min(s + 1, 5));
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
+  const handleUpdate = useCallback((newData: ProjectData) => {
+    setProjectData(newData);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-full min-w-0">
       {/* Header Wizard */}
@@ -66,11 +107,22 @@ export default function WizardShell({
           {projectData.name && (
             <>
               <div className="h-4 w-px bg-outline-variant hidden sm:block" />
-              <div className="hidden sm:flex items-center gap-2 max-w-[100px] md:max-w-[200px]">
-                <span className="material-symbols-outlined text-base text-secondary">folder</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary truncate">
-                  {projectData.name}
-                </span>
+              <div className="hidden sm:flex flex-col">
+                <div className="flex items-center gap-2 max-w-[100px] md:max-w-[200px]">
+                  <span className="material-symbols-outlined text-base text-secondary">folder</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary truncate">
+                    {projectData.name}
+                  </span>
+                </div>
+                {/* Save Indicator */}
+                <div className="flex items-center gap-1.5 opacity-60">
+                  <span className={`material-symbols-outlined text-[10px] ${isSaving ? 'animate-spin text-primary' : 'text-green-500'}`}>
+                    {isSaving ? 'sync' : 'cloud_done'}
+                  </span>
+                  <span className="text-[8px] font-bold uppercase tracking-tighter">
+                    {isSaving ? t('common.loading') : (t('common.saved') || 'Tersimpan')}
+                  </span>
+                </div>
               </div>
               <StatusDropdown 
                 currentStatus={projectData.status || 'draft'}
@@ -117,8 +169,8 @@ export default function WizardShell({
 
       <div className="max-w-full mx-auto w-full">
         {step === 1 && <Step1Category onSelect={handleTypeSelect} />}
-        {step === 2 && <Step2Assets data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
-        {step === 3 && <Step3Mapping data={projectData} onUpdate={setProjectData} onNext={handleNext} onBack={handleBack} />}
+        {step === 2 && <Step2Assets data={projectData} onUpdate={handleUpdate} onNext={handleNext} onBack={handleBack} />}
+        {step === 3 && <Step3Mapping data={projectData} onUpdate={handleUpdate} onNext={handleNext} onBack={handleBack} />}
         {step === 4 && (
           <Step4Result 
             data={projectData} 
@@ -130,7 +182,7 @@ export default function WizardShell({
           <Step5Print 
             data={projectData} 
             onBack={handleBack} 
-            onUpdate={setProjectData}
+            onUpdate={handleUpdate}
             onComplete={onClose} 
           />
         )}
