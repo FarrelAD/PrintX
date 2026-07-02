@@ -18,7 +18,7 @@ try {
   }
 
   // Generate sitemap.xml
-  const siteUrl = process.env.SITE_URL || 'https://printx.pages.dev';
+  const siteUrl = process.env.SITE_URL || 'https://printx.farrelad.com';
   const sitemapPath = path.join(clientDir, 'sitemap.xml');
   const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
