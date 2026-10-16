@@ -92,7 +92,7 @@ spacing:
 
 ## Brand & Style
 
-The design system is rooted in the heritage of editorial design and traditional printing. It prioritizes clarity, authority, and the physical sensation of paper and ink. By eschewing modern trends like gradients and rounded corners, it evokes an atmosphere of intellectual rigor and professional permanence. 
+The design system is rooted in the heritage of editorial design and traditional printing. It prioritizes clarity, authority, and the physical sensation of paper and ink. By eschewing modern trends like gradients and rounded corners, it evokes an atmosphere of intellectual rigor and professional permanence.
 
 The aesthetic is strictly **Minimalist** and **Grid-based**, leaning into a document-oriented layout. It treats the digital screen as a high-quality stationery surface, emphasizing the "white space" as a functional element rather than empty space. The emotional response is one of calm, structured reliability—ideal for archival content, technical documentation, or high-end editorial platforms.
 
@@ -109,8 +109,8 @@ The color palette of the design system is binary and uncompromising, utilizing a
 
 This design system employs a sophisticated typographic pairing that balances traditional editorial flair with modern functional clarity.
 
-- **Headlines (Newsreader):** This serif typeface provides an authoritative, literary tone. Larger headings should utilize heavier weights to mimic the impact of a newspaper masthead. 
-- **Body & Labels (Inter):** A neutral, systematic sans-serif ensures that dense information remains highly legible across all screen sizes. 
+- **Headlines (Newsreader):** This serif typeface provides an authoritative, literary tone. Larger headings should utilize heavier weights to mimic the impact of a newspaper masthead.
+- **Body & Labels (Inter):** A neutral, systematic sans-serif ensures that dense information remains highly legible across all screen sizes.
 - **Execution:** Use generous line heights (1.6) for body text to improve the reading experience, mimicking the leading found in high-quality print journals. Labels and small metadata should use uppercase styling with increased letter spacing for a technical, "cataloged" look.
 
 ## Layout & Spacing

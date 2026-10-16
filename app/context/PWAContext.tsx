@@ -1,32 +1,31 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-type PWAContextType = {
-  isInstallable: boolean;
-  handleInstall: () => Promise<void>;
-};
-
-const PWAContext = createContext<PWAContextType | undefined>(undefined);
+import React, { useState, useEffect } from 'react';
+import {
+  PWAContext,
+  type BeforeInstallPromptEvent,
+} from './pwaContextInstance';
 
 export const PWAProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installPrompt, setInstallPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault();
-      setInstallPrompt(e);
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      return;
+    }
+
+    const handler = (e: Event) => {
+      const promptEvent = e as BeforeInstallPromptEvent;
+      promptEvent.preventDefault();
+      setInstallPrompt(promptEvent);
       setIsInstallable(true);
       console.log('PWA: beforeinstallprompt event captured');
     };
 
     window.addEventListener('beforeinstallprompt', handler);
-
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstallable(false);
-    }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
@@ -51,12 +50,4 @@ export const PWAProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </PWAContext.Provider>
   );
-};
-
-export const usePWAInstall = () => {
-  const context = useContext(PWAContext);
-  if (context === undefined) {
-    throw new Error('usePWAInstall must be used within a PWAProvider');
-  }
-  return context;
 };

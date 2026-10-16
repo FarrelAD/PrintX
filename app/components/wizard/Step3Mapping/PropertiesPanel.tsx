@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MappingField } from '@/types/project';
 import {
@@ -17,12 +17,14 @@ export function PropertiesPanel({
   onDelete: () => void;
 }) {
   const { t } = useTranslation();
+  const [prevFontSize, setPrevFontSize] = useState(field.fontSize);
   const [tempFontSize, setTempFontSize] = useState(field.fontSize.toString());
 
   // Sync local state when external field changes (e.g. via slider)
-  useEffect(() => {
+  if (field.fontSize !== prevFontSize) {
+    setPrevFontSize(field.fontSize);
     setTempFontSize(field.fontSize.toString());
-  }, [field.fontSize]);
+  }
 
   const handleFontSizeInput = (val: string) => {
     setTempFontSize(val);

@@ -28,7 +28,7 @@ export function getDB() {
   return dbPromise;
 }
 
-const STATUS_MAP: Record<string, string> = {
+const STATUS_MAP: Record<string, NonNullable<ProjectData['status']>> = {
   Draf: 'draft',
   'Sedang Dikerjakan': 'in_progress',
   'Siap Cetak': 'ready',
@@ -38,7 +38,7 @@ const STATUS_MAP: Record<string, string> = {
 function migrateProject(project: ProjectData): ProjectData {
   if (!project) return project;
   if (project.status && STATUS_MAP[project.status]) {
-    return { ...project, status: STATUS_MAP[project.status] as any };
+    return { ...project, status: STATUS_MAP[project.status] };
   }
   return project;
 }

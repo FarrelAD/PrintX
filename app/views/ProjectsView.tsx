@@ -44,7 +44,27 @@ export default function ProjectsView() {
   }
 
   useEffect(() => {
-    loadProjects();
+    let ignore = false;
+
+    getAllProjects()
+      .then((data) => {
+        if (ignore) return;
+        setProjects(Array.isArray(data) ? [...data].reverse() : []);
+      })
+      .catch((err) => {
+        if (!ignore) {
+          console.error('ProjectsView: Failed to load projects:', err);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   async function handleDelete(e: React.MouseEvent, id: string) {

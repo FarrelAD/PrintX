@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function NameModal({
   isOpen,
@@ -17,13 +17,17 @@ export default function NameModal({
   placeholder?: string;
   confirmLabel?: string;
 }) {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
   const [name, setName] = useState(initialValue);
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || initialValue !== prevInitialValue) {
+    setPrevIsOpen(isOpen);
+    setPrevInitialValue(initialValue);
     if (isOpen) {
       setName(initialValue);
     }
-  }, [isOpen, initialValue]);
+  }
 
   if (!isOpen) return null;
 

@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.22.0",
+    "pnpm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "react-router dev",
     "build": "tsc -b && react-router build && node scripts/postbuild.js",

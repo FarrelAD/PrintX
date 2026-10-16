@@ -13,23 +13,32 @@ export default function DashboardHome() {
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  async function loadProjects() {
-    try {
-      const data = await getAllProjects();
-      if (!Array.isArray(data)) {
-        setProjects([]);
-        return;
-      }
-      setProjects([...data].reverse());
-    } catch (err) {
-      console.error('Dashboard: Failed to load projects:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadProjects();
+    let ignore = false;
+
+    getAllProjects()
+      .then((data) => {
+        if (ignore) return;
+        if (!Array.isArray(data)) {
+          setProjects([]);
+          return;
+        }
+        setProjects([...data].reverse());
+      })
+      .catch((err) => {
+        if (!ignore) {
+          console.error('Dashboard: Failed to load projects:', err);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Defensive checks for projects data

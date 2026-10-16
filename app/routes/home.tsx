@@ -9,7 +9,10 @@ export const meta: MetaFunction = () => {
       content:
         'Cetak kartu ID, sertifikat, dan label otomatis dari excel/spreadsheet secara offline dan 100% aman.',
     },
-    { property: 'og:title', content: 'PrintX | Solusi Cetak Dokumen Massal Otomatis' },
+    {
+      property: 'og:title',
+      content: 'PrintX | Solusi Cetak Dokumen Massal Otomatis',
+    },
     {
       property: 'og:description',
       content:
@@ -18,7 +21,10 @@ export const meta: MetaFunction = () => {
     { property: 'og:image', content: '/og-image.png' },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'PrintX | Solusi Cetak Dokumen Massal Otomatis' },
+    {
+      name: 'twitter:title',
+      content: 'PrintX | Solusi Cetak Dokumen Massal Otomatis',
+    },
     {
       name: 'twitter:description',
       content:

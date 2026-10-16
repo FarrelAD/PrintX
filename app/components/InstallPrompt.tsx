@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { usePWAInstall } from '@/context/PWAContext';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 export default function InstallPrompt({
   variant = 'sidebar',
