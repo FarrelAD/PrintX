@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import type { ProjectType, ProjectData } from '@/types/project';
 import Step1Category from '@/components/wizard/Step1Category';
 import Step2Assets from '@/components/wizard/Step2Assets';

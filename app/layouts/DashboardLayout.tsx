@@ -1,4 +1,4 @@
-import { Outlet, NavLink, Link } from 'react-router-dom';
+import { Outlet, NavLink, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/Logo';
 import InstallPrompt from '@/components/InstallPrompt';

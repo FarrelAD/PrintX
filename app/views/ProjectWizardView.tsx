@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import WizardShell from '@/features/wizard/WizardShell';
 import { getProject } from '@/lib/db';
