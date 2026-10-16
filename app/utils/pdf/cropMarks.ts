@@ -1,4 +1,4 @@
-import { jsPDF } from 'jspdf';
+import type { jsPDF } from 'jspdf';
 
 /**
  * Draws professional crop marks around a design element on the PDF.

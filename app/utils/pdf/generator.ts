@@ -1,4 +1,3 @@
-import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import type { ProjectData, PrintConfig } from '@/types/project';
 import { loadImage } from './imageLoader';
@@ -34,6 +33,8 @@ export async function generateProfessionalPDF(
 ): Promise<void> {
   const { dataset, mapping, design } = data;
   if (!dataset || !mapping || !design?.preview) return;
+
+  const { jsPDF } = await import('jspdf');
 
   const paperDim = PAPER_SIZES[config.paperSize] ?? PAPER_SIZES.A4;
   const paperW = config.orientation === 'p' ? paperDim.w : paperDim.h;

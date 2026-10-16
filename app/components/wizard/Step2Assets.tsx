@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 import type { ProjectData } from '@/types/project';
 
 export default function Step2Assets({
@@ -38,6 +37,7 @@ export default function Step2Assets({
   const handleDataChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const XLSX = await import('xlsx');
       const reader = new FileReader();
       reader.onload = (event) => {
         const bstr = event.target?.result;

@@ -1,6 +1,14 @@
 import { useNavigate } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getDB } from '@/lib/db';
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Pengaturan | PrintX' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export default function SettingsView() {
   const { t } = useTranslation();

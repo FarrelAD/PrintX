@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { Text, Rect, Group } from 'react-konva';
 import type Konva from 'konva';
 import type { MappingField } from '@/types/project';
 
-export function FieldNode({
+export const FieldNode = memo(function FieldNode({
   field,
   scale,
   isSelected,
@@ -113,4 +113,4 @@ export function FieldNode({
       )}
     </Group>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Stage,
@@ -9,7 +10,7 @@ import {
 import type { ProjectData } from '@/types/project';
 import { QRNode } from './QRNode';
 
-export function RowPreview({
+export const RowPreview = memo(function RowPreview({
   rowIndex,
   width = 280,
   data,
@@ -39,7 +40,13 @@ export function RowPreview({
   });
 
   return (
-    <div className="flex flex-col gap-1 items-center">
+    <div
+      className="flex flex-col gap-1 items-center"
+      style={{
+        contentVisibility: 'auto',
+        containIntrinsicSize: `auto ${previewH + 24}px`,
+      }}
+    >
       <div
         className="border border-outline-variant overflow-hidden bg-surface-container-low"
         style={{ width: width, height: previewH }}
@@ -117,4 +124,4 @@ export function RowPreview({
       </span>
     </div>
   );
-}
+});

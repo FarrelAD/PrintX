@@ -1,54 +1,68 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useState, useMemo } from 'react';
+import { Link, useNavigate, useLoaderData } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getAllProjects } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
 import NameModal from '@/components/ui/NameModal';
 
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Dashboard | PrintX' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
+
+export async function clientLoader() {
+  const data = await getAllProjects();
+  return {
+    initialProjects: Array.isArray(data) ? [...data].reverse() : [],
+  };
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="py-20 flex justify-center">
+      <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+        autorenew
+      </span>
+    </div>
+  );
+}
+
 export default function DashboardHome() {
   const { t, i18n } = useTranslation();
-  const [projects, setProjects] = useState<ProjectData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const loaderData = useLoaderData<typeof clientLoader>();
+  const [projects] = useState<ProjectData[]>(loaderData?.initialProjects ?? []);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let ignore = false;
+  // Single-pass iteration to calculate project stats (js-combine-iterations)
+  const { validProjects, activeProjects, readyProjects } = useMemo(() => {
+    const valid: ProjectData[] = [];
+    let active = 0;
+    let ready = 0;
 
-    getAllProjects()
-      .then((data) => {
-        if (ignore) return;
-        if (!Array.isArray(data)) {
-          setProjects([]);
-          return;
+    for (let i = 0; i < projects.length; i++) {
+      const p = projects[i];
+      if (p && typeof p === 'object') {
+        valid.push(p);
+        if (!p.status || p.status === 'draft' || p.status === 'in_progress') {
+          active++;
         }
-        setProjects([...data].reverse());
-      })
-      .catch((err) => {
-        if (!ignore) {
-          console.error('Dashboard: Failed to load projects:', err);
+        if (p.status === 'ready') {
+          ready++;
         }
-      })
-      .finally(() => {
-        if (!ignore) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      ignore = true;
+      }
+    }
+    return {
+      validProjects: valid,
+      activeProjects: active,
+      readyProjects: ready,
     };
-  }, []);
+  }, [projects]);
 
-  // Defensive checks for projects data
-  const validProjects = projects.filter((p) => p && typeof p === 'object');
-  const activeProjects = validProjects.filter(
-    (p) => !p.status || p.status === 'draft' || p.status === 'in_progress',
-  ).length;
-  const readyProjects = validProjects.filter(
-    (p) => p.status === 'ready',
-  ).length;
   const recentProjects = validProjects.slice(0, 3);
 
   const handleNewProject = () => {
@@ -199,13 +213,7 @@ export default function DashboardHome() {
           </Link>
         </div>
 
-        {isLoading ? (
-          <div className="py-12 flex justify-center">
-            <span className="material-symbols-outlined animate-spin text-4xl text-primary">
-              autorenew
-            </span>
-          </div>
-        ) : recentProjects.length > 0 ? (
+        {recentProjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
             {recentProjects.map((project) => {
               const statusKey = getStatusKey(project.status || 'draft');

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import { useNavigate, useLoaderData } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
   getAllProjects,
@@ -11,10 +12,37 @@ import type { ProjectData } from '@/types/project';
 import NameModal from '@/components/ui/NameModal';
 import StatusDropdown from '@/components/ui/StatusDropdown';
 
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Projects | PrintX' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
+
+export async function clientLoader() {
+  const data = await getAllProjects();
+  return {
+    initialProjects: Array.isArray(data) ? [...data].reverse() : [],
+  };
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="py-20 flex justify-center">
+      <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+        autorenew
+      </span>
+    </div>
+  );
+}
+
 export default function ProjectsView() {
   const { t, i18n } = useTranslation();
-  const [projects, setProjects] = useState<ProjectData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const loaderData = useLoaderData<typeof clientLoader>();
+  const [projects, setProjects] = useState<ProjectData[]>(
+    loaderData?.initialProjects ?? [],
+  );
+  const [isLoading, setIsLoading] = useState(false);
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -42,30 +70,6 @@ export default function ProjectsView() {
       setIsLoading(false);
     }
   }
-
-  useEffect(() => {
-    let ignore = false;
-
-    getAllProjects()
-      .then((data) => {
-        if (ignore) return;
-        setProjects(Array.isArray(data) ? [...data].reverse() : []);
-      })
-      .catch((err) => {
-        if (!ignore) {
-          console.error('ProjectsView: Failed to load projects:', err);
-        }
-      })
-      .finally(() => {
-        if (!ignore) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
 
   async function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation();

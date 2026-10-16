@@ -1,6 +1,20 @@
-import { type RouteConfig, route } from '@react-router/dev/routes';
+import {
+  type RouteConfig,
+  route,
+  layout,
+  index,
+  prefix,
+} from '@react-router/dev/routes';
 
 export default [
   route('/', 'routes/home.tsx'),
-  route('dashboard/*', 'routes/dashboard.tsx'),
+  ...prefix('dashboard', [
+    layout('layouts/DashboardLayout.tsx', [
+      index('views/DashboardHome.tsx'),
+      route('projects', 'views/ProjectsView.tsx'),
+      route('dataset', 'views/DatasetView.tsx'),
+      route('settings', 'views/SettingsView.tsx'),
+      route('project/:id', 'views/ProjectWizardView.tsx'),
+    ]),
+  ]),
 ] satisfies RouteConfig;

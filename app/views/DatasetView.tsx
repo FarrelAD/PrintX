@@ -1,29 +1,39 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import { useNavigate, useLoaderData } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getAllProjects } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Dataset | PrintX' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
+
+export async function clientLoader() {
+  const data = await getAllProjects();
+  return {
+    initialProjects: Array.isArray(data) ? [...data].reverse() : [],
+  };
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="py-20 flex justify-center">
+      <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+        autorenew
+      </span>
+    </div>
+  );
+}
+
 export default function DatasetView() {
   const { t } = useTranslation();
-  const [projects, setProjects] = useState<ProjectData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const loaderData = useLoaderData<typeof clientLoader>();
+  const [projects] = useState<ProjectData[]>(loaderData?.initialProjects ?? []);
   const navigate = useNavigate();
-
-  async function loadProjects() {
-    try {
-      const data = await getAllProjects();
-      setProjects(data.reverse());
-    } catch (err) {
-      console.error('Failed to load projects:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    Promise.resolve().then(() => loadProjects());
-  }, []);
 
   const projectsWithDataset = projects.filter(
     (p) => p.dataset && p.dataset.rows.length > 0,
@@ -42,13 +52,7 @@ export default function DatasetView() {
       </div>
 
       <section className="bg-white border border-primary p-0 overflow-hidden">
-        {isLoading ? (
-          <div className="py-20 flex justify-center">
-            <span className="material-symbols-outlined animate-spin text-4xl text-primary">
-              autorenew
-            </span>
-          </div>
-        ) : projectsWithDataset.length > 0 ? (
+        {projectsWithDataset.length > 0 ? (
           <>
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto w-full">
