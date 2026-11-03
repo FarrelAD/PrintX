@@ -22,7 +22,10 @@
       "page_not_found": "404 - Page Not Found",
       "page_not_found_desc": "Sorry, we couldn't find the page you're looking for.",
       "back_to_home": "Back to Home"
-    }
+    },
+    "white": "White",
+    "gray": "Gray",
+    "black": "Black"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -59,7 +62,8 @@
     },
     "empty": "No local projects yet",
     "create_new": "Create New Project",
-    "copies": "Copies"
+    "copies": "Copies",
+    "untitled": "Untitled Project"
   },
   "status": {
     "draft": "Draft",
@@ -133,7 +137,8 @@
       },
       "panels": {
         "dataset_columns": "Dataset Columns",
-        "design_elements": "Design Elements"
+        "design_elements": "Design Elements",
+        "design_canvas": "Design Canvas"
       },
       "properties": {
         "title": "Field Properties",
@@ -151,7 +156,19 @@
         "bold": "Bold",
         "wrap": "Wrap",
         "delete_field": "Delete Field"
-      }
+      },
+      "nav_next": "Preview & Finish",
+      "mapping_required": "Please add at least one field to the canvas first",
+      "no_design_hint": "No design loaded",
+      "drop_hint": "Release to place",
+      "click_hint": "Click anywhere to place \"{{column}}\"",
+      "active_hint": "Click canvas to place \"{{column}}\"",
+      "empty_canvas_hint": "Drag columns from the left panel onto the design canvas",
+      "reset_confirm": "Are you sure you want to reset all mappings?",
+      "fields_count": "fields",
+      "design_on": "Design On",
+      "design_off": "Design Off",
+      "canvas_bg": "Canvas BG"
     },
     "step4": {
       "title": "Result Preview",
@@ -164,7 +181,12 @@
       "data_count": "Record #{{index}}",
       "list": {
         "title": "Document List"
-      }
+      },
+      "error_no_mapping": "Mapping is empty or incomplete. Please map fields first.",
+      "error_no_data": "Dataset is empty. Please upload data first.",
+      "record_navigation": "Record Navigation",
+      "complete_mapping_hint": "Complete field mapping first",
+      "nav_generate": "Generate Documents"
     },
     "step5": {
       "title": "Print Configuration",
@@ -177,12 +199,28 @@
         "portrait": "Portrait",
         "landscape": "Landscape",
         "horizontal": "Horizontal",
-        "vertical": "Vertical"
+        "vertical": "Vertical",
+        "design_width": "Design Width (cm)",
+        "design_height": "Design Height (cm)",
+        "bleed": "Bleed / Trim Margin (mm)",
+        "crop_marks": "Crop Marks (Cutting Guides)",
+        "n_up": "Layout Optimization (N-Up)",
+        "horizontal_gap": "Horizontal Gap (mm)",
+        "vertical_gap": "Vertical Gap (mm)"
       },
       "actions": {
         "generate": "Generate PDF",
-        "finish": "Finish"
-      }
+        "finish": "Finish",
+        "processing": "Processing..."
+      },
+      "error_generate": "An error occurred while generating PDF",
+      "lock_ratio": "Lock Aspect Ratio",
+      "unlock_ratio": "Free Aspect Ratio",
+      "preview_label": "Paper Layout Preview",
+      "result_estimate": "Output Estimate",
+      "documents_label": "Documents",
+      "generating_title": "Preparing Document...",
+      "processing_desc": "Processing {{count}} records with high resolution"
     }
   },
   "pwa": {

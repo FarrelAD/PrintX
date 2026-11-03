@@ -22,7 +22,10 @@
       "page_not_found": "404 - Halaman Tidak Ditemukan",
       "page_not_found_desc": "Maaf, kami tidak dapat menemukan halaman yang Anda cari.",
       "back_to_home": "Kembali ke Beranda"
-    }
+    },
+    "white": "Putih",
+    "gray": "Abu-abu",
+    "black": "Hitam"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -59,7 +62,8 @@
     },
     "empty": "Belum ada proyek lokal",
     "create_new": "Buat Proyek Baru",
-    "copies": "Salinan"
+    "copies": "Salinan",
+    "untitled": "Proyek Tanpa Judul"
   },
   "status": {
     "draft": "Draf",
@@ -133,7 +137,8 @@
       },
       "panels": {
         "dataset_columns": "Kolom Dataset",
-        "design_elements": "Elemen Desain"
+        "design_elements": "Elemen Desain",
+        "design_canvas": "Kanvas Desain"
       },
       "properties": {
         "title": "Properti Bidang",
@@ -151,7 +156,19 @@
         "bold": "Bold",
         "wrap": "Wrap",
         "delete_field": "Hapus Bidang"
-      }
+      },
+      "nav_next": "Pratinjau & Selesai",
+      "mapping_required": "Tambahkan minimal satu bidang ke kanvas terlebih dahulu",
+      "no_design_hint": "Tidak ada desain dimuat",
+      "drop_hint": "Lepaskan untuk menempatkan",
+      "click_hint": "Klik di mana saja untuk menempatkan \"{{column}}\"",
+      "active_hint": "Klik kanvas untuk menempatkan \"{{column}}\"",
+      "empty_canvas_hint": "Seret kolom dari panel kiri ke atas kanvas desain",
+      "reset_confirm": "Apakah Anda yakin ingin mengatur ulang semua pemetaan?",
+      "fields_count": "bidang",
+      "design_on": "Desain On",
+      "design_off": "Desain Off",
+      "canvas_bg": "BG Kanvas"
     },
     "step4": {
       "title": "Pratinjau Hasil",
@@ -164,7 +181,12 @@
       "data_count": "Data #{{index}}",
       "list": {
         "title": "Daftar Dokumen"
-      }
+      },
+      "error_no_mapping": "Pemetaan kosong atau belum lengkap. Harap petakan bidang terlebih dahulu.",
+      "error_no_data": "Dataset kosong. Harap unggah data terlebih dahulu.",
+      "record_navigation": "Navigasi Rekaman",
+      "complete_mapping_hint": "Selesaikan pemetaan bidang terlebih dahulu",
+      "nav_generate": "Generate Dokumen"
     },
     "step5": {
       "title": "Konfigurasi Cetak",
@@ -177,12 +199,28 @@
         "portrait": "Potret",
         "landscape": "Lanskap",
         "horizontal": "Horizontal",
-        "vertical": "Vertikal"
+        "vertical": "Vertikal",
+        "design_width": "Lebar Desain (cm)",
+        "design_height": "Tinggi Desain (cm)",
+        "bleed": "Bleed / Margin Potong (mm)",
+        "crop_marks": "Crop Marks (Garis Panduan Potong)",
+        "n_up": "Optimasi Layout (N-Up)",
+        "horizontal_gap": "Gap Horizontal (mm)",
+        "vertical_gap": "Gap Vertikal (mm)"
       },
       "actions": {
         "generate": "Hasilkan PDF",
-        "finish": "Selesai"
-      }
+        "finish": "Selesai",
+        "processing": "Memproses..."
+      },
+      "error_generate": "Terjadi kesalahan saat membuat PDF",
+      "lock_ratio": "Kunci Rasio Aspek",
+      "unlock_ratio": "Rasio Aspek Bebas",
+      "preview_label": "Preview Layout Kertas",
+      "result_estimate": "Estimasi Hasil",
+      "documents_label": "Dokumen",
+      "generating_title": "Menyiapkan Dokumen...",
+      "processing_desc": "Memproses {{count}} data dengan resolusi tinggi"
     }
   },
   "pwa": {
