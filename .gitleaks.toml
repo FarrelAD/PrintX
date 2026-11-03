@@ -1,0 +1,16 @@
+# Gitleaks Configuration for PrintX
+# Documentation: https://github.com/gitleaks/gitleaks
+
+title = "PrintX Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for test fixtures, lockfiles, and documentation"
+paths = [
+  '''^tests/.*''',
+  '''.*\.(test|spec)\..*''',
+  '''^pnpm-lock\.yaml$''',
+  '''^\.agents/.*'''
+]

@@ -31,16 +31,28 @@ describe('i18n Localization Integrity', () => {
     const missingInId = [...enKeySet].filter((k) => !idKeySet.has(k));
     const missingInEn = [...idKeySet].filter((k) => !enKeySet.has(k));
 
-    expect(missingInId, `Keys present in en.json but missing in id.json: ${missingInId.join(', ')}`).toEqual([]);
-    expect(missingInEn, `Keys present in id.json but missing in en.json: ${missingInEn.join(', ')}`).toEqual([]);
+    expect(
+      missingInId,
+      `Keys present in en.json but missing in id.json: ${missingInId.join(', ')}`,
+    ).toEqual([]);
+    expect(
+      missingInEn,
+      `Keys present in id.json but missing in en.json: ${missingInEn.join(', ')}`,
+    ).toEqual([]);
   });
 
   it('should have non-empty translation strings for all keys', () => {
     for (const [key, value] of Object.entries(idKeys)) {
-      expect(value.trim().length, `Empty Indonesian translation for key: ${key}`).toBeGreaterThan(0);
+      expect(
+        value.trim().length,
+        `Empty Indonesian translation for key: ${key}`,
+      ).toBeGreaterThan(0);
     }
     for (const [key, value] of Object.entries(enKeys)) {
-      expect(value.trim().length, `Empty English translation for key: ${key}`).toBeGreaterThan(0);
+      expect(
+        value.trim().length,
+        `Empty English translation for key: ${key}`,
+      ).toBeGreaterThan(0);
     }
   });
 
@@ -63,7 +75,9 @@ describe('i18n Localization Integrity', () => {
           while ((match = tCallRegex.exec(content)) !== null) {
             const key = match[1];
             if (!idKeys[key] || !enKeys[key]) {
-              missingInDicts.push(`${key} (in ${path.relative(appDir, fullPath)})`);
+              missingInDicts.push(
+                `${key} (in ${path.relative(appDir, fullPath)})`,
+              );
             }
           }
         }
@@ -71,7 +85,10 @@ describe('i18n Localization Integrity', () => {
     }
 
     scanDir(appDir);
-    expect(missingInDicts, `Source code references missing translation keys: \n${missingInDicts.join('\n')}`).toEqual([]);
+    expect(
+      missingInDicts,
+      `Source code references missing translation keys: \n${missingInDicts.join('\n')}`,
+    ).toEqual([]);
   });
 
   it('should resolve wizard.step3.nav_next and dynamic interpolation accurately', async () => {
@@ -88,13 +105,21 @@ describe('i18n Localization Integrity', () => {
 
     // Check Indonesian
     expect(i18n.t('wizard.step3.nav_next')).toBe('Pratinjau & Selesai');
-    expect(i18n.t('wizard.step3.click_hint', { column: 'Nama' })).toBe('Klik di mana saja untuk menempatkan "Nama"');
-    expect(i18n.t('wizard.step5.processing_desc', { count: 25 })).toBe('Memproses 25 data dengan resolusi tinggi');
+    expect(i18n.t('wizard.step3.click_hint', { column: 'Nama' })).toBe(
+      'Klik di mana saja untuk menempatkan "Nama"',
+    );
+    expect(i18n.t('wizard.step5.processing_desc', { count: 25 })).toBe(
+      'Memproses 25 data dengan resolusi tinggi',
+    );
 
     // Switch to English
     await i18n.changeLanguage('en');
     expect(i18n.t('wizard.step3.nav_next')).toBe('Preview & Finish');
-    expect(i18n.t('wizard.step3.click_hint', { column: 'Nama' })).toBe('Click anywhere to place "Nama"');
-    expect(i18n.t('wizard.step5.processing_desc', { count: 25 })).toBe('Processing 25 records with high resolution');
+    expect(i18n.t('wizard.step3.click_hint', { column: 'Nama' })).toBe(
+      'Click anywhere to place "Nama"',
+    );
+    expect(i18n.t('wizard.step5.processing_desc', { count: 25 })).toBe(
+      'Processing 25 records with high resolution',
+    );
   });
 });
