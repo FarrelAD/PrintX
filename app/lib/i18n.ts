@@ -14,6 +14,13 @@ i18n
       en: { translation: en },
     },
     fallbackLng: 'id',
+    returnEmptyString: false,
+    parseMissingKeyHandler: (key) => {
+      if (import.meta.env?.DEV) {
+        console.warn(`[i18n] Missing translation for key: "${key}"`);
+      }
+      return '';
+    },
     interpolation: {
       escapeValue: false,
     },

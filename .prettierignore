@@ -5,3 +5,5 @@ dist
 dev-dist
 .react-router
 pnpm-lock.yaml
+.agents/**
+.husky/_/**

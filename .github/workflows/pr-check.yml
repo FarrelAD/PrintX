@@ -1,0 +1,150 @@
+name: Pull Request Verification
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+      - dev
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ════════════════════════════════════════════════════════════════════════════
+  # 1. Fast Quality & Security Checks (Prettier, Gitleaks, Dependency Audit)
+  # ════════════════════════════════════════════════════════════════════════════
+  check-format-and-security:
+    name: 1. Format, Secrets & Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install Gitleaks
+        run: |
+          GITLEAKS_VERSION="8.24.0"
+          curl -sSL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/
+          rm -f gitleaks.tar.gz
+
+      - name: Gitleaks Secret Scan
+        run: gitleaks detect --source=. --config=.gitleaks.toml --verbose --redact
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check code formatting (Prettier)
+        run: pnpm run format:check
+
+      - name: Dependency security audit (Critical & High CVEs)
+        run: |
+          echo "### 🛡️ PR Dependency Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          set +e
+          pnpm audit --audit-level high --ignore-unfixable 2>&1 | tee audit_output.txt
+          AUDIT_EXIT=${PIPESTATUS[0]}
+          set -e
+
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat audit_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          if [ $AUDIT_EXIT -ne 0 ]; then
+            echo "::error::High or Critical fixable dependency vulnerabilities detected. Review Step Summary for details."
+            exit $AUDIT_EXIT
+          else
+            echo "::notice::All dependencies clean (no fixable High/Critical vulnerabilities detected)."
+          fi
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # 2. Application Verification (Typecheck, Lint, Unit/i18n Tests & Build)
+  # ════════════════════════════════════════════════════════════════════════════
+  verify-app:
+    name: 2. Typecheck, Lint, Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript & React Router typecheck
+        run: pnpm run typecheck
+
+      - name: Code linter check (ESLint)
+        run: pnpm run lint
+
+      - name: Execute unit & i18n integrity tests (Vitest)
+        run: pnpm run test
+
+      - name: Build production application & prerender routes
+        run: pnpm run build
+
+      - name: Verify production build artifacts
+        run: |
+          echo "Verifying generated build artifacts in dist/client..."
+          for FILE in "dist/client/index.html" "dist/client/dashboard/index.html" "dist/client/404.html" "dist/client/sitemap.xml" "dist/client/robots.txt"; do
+            if [ ! -f "$FILE" ]; then
+              echo "Error: Missing expected build artifact: $FILE"
+              exit 1
+            fi
+          done
+          echo "All production build and post-build artifacts verified successfully!"
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # 3. PR Gate (Aggregator Status Check for Branch Protection)
+  # ════════════════════════════════════════════════════════════════════════════
+  pr-gate:
+    name: PR Verification Gate
+    needs:
+      - check-format-and-security
+      - verify-app
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate Check Results
+        run: |
+          echo "Evaluating sub-job outcomes..."
+          FORMAT_RES="${{ needs.check-format-and-security.result }}"
+          APP_RES="${{ needs.verify-app.result }}"
+
+          echo "Format, Secrets & Security : $FORMAT_RES"
+          echo "App Verification & Build   : $APP_RES"
+
+          for RES in "$FORMAT_RES" "$APP_RES"; do
+            if [ "$RES" != "success" ]; then
+              echo "Error: At least one required verification job failed or did not succeed."
+              exit 1
+            fi
+          done
+
+          echo "All PR verification checks passed successfully!"

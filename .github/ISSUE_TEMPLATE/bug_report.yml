@@ -1,0 +1,78 @@
+name: Bug report
+description: Create a report to help us improve PrintX
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Before submitting, please search existing issues to avoid duplicates.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug you encountered. Include error messages, console logs, or screenshots if available.
+      placeholder: 'Tell us what you see.'
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide a minimal, reproducible scenario.
+      placeholder: |
+        1. Open PrintX Dashboard (`/dashboard`)
+        2. Create a new ID Card project and upload a CSV dataset
+        3. Navigate to Step 3 (Data Mapping)...
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component
+      description: Which part of PrintX is affected?
+      options:
+        - Landing Page / Navigation
+        - Dashboard / Projects / Datasets Management
+        - Wizard Step 1 & 2 (Category & Asset Upload)
+        - Wizard Step 3 (Konva Canvas & Field Mapping)
+        - Wizard Step 4 (Live Record Preview)
+        - Wizard Step 5 (PDF Generation / N-Up / Crop Marks)
+        - Localization / i18n (ID / EN)
+        - PWA / Offline / IndexedDB Storage
+        - CI/CD Workflows
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser & OS Environment
+      description: Relevant versions (Browser, OS, device type, language setting).
+      placeholder: 'e.g. Chrome 135, Windows 11 / Ubuntu 24.04, Desktop, Language: ID'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Browser Console Logs & Stack Traces
+      description: Paste any relevant browser console output here.
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched for an existing issue about this bug
+          required: true
+        - label: I have provided all the information requested above
+          required: true
