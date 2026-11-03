@@ -58,7 +58,8 @@ export default function Step5Print({
 
   useEffect(() => {
     onUpdate({ ...data, printConfig: config });
-  }, [config, data, onUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config]);
 
   const handleWidthChange = (val: number) => {
     setConfig((prev) => {
@@ -86,7 +87,7 @@ export default function Step5Print({
 
     try {
       await generateProfessionalPDF(data, config, (p) => setProgress(p));
-      onUpdate({ ...data, status: 'Siap Cetak', printConfig: config });
+      onUpdate({ ...data, status: 'ready', printConfig: config });
       onComplete();
     } catch (err) {
       console.error('PDF Generation failed:', err);

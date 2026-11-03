@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { useNavigate, useLoaderData } from 'react-router';
 import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getAllProjects } from '@/lib/db';
-import type { ProjectData } from '@/types/project';
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,7 +30,7 @@ export function HydrateFallback() {
 export default function DatasetView() {
   const { t } = useTranslation();
   const loaderData = useLoaderData<typeof clientLoader>();
-  const [projects] = useState<ProjectData[]>(loaderData?.initialProjects ?? []);
+  const projects = loaderData?.initialProjects ?? [];
   const navigate = useNavigate();
 
   const projectsWithDataset = projects.filter(
