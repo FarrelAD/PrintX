@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { getDB } from '@/lib/db';
+import { clearAllProjects } from '@/lib/db';
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,8 +19,7 @@ export default function SettingsView() {
 
     if (isConfirmed) {
       try {
-        const db = await getDB();
-        await db.clear('projects');
+        await clearAllProjects();
         alert(t('settings.data.success_clear'));
         navigate('/dashboard');
       } catch (err) {
@@ -90,7 +89,7 @@ export default function SettingsView() {
               <span className="text-sm font-bold uppercase tracking-widest text-secondary">
                 {t('settings.info.license')}
               </span>
-              <span className="font-mono text-sm text-primary">MIT</span>
+              <span className="font-mono text-sm text-primary">MIT-0</span>
             </div>
             <div className="flex justify-between items-center border-b border-outline-variant pb-4">
               <span className="text-sm font-bold uppercase tracking-widest text-secondary">

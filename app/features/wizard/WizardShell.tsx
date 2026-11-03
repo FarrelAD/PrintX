@@ -7,9 +7,25 @@ import Step2Assets from '@/components/wizard/Step2Assets';
 import Step3Mapping from '@/components/wizard/Step3Mapping';
 import Step4Result from '@/components/wizard/Step4Result';
 import Step5Print from '@/components/wizard/Step5Print';
-import { saveProject } from '@/lib/db';
+import { saveProject, getInitialWizardStep } from '@/lib/db';
 
 import StatusDropdown from '@/components/ui/StatusDropdown';
+
+function serializeComparable(data: ProjectData): string {
+  const { updatedAt: _updatedAt, ...rest } = data;
+  void _updatedAt;
+  return JSON.stringify(rest);
+}
+
+function shouldPersistProject(data: ProjectData): boolean {
+  return Boolean(
+    data.id ||
+    data.type ||
+    data.name?.trim() ||
+    data.design?.preview ||
+    (data.dataset && data.dataset.rows.length > 0),
+  );
+}
 
 export default function WizardShell({
   initialData,
@@ -22,51 +38,95 @@ export default function WizardShell({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [step, setStep] = useState(initialData ? 2 : 1);
+  const [step, setStep] = useState(() => getInitialWizardStep(initialData));
   const [projectData, setProjectData] = useState<ProjectData>(
     initialData || {
       type: null,
+      status: 'draft',
     },
   );
   const [isSaving, setIsSaving] = useState(false);
-  const lastSavedData = useRef<string>(JSON.stringify(initialData || {}));
+
+  const lastSavedComparable = useRef<string>(
+    initialData?.id ? serializeComparable(initialData) : '',
+  );
+  const latestProjectDataRef = useRef<ProjectData>(projectData);
+
+  useEffect(() => {
+    latestProjectDataRef.current = projectData;
+  }, [projectData]);
+
+  const persistNow = useCallback(
+    async (dataToSave: ProjectData) => {
+      if (!shouldPersistProject(dataToSave)) return null;
+      const comparable = serializeComparable(dataToSave);
+      if (dataToSave.id && comparable === lastSavedComparable.current) {
+        return dataToSave;
+      }
+
+      setIsSaving(true);
+      try {
+        const updated = await saveProject(dataToSave);
+        lastSavedComparable.current = serializeComparable(updated);
+
+        if (!dataToSave.id && updated.id) {
+          latestProjectDataRef.current = {
+            ...latestProjectDataRef.current,
+            id: updated.id,
+          };
+          setProjectData((prev) => ({ ...prev, id: updated.id }));
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.delete('name');
+          const query = searchParams.toString();
+          navigate(
+            `/dashboard/project/${updated.id}${query ? `?${query}` : ''}`,
+            { replace: true },
+          );
+        }
+        return updated;
+      } catch (err) {
+        console.error('Failed to auto-save project:', err);
+        return null;
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [location.search, navigate],
+  );
 
   // Auto-save on data change
   useEffect(() => {
-    // Only save if we have a type (started the project) or if it's already an existing project
-    if (!projectData.type && !projectData.id) return;
+    if (!shouldPersistProject(projectData)) return;
 
-    const currentDataStr = JSON.stringify(projectData);
-    if (currentDataStr === lastSavedData.current) return;
+    const currentComparable = serializeComparable(projectData);
+    if (projectData.id && currentComparable === lastSavedComparable.current) {
+      return;
+    }
 
     const timer = setTimeout(() => {
-      setIsSaving(true);
-      saveProject(projectData)
-        .then((updated) => {
-          lastSavedData.current = JSON.stringify(updated);
-
-          // If this was a "new" project and we just got an ID, update the URL
-          if (!projectData.id && updated.id) {
-            setProjectData((prev) => ({ ...prev, id: updated.id }));
-            const searchParams = new URLSearchParams(location.search);
-            navigate(
-              `/dashboard/project/${updated.id}?${searchParams.toString()}`,
-              { replace: true },
-            );
-          }
-
-          setIsSaving(false);
-        })
-        .catch((err) => {
-          console.error('Failed to auto-save:', err);
-          setIsSaving(false);
-        });
-    }, 1000); // Debounce saves by 1s
+      void persistNow(latestProjectDataRef.current);
+    }, 500);
 
     return () => clearTimeout(timer);
-  }, [projectData, location.search, navigate]);
+  }, [projectData, persistNow]);
 
-  // Prevent accidental close during save
+  // Flush any pending unsaved changes on unmount
+  useEffect(() => {
+    return () => {
+      const current = latestProjectDataRef.current;
+      if (
+        shouldPersistProject(current) &&
+        (!current.id ||
+          serializeComparable(current) !== lastSavedComparable.current)
+      ) {
+        void saveProject(current).catch((err) =>
+          console.error('Failed to flush project save on unmount:', err),
+        );
+      }
+    };
+  }, []);
+
+  // Prevent accidental browser tab close during active save
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isSaving) {
@@ -87,16 +147,45 @@ export default function WizardShell({
   ];
 
   const handleTypeSelect = (type: ProjectType) => {
-    setProjectData((prev) => ({ ...prev, type }));
+    const nextData: ProjectData = {
+      ...latestProjectDataRef.current,
+      type,
+      status: latestProjectDataRef.current.status || 'draft',
+    };
+    latestProjectDataRef.current = nextData;
+    setProjectData(nextData);
     setStep(2);
+    void persistNow(nextData);
   };
 
   const handleNext = () => setStep((s) => Math.min(s + 1, 5));
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleUpdate = useCallback((newData: ProjectData) => {
-    setProjectData(newData);
+    setProjectData((prev) => {
+      const merged: ProjectData = {
+        ...prev,
+        ...newData,
+        id: prev.id || newData.id,
+        name: newData.name ?? prev.name,
+        status: newData.status ?? prev.status ?? 'draft',
+      };
+      latestProjectDataRef.current = merged;
+      return merged;
+    });
   }, []);
+
+  const handleCloseWizard = useCallback(async () => {
+    const current = latestProjectDataRef.current;
+    if (
+      shouldPersistProject(current) &&
+      (!current.id ||
+        serializeComparable(current) !== lastSavedComparable.current)
+    ) {
+      await persistNow(current);
+    }
+    onClose();
+  }, [onClose, persistNow]);
 
   return (
     <div className="flex flex-col min-h-full min-w-0">
@@ -104,7 +193,7 @@ export default function WizardShell({
       <div className="flex justify-between items-center mb-8 md:mb-12">
         <div className="flex items-center gap-4">
           <button
-            onClick={onClose}
+            onClick={() => void handleCloseWizard()}
             className="text-xs md:text-sm font-semibold uppercase tracking-widest flex items-center gap-1 md:gap-2 hover:text-secondary transition-colors whitespace-nowrap"
           >
             <span className="material-symbols-outlined text-lg">
@@ -113,7 +202,7 @@ export default function WizardShell({
             {t('common.cancel')}
           </button>
 
-          {projectData.name && (
+          {(projectData.name || projectData.id) && (
             <>
               <div className="h-4 w-px bg-outline-variant hidden sm:block" />
               <div className="hidden sm:flex flex-col">
@@ -122,7 +211,7 @@ export default function WizardShell({
                     folder
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary truncate">
-                    {projectData.name}
+                    {projectData.name || t('projects.untitled')}
                   </span>
                 </div>
                 {/* Save Indicator */}
@@ -142,11 +231,15 @@ export default function WizardShell({
               <StatusDropdown
                 currentStatus={projectData.status || 'draft'}
                 onStatusChange={(status) =>
-                  setProjectData((prev) => ({
-                    ...prev,
-                    status,
-                    updatedAt: Date.now(),
-                  }))
+                  setProjectData((prev) => {
+                    const updated = {
+                      ...prev,
+                      status,
+                      updatedAt: Date.now(),
+                    };
+                    latestProjectDataRef.current = updated;
+                    return updated;
+                  })
                 }
                 className="hidden md:block"
                 direction="down"
@@ -191,7 +284,7 @@ export default function WizardShell({
                   {s.title}
                 </span>
               </button>
-              {s.number < 4 && (
+              {s.number < 5 && (
                 <div className="w-2 md:w-4 h-px bg-outline-variant"></div>
               )}
             </div>
@@ -229,7 +322,7 @@ export default function WizardShell({
             data={projectData}
             onBack={handleBack}
             onUpdate={handleUpdate}
-            onComplete={onClose}
+            onComplete={() => void handleCloseWizard()}
           />
         )}
       </div>

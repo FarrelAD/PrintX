@@ -2,7 +2,7 @@ import { useNavigate, useLoaderData } from 'react-router';
 import type { MetaFunction, ClientLoaderFunctionArgs } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import WizardShell from '@/features/wizard/WizardShell';
-import { getProject } from '@/lib/db';
+import { getProject, saveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
 export const meta: MetaFunction = () => {
@@ -34,13 +34,29 @@ export async function clientLoader({
   }
 
   const url = new URL(request.url);
-  const name = url.searchParams.get('name');
-  const project: ProjectData | null = name
-    ? ({ name, type: null } as ProjectData)
-    : null;
+  const name = url.searchParams.get('name')?.trim();
+  if (name) {
+    try {
+      const saved = await saveProject({
+        name,
+        type: null,
+        status: 'draft',
+      });
+      return {
+        project: saved,
+        notFound: false,
+      };
+    } catch (err) {
+      console.error('Failed to initialize named project:', err);
+      return {
+        project: { name, type: null, status: 'draft' } as ProjectData,
+        notFound: false,
+      };
+    }
+  }
 
   return {
-    project,
+    project: null,
     notFound: false,
   };
 }
@@ -84,6 +100,7 @@ export default function ProjectWizardView() {
   return (
     <div className="max-w-full mx-auto pb-10">
       <WizardShell
+        key={initialData?.id || 'new'}
         initialData={initialData}
         onClose={() => navigate('/dashboard')}
       />

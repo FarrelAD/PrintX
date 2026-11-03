@@ -43,6 +43,7 @@ export default function ProjectsView() {
     loaderData?.initialProjects ?? [],
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -105,8 +106,14 @@ export default function ProjectsView() {
   }
 
   const filteredProjects = projects.filter((p) => {
-    if (activeTab === 'all') return true;
-    return (p.status || 'draft') === activeTab;
+    const matchesTab =
+      activeTab === 'all' || (p.status || 'draft') === activeTab;
+    const matchesSearch =
+      !searchQuery.trim() ||
+      (p.name || t('projects.untitled') || '')
+        .toLowerCase()
+        .includes(searchQuery.trim().toLowerCase());
+    return matchesTab && matchesSearch;
   });
 
   const handleNewProject = () => {
@@ -146,10 +153,20 @@ export default function ProjectsView() {
       }
     } else {
       // New project case
-      const url = name.trim()
-        ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}`
-        : '/dashboard/project/new';
-      navigate(url);
+      const trimmed = name.trim();
+      try {
+        const created = await dbSaveProject({
+          name: trimmed || undefined,
+          type: null,
+          status: 'draft',
+        });
+        navigate(`/dashboard/project/${created.id}`);
+      } catch {
+        const url = trimmed
+          ? `/dashboard/project/new?name=${encodeURIComponent(trimmed)}`
+          : '/dashboard/project/new';
+        navigate(url);
+      }
     }
   };
 
@@ -207,6 +224,8 @@ export default function ProjectsView() {
           </span>
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('common.search') || 'Cari...'}
             className="bg-transparent border-none outline-none text-sm w-full font-body"
           />

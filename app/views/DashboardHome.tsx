@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link, useNavigate, useLoaderData } from 'react-router';
 import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { getAllProjects } from '@/lib/db';
+import { getAllProjects, saveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
 import NameModal from '@/components/ui/NameModal';
@@ -34,7 +34,10 @@ export function HydrateFallback() {
 export default function DashboardHome() {
   const { t, i18n } = useTranslation();
   const loaderData = useLoaderData<typeof clientLoader>();
-  const [projects] = useState<ProjectData[]>(loaderData?.initialProjects ?? []);
+  const projects = useMemo(
+    () => loaderData?.initialProjects ?? [],
+    [loaderData?.initialProjects],
+  );
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -69,12 +72,22 @@ export default function DashboardHome() {
     setIsNameModalOpen(true);
   };
 
-  const confirmNewProject = (name: string) => {
+  const confirmNewProject = async (name: string) => {
     setIsNameModalOpen(false);
-    const url = name.trim()
-      ? `/dashboard/project/new?name=${encodeURIComponent(name.trim())}`
-      : '/dashboard/project/new';
-    navigate(url);
+    const trimmed = name.trim();
+    try {
+      const created = await saveProject({
+        name: trimmed || undefined,
+        type: null,
+        status: 'draft',
+      });
+      navigate(`/dashboard/project/${created.id}`);
+    } catch {
+      const url = trimmed
+        ? `/dashboard/project/new?name=${encodeURIComponent(trimmed)}`
+        : '/dashboard/project/new';
+      navigate(url);
+    }
   };
 
   const getStatusKey = (status: ProjectData['status']): string => {
