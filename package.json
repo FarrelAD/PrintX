@@ -2,6 +2,7 @@
   "name": "printx",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT-0",
   "type": "module",
   "packageManager": "pnpm@11.18.0",
   "engines": {

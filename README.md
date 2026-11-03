@@ -14,7 +14,12 @@
 [![Printing Industry](https://img.shields.io/badge/Printing_Industry-FF5733?style=flat)](https://github.com/topics/printing)
 [![Mail Merge](https://img.shields.io/badge/Mail_Merge-2ECC71?style=flat)](https://github.com/topics/mail-merge)
 [![Industrial Tool](https://img.shields.io/badge/Industrial_Tool-34495E?style=flat)](https://github.com/topics/industrial)
+[![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg?style=flat)](./LICENSE)
 
 </div>
 
 An experimental project to help automate generating ready-to-print documents for large amounts of data in web-based applications. This app idea is inspired by “Mail Merge,” a feature commonly found in Microsoft Word, Excel, and other similar apps.
+
+## License
+
+Released under the [MIT No Attribution (MIT-0)](./LICENSE) license. You are free to use, modify, and distribute this software for any purpose—with or without attribution.
