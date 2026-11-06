@@ -9,8 +9,7 @@ import {
 } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
-import NameModal from '@/components/ui/NameModal';
-import StatusDropdown from '@/components/ui/StatusDropdown';
+import { NameModal, StatusDropdown, Button, Input } from '@/components/ui';
 
 export const meta: MetaFunction = () => {
   return [
@@ -196,13 +195,14 @@ export default function ProjectsView() {
           </h1>
           <p className="text-secondary text-sm mt-2">{t('projects.desc')}</p>
         </div>
-        <button
+        <Button
           onClick={handleNewProject}
-          className="bg-primary text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-on-primary hover:text-primary border border-primary transition-colors flex items-center gap-2"
+          variant="primary"
+          icon="add"
+          size="md"
         >
-          <span className="material-symbols-outlined text-sm">add</span>
           {t('common.new_project')}
-        </button>
+        </Button>
       </div>
 
       {/* Navigation & Filter Bar */}
@@ -218,16 +218,14 @@ export default function ProjectsView() {
             </button>
           ))}
         </div>
-        <div className="hidden md:flex items-center gap-4 w-full md:w-64 border-b border-primary/20 pb-1">
-          <span className="material-symbols-outlined text-secondary text-lg">
-            search
-          </span>
-          <input
+        <div className="hidden md:flex items-center w-full md:w-64">
+          <Input
             type="text"
+            icon="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('common.search') || 'Cari...'}
-            className="bg-transparent border-none outline-none text-sm w-full font-body"
+            className="p-2 text-sm"
           />
         </div>
       </section>
@@ -261,24 +259,22 @@ export default function ProjectsView() {
                   ID: {project.id?.slice(0, 8)}
                 </div>
                 <div className="flex gap-2">
-                  <button
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    icon="edit"
                     onClick={(e) => handleRenameClick(e, project)}
-                    className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-surface-container transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                    className="opacity-0 group-hover:opacity-100 shadow-sm"
                     title={t('common.rename') || 'Ubah Nama'}
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      edit
-                    </span>
-                  </button>
-                  <button
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    icon="delete"
                     onClick={(e) => handleDelete(e, project.id!)}
-                    className="w-8 h-8 bg-white border border-primary flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                    className="opacity-0 group-hover:opacity-100 shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-600"
                     title={t('common.delete') || 'Hapus Proyek'}
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                  </button>
+                  />
                 </div>
               </div>
             </div>

@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router';
 import type { ProjectType, ProjectData } from '@/types/project';
-import Step1Category from '@/components/wizard/Step1Category';
-import Step2Assets from '@/components/wizard/Step2Assets';
-import Step3Mapping from '@/components/wizard/Step3Mapping';
-import Step4Result from '@/components/wizard/Step4Result';
-import Step5Print from '@/components/wizard/Step5Print';
+import Step1Category from './Step1Category';
+import Step2Assets from './Step2Assets';
+import Step3Mapping from './Step3Mapping';
+import Step4Result from './Step4Result';
+import Step5Print from './Step5Print';
 import { saveProject, getInitialWizardStep } from '@/lib/db';
 
 import StatusDropdown from '@/components/ui/StatusDropdown';
