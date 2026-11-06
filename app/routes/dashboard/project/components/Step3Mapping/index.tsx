@@ -11,7 +11,7 @@ import type Konva from 'konva';
 import type { ProjectData, MappingField } from '@/types/project';
 import { useImageLoader } from '@/hooks/useImageLoader';
 import { useStageSize } from '@/hooks/useStageSize';
-import { uid } from '@/utils/uid';
+import { uid } from '@/lib/uid';
 
 import {
   DEFAULT_FIELD_W,
