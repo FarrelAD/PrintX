@@ -4,7 +4,7 @@ import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/Logo';
 import InstallPrompt from '@/components/InstallPrompt';
-import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import { Button, LanguageSwitcher } from '@/components/ui';
 
 export const meta: MetaFunction = () => {
   return [
@@ -99,15 +99,17 @@ export default function HomeRoute() {
               variant="compact"
               className="py-2.5 px-4 md:py-3 md:px-6 text-[10px] md:text-sm whitespace-nowrap"
             />
-            <button
-              className="bg-primary text-on-primary py-2.5 px-4 md:py-3 md:px-6 font-semibold tracking-widest uppercase text-[10px] md:text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all whitespace-nowrap"
+            <Button
+              size="sm"
+              variant="primary"
+              className="whitespace-nowrap"
               onClick={() => navigate('/dashboard')}
             >
               <span className="hidden xs:inline">
                 {t('landing.nav.start_now')}
               </span>
               <span className="xs:hidden">{t('landing.nav.start')}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </nav>
@@ -123,12 +125,13 @@ export default function HomeRoute() {
               {t('landing.hero.subtitle')}
             </p>
             <div className="flex items-center gap-4">
-              <button
-                className="bg-primary text-on-primary py-3 px-6 font-semibold tracking-widest uppercase text-sm border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all"
+              <Button
+                variant="primary"
+                size="md"
                 onClick={() => navigate('/dashboard')}
               >
                 {t('landing.hero.cta')}
-              </button>
+              </Button>
               <InstallPrompt variant="compact" className="py-3 px-6 text-sm" />
             </div>
           </div>
@@ -261,12 +264,14 @@ export default function HomeRoute() {
             {t('landing.cta.title')}
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
-            <button
-              className="bg-primary text-on-primary py-6 px-12 font-semibold tracking-widest uppercase text-base border border-primary hover:bg-on-primary hover:text-primary active:scale-95 transition-all"
+            <Button
+              variant="primary"
+              size="lg"
+              className="py-6 px-12"
               onClick={() => navigate('/dashboard')}
             >
               {t('landing.cta.button')}
-            </button>
+            </Button>
             <InstallPrompt
               variant="compact"
               className="py-6 px-12 text-base bg-white text-primary border-primary hover:bg-primary hover:text-white"

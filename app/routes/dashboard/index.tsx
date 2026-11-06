@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getAllProjects, saveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
-import NameModal from '@/components/ui/NameModal';
+import { NameModal, Button } from '@/components/ui';
 
 export const meta: MetaFunction = () => {
   return [
@@ -138,15 +138,15 @@ export default function DashboardHome() {
           </div>
 
           <div className="flex flex-col items-start md:items-end gap-4">
-            <button
+            <Button
+              variant="primary"
+              size="lg"
+              icon="add"
               onClick={handleNewProject}
-              className="group relative bg-primary text-on-primary py-4 px-8 font-semibold tracking-widest uppercase text-sm border border-primary overflow-hidden transition-all hover:bg-white hover:text-primary active:scale-95 flex items-center gap-3 w-full md:w-auto justify-center"
+              className="w-full md:w-auto"
             >
-              <span className="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">
-                add
-              </span>
-              <span>{t('common.new_project')}</span>
-            </button>
+              {t('common.new_project')}
+            </Button>
             <div className="hidden md:flex gap-8 border-t border-primary/20 pt-4 w-full justify-end">
               <div className="text-right">
                 <div className="text-[10px] uppercase tracking-widest text-secondary">

@@ -2,6 +2,7 @@ import { useNavigate, useLoaderData } from 'react-router';
 import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getAllProjects } from '@/lib/db';
+import { Button } from '@/components/ui';
 
 export const meta: MetaFunction = () => {
   return [
@@ -94,17 +95,18 @@ export default function DatasetView() {
                         {project.name || t('projects.untitled')}
                       </td>
                       <td className="p-4">
-                        <button
+                        <Button
+                          variant="link"
+                          size="sm"
                           onClick={() =>
                             navigate(`/dashboard/project/${project.id}`)
                           }
-                          className="text-xs uppercase font-bold tracking-widest text-primary hover:underline flex items-center gap-1"
                         >
                           {t('datasets.table.open')}{' '}
                           <span className="material-symbols-outlined text-[14px]">
                             arrow_forward
                           </span>
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -163,17 +165,17 @@ export default function DatasetView() {
                       </div>
                     </div>
 
-                    <button
+                    <Button
+                      variant="primary"
+                      size="md"
+                      className="w-full"
+                      icon="arrow_forward"
                       onClick={() =>
                         navigate(`/dashboard/project/${project.id}`)
                       }
-                      className="w-full bg-primary text-white py-3 text-xs uppercase font-bold tracking-widest flex justify-center items-center gap-2 hover:bg-neutral-800 transition-colors"
                     >
-                      {t('datasets.table.open')}{' '}
-                      <span className="material-symbols-outlined text-sm">
-                        arrow_forward
-                      </span>
-                    </button>
+                      {t('datasets.table.open')}
+                    </Button>
                   </div>
                 </div>
               ))}

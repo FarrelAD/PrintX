@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import type { MetaFunction } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { clearAllProjects } from '@/lib/db';
+import { Button, Card } from '@/components/ui';
 
 export const meta: MetaFunction = () => {
   return [
@@ -42,7 +43,7 @@ export default function SettingsView() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section className="border border-primary bg-white p-6 md:p-8">
+        <Card className="p-6 md:p-8">
           <h2 className="text-xl font-heading uppercase mb-6 flex items-center gap-2">
             <span className="material-symbols-outlined">storage</span>
             {t('settings.data.title')}
@@ -58,19 +59,18 @@ export default function SettingsView() {
             <p className="text-xs text-secondary mb-4">
               {t('settings.data.danger_desc')}
             </p>
-            <button
+            <Button
+              variant="danger"
+              size="md"
+              icon="delete_forever"
               onClick={handleClearData}
-              className="bg-error text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-2"
             >
-              <span className="material-symbols-outlined text-[16px]">
-                delete_forever
-              </span>
               {t('settings.data.clear_button')}
-            </button>
+            </Button>
           </div>
-        </section>
+        </Card>
 
-        <section className="border border-primary bg-white p-6 md:p-8">
+        <Card className="p-6 md:p-8">
           <h2 className="text-xl font-heading uppercase mb-6 flex items-center gap-2">
             <span className="material-symbols-outlined">info</span>
             {t('settings.info.title')}
@@ -100,7 +100,7 @@ export default function SettingsView() {
               </span>
             </div>
           </div>
-        </section>
+        </Card>
       </div>
     </>
   );
