@@ -31,7 +31,7 @@ export default defineConfig([
   {
     files: [
       'app/routes/**/*.{ts,tsx}',
-      'app/layouts/**/*.{ts,tsx}',
+      'app/components/layouts/**/*.{ts,tsx}',
       'app/root.tsx',
     ],
     rules: {
