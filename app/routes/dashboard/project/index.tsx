@@ -1,7 +1,7 @@
 import { useNavigate, useLoaderData } from 'react-router';
 import type { MetaFunction, ClientLoaderFunctionArgs } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import WizardShell from '@/features/wizard/WizardShell';
+import WizardShell from './components/WizardShell';
 import { getProject, saveProject } from '@/lib/db';
 import type { ProjectData } from '@/types/project';
 
