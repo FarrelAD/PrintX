@@ -9,7 +9,7 @@ import {
 export default [
   route('/', 'routes/home/index.tsx'),
   ...prefix('dashboard', [
-    layout('layouts/DashboardLayout.tsx', [
+    layout('components/layouts/DashboardLayout.tsx', [
       index('routes/dashboard/index.tsx'),
       route('projects', 'routes/dashboard/projects/index.tsx'),
       route('dataset', 'routes/dashboard/dataset/index.tsx'),

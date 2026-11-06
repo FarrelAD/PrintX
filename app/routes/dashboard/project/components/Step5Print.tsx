@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ProjectData, PrintConfig } from '@/types/project';
-import { generateProfessionalPDF } from '@/utils/pdf/generator';
+import { generateProfessionalPDF } from '@/lib/pdf/generator';
 
 const DEFAULT_CONFIG: PrintConfig = {
   paperSize: 'A4',
